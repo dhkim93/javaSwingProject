@@ -1,0 +1,13 @@
+package com.bs.view;
+
+import javax.swing.JFrame;
+import java.awt.Rectangle;
+
+public class BoardDetail extends JFrame{
+	public BoardDetail() {
+		setBounds(new Rectangle(800, 550));
+	}
+	
+	
+
+}

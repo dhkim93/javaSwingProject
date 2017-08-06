@@ -1,0 +1,75 @@
+package com.bs.vo;
+
+public class ClosetVO {
+	private String id;
+	private String product_code;
+	private String product_name;
+	private String date;
+	
+	
+	public ClosetVO() {}
+
+
+	public ClosetVO(String id, String product_code, String product_name,
+			String date) {
+		super();
+		this.id = id;
+		this.product_code = product_code;
+		this.product_name = product_name;
+		this.date = date;
+	}
+
+
+	public String getId() {
+		return id;
+	}
+
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+
+	public String getProduct_code() {
+		return product_code;
+	}
+
+
+	public void setProduct_code(String product_code) {
+		this.product_code = product_code;
+	}
+
+
+	public String getProduct_name() {
+		return product_name;
+	}
+
+
+	public void setProduct_name(String product_name) {
+		this.product_name = product_name;
+	}
+
+
+	public String getDate() {
+		return date;
+	}
+
+
+	public void setDate(String date) {
+		this.date = date;
+	}
+
+
+	@Override
+	public String toString() {
+		return "ClosetVO [id=" + id + ", product_code=" + product_code
+				+ ", product_name=" + product_name + ", date=" + date + "]";
+	}
+	
+	
+	
+	
+	
+	
+
+}

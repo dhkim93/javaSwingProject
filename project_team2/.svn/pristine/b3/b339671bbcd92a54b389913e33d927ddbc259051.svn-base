@@ -1,0 +1,203 @@
+package com.bs.view;
+
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.GridBagLayout;
+import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JScrollPane;
+import javax.swing.ScrollPaneConstants;
+
+import com.bs.control.MyCartDAO;
+import com.bs.vo.CartVO;
+
+import java.awt.Scrollbar;
+
+public class MyCart extends JPanel {
+	
+	JRadioButton radioButton, radioButton_1, radioButton_2; // RadioButton 선언
+	JButton button_1, button_2, button_Main;
+	JLabel label_pic1, label_pic2, label_pic3;// 이미지 출력 라벨
+	JLabel label_num1, label_num2, label_num3;// 장바구니에서 목록 순서(1,2,3...)
+	JLabel label_sumCh = new JLabel("총금액 : ");
+	JPanel panel_bottom = new JPanel();// 4번째 패널
+	JLabel label_sumNum = new JLabel("5000원 : ");
+
+	int sum = 0;// 합계 저장 변수
+	// 서버에서 데이터 가져오기 위해 초기화한 변수 2개
+	MyCartDAO mcdao = null;
+	
+	// cart에 있는 id값
+	String c_id = "deokhyeon";
+
+	public MyCart(MainFrame win) {
+		setBounds(new Rectangle(50, 50, 800, 550));
+
+		setLayout(null);
+		
+		//패널4
+		panel_bottom.setBounds(12, 10, 789, 56);
+		add(panel_bottom);
+		panel_bottom.setLayout(null);
+		
+		button_1 = new JButton("구매확정");
+		button_1.setBounds(226, 10, 130, 23);
+		panel_bottom.add(button_1);
+		
+		button_2 = new JButton("삭제");
+		button_2.setBounds(368, 10, 79, 23);
+		panel_bottom.add(button_2);
+		
+		label_sumCh.setBounds(643, 10, 48, 15);
+		panel_bottom.add(label_sumCh);
+		
+		label_sumNum.setBounds(703, 10, 55, 15);
+		panel_bottom.add(label_sumNum);
+		
+		//메인으로 가기 버튼
+		button_Main = new JButton("메인화면");
+		button_Main.setBounds(459, 10, 104, 23);
+		button_Main.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					if (e.getSource() == button_Main) {
+						win.panelChange("LoginPage");
+					}
+				} catch (Exception ex) {
+					System.out.println(ex);
+				}
+			}
+		});
+		
+		panel_bottom.setLayout(new GridBagLayout());
+		panel_bottom.add(button_Main);
+		
+		JScrollPane sc = new JScrollPane(this, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS
+				,ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		sc.setViewportView(this);
+		sc.setPreferredSize(new Dimension(100, 100));
+		
+		
+		
+		
+		//서버에서 가져온 데이터로 글자 지정 부분
+		try {
+			
+			ArrayList<CartVO> list = null;
+			mcdao = new MyCartDAO();//서버에서 가져온 값을 쓰기위해 DAO 객체화
+			list = mcdao.getCartAndImage(c_id);//cart에 있는 id정보를 가져옴(deokhyoen으로 설정한 것만...)
+			//list에 내용이 있을경우 실행
+			if (list != null){
+				
+				System.out.println(list.get(0));
+				System.out.println("size " + list.size());
+				
+				int jpanelAxis = 70;
+				int yAxis = 10;
+
+				for (int i = 0; i < list.size(); i++) {
+					
+						
+						System.out.println("jpanelAxis :" + jpanelAxis);
+					
+						JPanel jpanel[] =  new JPanel[list.size()];
+						jpanel[i] = new JPanel();
+						jpanel[i].setBackground(Color.WHITE);
+						
+						jpanel[i].setBounds(10, jpanelAxis, 789, 153);
+						add(jpanel[i]);
+						jpanel[i].setLayout(null);
+						
+						super.add(jpanel[i]);
+						/*Scrollbar scrollbar = new Scrollbar();
+						
+						scrollbar.setBounds(794, 72, 17, 491);
+						add(scrollbar);
+						*/
+					/*	jpanel[0].setLayout(new GridBagLayout());
+						JScrollPane sc = new JScrollPane(jpanel[0], ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS
+								,ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+						sc.setViewportView(jpanel[i]);
+						sc.setPreferredSize(new Dimension(400,400));*/
+						
+						
+						
+						JLabel label_num[] = new JLabel[list.size()];
+						
+						label_num[i] = new JLabel(Integer.toString(i+1)); //카트 순번
+						label_num[i].setBounds(12, 10, 15, 15);
+						jpanel[i].add(label_num[i]);
+						
+						JLabel label_pName[] = new JLabel[list.size()]; //제품명 
+						label_pName[i] = new JLabel();
+						label_pName[i].setBounds(193, 10, 61, 15);
+						jpanel[i].add(label_pName[i]);
+						
+						JLabel label_pCode[] = new JLabel[list.size()]; //제품코드
+						label_pCode[i] = new JLabel();
+						label_pCode[i].setBounds(266, 10, 61, 15);
+						jpanel[i].add(label_pCode[i]);
+						label_pCode[i].setVisible(false);//코드 안보이게 하기
+						
+						JLabel label_price[] = new JLabel[list.size()];
+						
+						label_price[i] = new JLabel(); //가격표 
+						label_price[i].setBounds(378, 10, 56, 15);
+						jpanel[i].add(label_price[i]);
+						
+						JRadioButton radioButton[] = new JRadioButton[list.size()]; //라디오 버튼 
+						radioButton[i] = (JRadioButton) new JRadioButton("선택");
+						radioButton[i].setBounds(533, 10, 67, 23);
+						radioButton[i].setBackground(Color.WHITE);
+						jpanel[i].add(radioButton[i]);
+						
+						JPanel panel_pic[] = new JPanel[list.size()]; //그림 패널
+						panel_pic[i] = new JPanel();
+						panel_pic[i].setBounds(39, 12, 142, 130);
+						jpanel[i].add(panel_pic[i]);
+						
+						
+//						&& list.get(i).getProductCode().contains("P_CAP")
+						label_pName[i].setText(list.get(i).getProductName());
+						label_price[i].setText(list.get(i).getPrice()+"원");//가격을 가져와서 글자를 화면에 뿌려줌
+						label_pCode[i].setText(list.get(i).getProductCode());//제품명을 가져와서 글자를 화면에 뿌려줌
+						sum +=Integer.parseInt(list.get(i).getPrice());//값을 모두더해서 sum에 저장
+						
+						ImageIcon imgProd[] = new ImageIcon[list.size()];  
+						imgProd[i] = new ImageIcon(list.get(i).getImagePath());//이미지 경로 받아옴
+						
+						System.out.println("!!!!!!!!!!!!!!" + list.get(i));
+						
+						JLabel label_pic[] = new JLabel[list.size()];
+						label_pic[i] = new JLabel();
+						
+						label_pic[i] = new JLabel(imgProd[i]);
+						label_pic[i].setBounds(50, 0, imgProd[i].getIconWidth(), imgProd[i].getIconHeight());
+						
+						panel_pic[i].add(label_pic[i]);
+						
+						
+						
+						jpanelAxis += 165;
+					
+					
+				}//for end
+				
+				label_sumNum.setText(sum+"원");//총액 화면에 출력
+				
+			} //end if
+			
+		}catch (Exception e) { 
+			System.out.println("e=[" + e + "]");
+			e.printStackTrace();
+		}
+	}
+}

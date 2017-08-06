@@ -1,0 +1,181 @@
+/* 
+ * =============================
+ * 프로그램 설명 : 
+ * 작성자 : 
+ * 최초 작성일자 : 
+ * 최종 수정일 : 
+ * 수정 내용 : 
+ * =============================
+ * */
+
+package com.bs.view;
+
+import java.awt.Dimension;
+import java.awt.Toolkit;
+
+import javax.swing.JFrame;
+import javax.swing.JScrollPane;
+
+public class MainFrame extends JFrame {
+
+	public MainFrame() {
+
+	}
+
+	public AdminPage adminPage = null;  //관리자페이지
+	public LoginPage loginPage = null;  //로그인페이지
+	public MyDressRoom myDressRoom = null; //내옷장 페이지
+	public Board board = null;	//게시판 페이지
+	public BoardDetail boardDetail = null; //게시판 상세보기 패널
+	public BoardUpdate boardUpdate = null; //게시판 수정 패널
+	public BoardInsert boardInsert= null;  //게시판 글쓰기 패널 
+	public MyCart myCart = null; //장바구니 패널
+	public static String id;
+
+	// 패널 변경 메서드
+	public void panelChange(String panelName, String id) throws Exception {
+		this.id = id;
+
+		if (panelName.equals("MyDressRoom")) { // 내옷장 화면
+			myDressRoom.getMyCloth(id);// 내 옷장에 있는 옷을 조회한다.
+			getContentPane().removeAll();
+			getContentPane().add(myDressRoom);
+			revalidate();
+			repaint();
+
+		} else if (panelName.equals("LoginPage")) { // 로그인 페이지
+			
+			loginPage.removeAll();
+			int compCount = loginPage.refreshList();  //상품의 갯수
+			
+			System.out.println("@@@@@@@compCount@@@@@@@ : "  +compCount + "@@@@@@@compCount@@@@@@@ : ");
+			
+			JScrollPane jsp = new JScrollPane(loginPage,					//스크롤 생성
+					JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+					JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+			
+			jsp.getVerticalScrollBar().setUnitIncrement(16);    //스크롤 속도
+			jsp.setBounds(0, 0, 885, 600); // 스크롤 페인 크기 지정
+			Dimension size = new Dimension();// 사이즈를 지정하기 위한 객체 생성
+			size.setSize(880, compCount * 225 / 2);// 객체의 사이즈를 지정
+			
+			loginPage.setPreferredSize(size);// 사이즈 정보를 가지고 있는 객체를 이용해 패널의 사이즈지정
+			
+			jsp.setViewportView(loginPage);  //스크롤 페인에 로그인 패널을 넣어준다.
+			
+			getContentPane().removeAll();   //기존의 요소들을 삭제한다.
+			
+			getContentPane().add(jsp); // 시작화면 = 로그인 화면
+			
+			// getContentPane().add(loginPage);
+			revalidate();  //재설정
+			repaint();	//다시 그리기
+
+		} else if (panelName.equals("Board")) { // 게시판 페이지
+
+			board.removeAll(); //기존 board 게시판의 컴포넌트를 모두 지워준다
+			board.getBoardRefresh(id); // 게시판을 다시 생성시켜준다.
+			getContentPane().removeAll(); //프레임의 컴포넌트 들을 모두 제거한다.
+			getContentPane().add(board);  //board 프레임을 넣어준다.
+			revalidate();  //값초기화
+			repaint();     //다시쓰기
+
+		} else if (panelName.equals("MyCart")) { // 장바구니 페이지
+			
+			myCart.removeAll(); //기존에 있던 컴포넌트들을 제거한다.
+			myCart.revalidate();
+			myCart.repaint();
+			myCart.updateUI();
+			myCart.getMyCartImage(id); // 카트에 담은 상품을 가져온다.
+			int comCount = myCart.getComponentCount(); // 가져온 컴포넌트 갯수
+
+			JScrollPane jsp = new JScrollPane(myCart,
+			JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+			JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+			jsp.getVerticalScrollBar().setUnitIncrement(16);    //스크롤 속도
+			jsp.setBounds(0, 0, 885, 600); // 스크롤 페인 크기 지정
+			Dimension size = new Dimension();// 사이즈를 지정하기 위한 객체 생성
+			System.out.println("comCount 개수!!!!" + comCount);
+			size.setSize(885, comCount * 200);// 객체의 사이즈를 지정
+
+			myCart.setPreferredSize(size);// 사이즈 정보를 가지고 있는 객체를 이용해 패널의 사이즈 지정
+
+			jsp.setViewportView(myCart);
+			getContentPane().removeAll();
+			getContentPane().add(jsp); //
+
+			revalidate();
+			repaint();
+		} else if (panelName.equals("MemberJoin")) { // 회원 가입 페이지
+			MemberJoin join = new MemberJoin();
+			join.setVisible(true);
+			join.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); //종료시 프로세스제거 
+			// this.setEnabled(false);
+			
+		} else if (panelName.equals("BoardDetail")) { // 게시판 상세 페이지
+			
+			boardDetail.removeAll(); //기존 board 게시판의 컴포넌트를 모두 지워준다
+			boardDetail.getRefresh(id); // 게시판을 다시 생성시켜준다.
+			getContentPane().removeAll();
+			getContentPane().add(boardDetail);
+			revalidate();
+			repaint();
+
+		} else if (panelName.equals("BoardUpdate")) { // 게시판 수정 페이지
+			
+			boardUpdate.removeAll(); //기존 board 게시판의 컴포넌트를 모두 지워준다
+			boardUpdate.getRefresh(id); // 게시판을 다시 생성시켜준다.
+			getContentPane().removeAll();
+			getContentPane().add(boardUpdate);
+			revalidate();
+			repaint();
+
+		} else if (panelName.equals("BoardInsert")) { // 게시판 등록 페이지
+			
+			boardInsert.removeAll(); //기존 board 게시판의 컴포넌트를 모두 지워준다
+			boardInsert.getRefresh(id); // 게시판을 다시 생성시켜준다.
+			getContentPane().removeAll();
+			getContentPane().add(boardInsert);
+			revalidate();
+			repaint();
+		
+		}else if (panelName.equals("AdminPage")) { // 관리자 페이지
+			
+			adminPage.removeAll(); //기존 컴포넌트를 모두 지워준다
+			adminPage.getRefresh(id); // 다시 생성시켜준다.
+			getContentPane().removeAll();
+			getContentPane().add(adminPage);
+			revalidate();
+			repaint();
+		
+		}
+			
+	}
+
+	public static void main(String[] args) throws Exception {
+		
+		MainFrame win = new MainFrame();
+		win.setSize(900, 600);
+		Dimension frameSize = win.getSize(); //프레임 사이즈 가져오기
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize(); //모니터 크기를 가져온다.
+		win.setLocation((screenSize.width - frameSize.width)/2, (screenSize.height - frameSize.height)/2); //윈도우 위치 계산
+		win.setLayout(null); //레이아웃 없음 -> 동서남북 없애줌  
+		win.setTitle("2017 SUMMER SALE!"); //타이틀
+		
+		win.adminPage = new AdminPage(win);  //로그인 페이지
+
+		win.myDressRoom = new MyDressRoom(win); //내옷장
+		win.board = new Board(win);	//게시판
+		win.boardDetail = new BoardDetail(win); //게시판 상세보기
+		win.boardUpdate = new BoardUpdate(win);  //게시판 수정화면
+		win.boardInsert = new BoardInsert(win);  //게시판 등록화면
+		win.myCart = new MyCart(win);  //장바구니 화면
+		win.loginPage = new LoginPage(win);  //로그인 페이지
+		win.panelChange("LoginPage", id); // 시작화면은 로그인 페이지
+		
+		win.setVisible(true);
+		win.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); //종료시 프로세스제거 
+		
+	}
+
+}

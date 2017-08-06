@@ -1,0 +1,110 @@
+package com.bs.vo;
+
+public class MemberVO {
+	
+	private String id ;
+	private String password;
+	private String name;
+	private int gender;
+	private int admin_flag;
+	private String Phone;
+	private String email;
+	
+	public MemberVO(String id, String password, String name, int gender,
+			int admin, String Phone, String email) {
+		super();
+		this.id = id;
+		this.password = password;
+		this.name = name;
+		this.gender = gender;
+		this.admin_flag = admin_flag;
+		this.Phone = Phone;
+		this.email = email;
+	}
+
+
+	public MemberVO() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+
+	public String getId() {
+		return id;
+	}
+
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+
+	public String getPassword() {
+		return password;
+	}
+
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+
+	public String getName() {
+		return name;
+	}
+
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+
+	public int getGender() {
+		return gender;
+	}
+
+
+	public void setGender(int gender) {
+		this.gender = gender;
+	}
+
+
+	public int getAdmin_flag() {
+		return admin_flag;
+	}
+
+
+	public void setAdmin_flag(int admin_flag) {
+		this.admin_flag = admin_flag;
+	}
+
+
+	public String getPhone() {
+		return Phone;
+	}
+
+
+	public void setPhone(String phone) {
+		Phone = phone;
+	}
+
+
+	public String getEmail() {
+		return email;
+	}
+
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+
+
+
+	
+	
+	
+	
+	
+
+}

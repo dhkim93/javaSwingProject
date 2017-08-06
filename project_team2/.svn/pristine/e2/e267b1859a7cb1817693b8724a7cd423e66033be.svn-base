@@ -1,0 +1,177 @@
+/* 
+ * =============================
+ * 프로그램 설명 : 
+ * 작성자 : 
+ * 최초 작성일자 : 
+ * 최종 수정일 : 
+ * 수정 내용 : 
+ * =============================
+ * */
+
+package com.bs.view;
+
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Label;
+import java.awt.Panel;
+import java.awt.TextField;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
+
+public class AdminPage extends JPanel implements ActionListener {
+
+	private JButton btn1, btn2;
+	private JTable table;
+	private JScrollPane scroll; /* 스크롤 추가를 위해 JScrollPane 선언 */
+	private DefaultTableModel tablemodel; /* addRow를 호출하기 위한 선언 */
+	private MainFrame win = null;
+	private JButton btnMain = new JButton("메인으로");
+	private JButton btnProdIns = new JButton("물품등록");
+	private JButton btnProdDel = new JButton("물품삭제");
+	private JButton btnUdt = new JButton("수정사항저장");
+
+	public AdminPage(MainFrame win) {
+		this.win = win;
+	}
+	
+	//화면 새로 고침 메서드
+	public void getRefresh(String id){
+
+		JPanel panel_comp = new JPanel();
+		/* DefaultTableModel을 구현하여 JTable을 생성한다. */
+		setLayout(null);
+		
+		panel_comp.setBounds(600, 30, 300, 450);
+		panel_comp.setBackground(Color.WHITE);
+		add(panel_comp);
+		panel_comp.setLayout(null);
+		
+		
+		tablemodel = new DefaultTableModel();
+		// "모델명", "품목명", "수량"
+		tablemodel.setColumnIdentifiers(new String[] { "モデル名", "品目名", "数量" });
+
+		table = new JTable(tablemodel);
+
+		scroll = new JScrollPane(table);
+		scroll.setBounds(0, 0, 465, 481);
+
+		// "물품추가"
+		btn1 = new JButton("物品追加");
+		panel_comp.add(btn1);
+		btn1.addActionListener(this);
+		
+		// "물품삭제"
+		btn2 = new JButton("物品削除");
+		btn2.addActionListener(this);
+		panel_comp.add(btn2);
+		
+		setLayout(null);
+
+		Panel panel = new Panel(new FlowLayout());
+		panel.setBounds(471, 0, 313, 512);
+		
+		// "모 자"
+		JRadioButton rdbtnNewRadioButton = new JRadioButton("帽　　子");
+		rdbtnNewRadioButton.setBounds(0, 30, 100, 20);
+		panel_comp.add(rdbtnNewRadioButton);
+		// "상 의"
+		JRadioButton rdbtnNewRadioButton_1 = new JRadioButton("上　　着");
+		rdbtnNewRadioButton_1.setBounds(0, 50, 100, 20);
+		panel_comp.add(rdbtnNewRadioButton_1);
+		// "하 의"
+		JRadioButton rdbtnNewRadioButton_2 = new JRadioButton("ズ　ボ　ン");
+		rdbtnNewRadioButton_2.setBounds(0, 70, 100, 20);
+		panel_comp.add(rdbtnNewRadioButton_2);
+		// "신 발"
+		JRadioButton rdbtnNewRadioButton_3 = new JRadioButton("　　靴　　");
+		rdbtnNewRadioButton_3.setBounds(0, 90, 100, 20);
+		panel_comp.add(rdbtnNewRadioButton_3);
+		panel_comp.add(btn1);
+		panel_comp.add(btn2);
+
+		btnProdDel.setBounds(150, 250, 100, 23);
+		btnMain.setBounds(150, 300, 100, 23);
+		btnUdt.setBounds(150, 350, 150, 23);
+		btnProdIns.setBounds(150, 400, 100, 23);
+		
+		
+		panel_comp.add(btnProdDel);
+		panel_comp.add(btnProdIns);
+		panel_comp.add(btnUdt);
+		panel_comp.add(btnMain);
+		
+		/* 화면의 레이아웃을 구성함 */
+		
+		add(panel);
+		add(table.getTableHeader(), BorderLayout.NORTH);
+		add(scroll);
+		setSize(900, 600);
+		setVisible(true);
+		
+		
+		
+		btnMain.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					if (e.getSource() == btnMain) {
+						win.panelChange("LoginPage", MainFrame.id);
+					}
+				} catch (Exception ex) {
+					System.out.println(ex);
+				}
+			}
+		});
+
+	}
+	
+	
+	
+
+	public void actionPerformed(ActionEvent e) {
+
+		Object obj = e.getSource();
+
+		/* 추가 버튼이 눌린 경우 */
+
+		if ((JButton) obj == btn1)
+
+		{
+
+			/* TextField에 입력된 데이터를 JTable에 삽입함 */
+
+			/* 이쪽에서 자동저장할 수 있게금 삽입하면 됩니다. */
+
+		}
+
+		/* 삭제 버튼이 눌린 경우 */
+
+		else if ((JButton) obj == btn2)
+
+		{
+
+			/* 예외처리. 선택된 row가 있어야 한다 */
+
+			if (table.getSelectedRow() >= 0)
+
+			{
+
+				tablemodel.removeRow(table.getSelectedRow());
+
+			}
+
+		}
+
+	}
+
+}

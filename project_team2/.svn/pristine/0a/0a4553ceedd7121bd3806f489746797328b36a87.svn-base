@@ -1,0 +1,218 @@
+package com.bs.view;
+
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Rectangle;
+import java.util.ArrayList;
+
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+
+import com.bs.control.MyCartDAO;
+import com.bs.vo.CartVO;
+
+public class MyCart extends JPanel {
+
+	JRadioButton radioButton, radioButton_1,radioButton_2; // RadioButton 선언
+	JButton button_1, button_2, button_3;
+	JPanel panel_pic1, panel_pic2, panel_pic3;
+	JLabel label_num1,label_num2,label_num3;
+	JLabel label_sumCh = new JLabel("총금액 : ");
+	JLabel label_sumNum = new JLabel("5000원 ");
+	
+	
+	JPanel panel_1= new JPanel();
+	JPanel panel_2= new JPanel();
+	JPanel panel_3= new JPanel();
+	JPanel panel_4= new JPanel();
+	
+	JLabel label_pName1= new JLabel("검은 티 :"); 
+	JLabel label_pName2= new JLabel("검은 티 :"); 
+	JLabel label_pName3= new JLabel("검은 티 :"); 
+	JLabel label_pCode1 = new JLabel("P_UP_01");
+	JLabel label_pCode2 = new JLabel("P_UP_02");
+	JLabel label_pCode3 = new JLabel("P_UP_03");
+	JLabel label_price1 = new JLabel("5000원");
+	JLabel label_price2 = new JLabel("5000원");
+	JLabel label_price3 = new JLabel("5000원");
+	
+	int sum = 0;//합계 저장 변수
+	//서버에서 데이터 가져오기 위해 초기화한 변수 2개
+		MyCartDAO mcdao = null;
+		ArrayList<CartVO> list = null;
+		//cart에 있는 id값
+		String c_id = "deokhyeon";
+		
+	public MyCart(MainFrame win) {
+		setBounds(new Rectangle(50, 50, 800, 550));
+
+		final ImageIcon icon1 = new ImageIcon("C:\\1.png");
+		final ImageIcon icon2 = new ImageIcon("C:\\2.png");
+		final ImageIcon icon3 = new ImageIcon("C:\\3.png");
+		setLayout(null);
+		
+		//패널1
+		panel_1.setBackground(Color.WHITE);
+		panel_1.setBounds(12, 10, 789, 153);
+		add(panel_1);
+		panel_1.setLayout(null);
+		
+		label_num1 = new JLabel("1");
+		label_num1.setBounds(12, 9, 15, 15);
+		panel_1.add(label_num1);
+		
+		label_pName1.setBounds(193, 13, 61, 15);
+		panel_1.add(label_pName1);
+		
+		label_pCode1.setBounds(266, 13, 61, 15);
+		panel_1.add(label_pCode1);
+//		label_pCode1.setVisible(false);//코드 안보이게 하기
+		
+		label_price1.setBounds(378, 13, 56, 15);
+		panel_1.add(label_price1);
+		
+		radioButton = new JRadioButton("선택");
+		radioButton.setBounds(533, 13, 67, 23);
+		radioButton.setBackground(Color.WHITE);
+		panel_1.add(radioButton);
+		
+		panel_pic1 = new JPanel(){
+			public void paintComponent(Graphics g) {
+				g.drawImage(icon1.getImage(), 0, 0, null);
+				setOpaque(false);
+				super.paintComponent(g);
+			}
+		};
+		panel_pic1.setBounds(30, 10, icon1.getIconWidth(), icon1.getIconHeight());
+		panel_1.add(panel_pic1);
+		
+		//패널 2		
+		panel_2.setBackground(Color.WHITE);
+		panel_2.setBounds(12, 184, 789, 153);
+		add(panel_2);
+		panel_2.setLayout(null);
+		
+		label_num2 = new JLabel("2");
+		label_num2.setBounds(12, 9, 15, 15);
+		panel_2.add(label_num2);
+		
+		label_pName2.setBounds(193, 13, 61, 15);
+		panel_2.add(label_pName2);
+		
+		label_pCode2.setBounds(266, 13, 61, 15);
+		panel_2.add(label_pCode2);
+//		label_pCode2.setVisible(false);//코드 안보이게 하기
+		
+		label_price2.setBounds(378, 13, 56, 15);
+		panel_2.add(label_price2);
+		
+		radioButton_1 = new JRadioButton("선택");
+		radioButton_1.setBounds(533, 13, 67, 23);
+		radioButton_1.setBackground(Color.WHITE);
+		panel_2.add(radioButton_1);
+		
+		panel_pic2 = new JPanel(){
+			public void paintComponent(Graphics g) {
+				g.drawImage(icon2.getImage(), 0, 0, null);
+				setOpaque(false);
+				super.paintComponent(g);
+			}
+		};
+		panel_pic2.setBounds(30, 10, icon2.getIconWidth(), icon2.getIconHeight());
+		panel_2.add(panel_pic2);
+		
+		//패널3
+		panel_3.setBackground(Color.WHITE);
+		panel_3.setBounds(12, 357, 789, 153);
+		add(panel_3);
+		panel_3.setLayout(null);
+		
+		label_num3 = new JLabel("3");
+		label_num3.setBounds(12, 9, 15, 15);
+		panel_3.add(label_num3);
+		
+		label_pName3.setBounds(193, 13, 61, 15);
+		panel_3.add(label_pName3);
+		
+		label_pCode3.setBounds(266, 13, 61, 15);
+		panel_3.add(label_pCode3);
+//		label_pCode3.setVisible(false);//코드 안보이게 하기
+		
+		label_price3.setBounds(378, 13, 56, 15);
+		panel_3.add(label_price3);
+		
+		radioButton_2 = new JRadioButton("선택");
+		radioButton_2.setBounds(533, 13, 67, 23);
+		radioButton_2.setBackground(Color.WHITE);
+		panel_3.add(radioButton_2);
+		
+		panel_pic3 = new JPanel(){
+			public void paintComponent(Graphics g) {
+				g.drawImage(icon3.getImage(), 0, 0, null);
+				setOpaque(false);
+				super.paintComponent(g);
+			}
+		};
+		panel_pic3.setBounds(30, 10, icon3.getIconWidth(), icon3.getIconHeight());
+		panel_3.add(panel_pic3);
+		
+		//패널4
+		panel_4.setBounds(12, 519, 789, 56);
+		add(panel_4);
+		panel_4.setLayout(null);
+		
+		button_1 = new JButton("구매");
+		button_1.setBounds(277, 10, 79, 23);
+		panel_4.add(button_1);
+		
+		button_2 = new JButton("삭제");
+		button_2.setBounds(368, 10, 79, 23);
+		panel_4.add(button_2);
+		
+		label_sumCh.setBounds(643, 10, 48, 15);
+		panel_4.add(label_sumCh);
+		
+		label_sumNum.setBounds(703, 10, 55, 15);
+		panel_4.add(label_sumNum);
+		
+		button_3 = new JButton("메인화면");
+		button_3.setBounds(459, 10, 104, 23);
+		panel_4.add(button_3);
+
+		try {
+			mcdao = new MyCartDAO();//서버에서 가져온 값을 쓰기위해 DAO 객체화
+			list = mcdao.getCartList(c_id);//cart에 있는 id정보를 가져옴(deokhyoen으로 설정한 것만...)
+			
+		} catch (Exception e) { 
+			System.out.println("e=[" + e + "]");
+		}
+		//list에 내용이 있을경우 실행
+		if (list != null){
+			for (int i = 0; i < 3; i++) {
+				if(i==0){
+					label_pName1.setText(list.get(i).getProductName());
+					label_price1.setText(list.get(i).getPrice()+"원");//가격을 가져와서 글자를 화면에 뿌려줌
+					label_pCode1.setText(list.get(i).getProductCode());//제품명을 가져와서 글자를 화면에 뿌려줌
+					sum +=Integer.parseInt(list.get(i).getPrice());//값을 모두더해서 sum에 저장
+				}else if(i==1){
+					label_pName2.setText(list.get(i).getProductName());
+					label_price2.setText(list.get(i).getPrice()+"원");//가격을 가져와서 글자를 화면에 뿌려줌
+					label_pCode2.setText(list.get(i).getProductCode());//제품명을 가져와서 글자를 화면에 뿌려줌
+					sum +=Integer.parseInt(list.get(i).getPrice());//값을 모두더해서 sum에 저장
+				}else if(i==2){
+					label_pName3.setText(list.get(i).getProductName());
+					label_price3.setText(list.get(i).getPrice()+"원");//가격을 가져와서 글자를 화면에 뿌려줌
+					label_pCode3.setText(list.get(i).getProductCode());//제품명을 가져와서 글자를 화면에 뿌려줌
+					sum +=Integer.parseInt(list.get(i).getPrice());//값을 모두더해서 sum에 저장
+				}
+			}
+			label_sumNum.setText(sum+"원");//총액 화면에 출력
+		}
+		
+		setVisible(true);
+
+	}
+}

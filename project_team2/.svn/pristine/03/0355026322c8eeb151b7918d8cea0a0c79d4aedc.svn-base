@@ -1,0 +1,113 @@
+package com.bs.view;
+
+import java.awt.Dimension;
+
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JScrollPane;
+
+import com.bs.vo.CartVO;
+
+public class MainFrame extends JFrame{
+	
+	public MainFrame() {
+		
+	}
+	
+	public LoginPage loginPage = null ;
+	public MyDressRoom myDressRoom = null;
+	public Board board = null;
+	public MyCart myCart = null;
+	public static String id;
+
+	// 패널 변경 메서드
+	public void panelChange(String panelName, String id) {
+		this.id = id;
+		
+		if (panelName.equals("MyDressRoom")) { //내옷장 화면
+			getContentPane().removeAll();
+			myDressRoom.getMyCloth(id);//내 옷장에 있는 옷을 조회한다.
+			getContentPane().add(myDressRoom);
+			revalidate();
+			repaint();
+			
+		}else if(panelName.equals("LoginPage")){		//로그인 페이지 
+
+			int compCount = loginPage.getComponentCount()-14; //가져온 상품의 갯수 
+			System.out.println("compCount  : " + compCount );
+
+			JScrollPane jsp = new JScrollPane(loginPage, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+			jsp.setBounds(0,0,880,600); //스크롤 페인 크기 지정
+			Dimension size = new Dimension();//사이즈를 지정하기 위한 객체 생성
+			size.setSize(880, compCount*260/2);//객체의 사이즈를 지정
+			loginPage.setPreferredSize(size);//사이즈 정보를 가지고 있는 객체를 이용해 패널의 사이즈 지정
+			jsp.setViewportView(loginPage);
+			getContentPane().removeAll();
+			getContentPane().add(jsp); // 시작화면 =  로그인 화면
+//			getContentPane().add(loginPage);
+			revalidate();
+			repaint();
+			
+		}else if(panelName.equals("Board")){		//게시판 페이지
+			getContentPane().removeAll();
+			
+			getContentPane().add(board);
+			revalidate();
+			repaint();
+			
+		}else if(panelName.equals("MyCart")){		//장바구니 페이지
+			
+			myCart.removeAll();
+			myCart.revalidate();
+			myCart.repaint();
+			myCart.updateUI();
+			myCart.getMyCartImage(id);  //카트에 담은 상품을 가져온다.
+			
+			int comCount = myCart.getComponentCount(); //가져온 컴포넌트 갯수
+			
+			System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" + comCount);
+			
+			JScrollPane jsp = new JScrollPane(myCart, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+			jsp.setBounds(0,0,880,600); //스크롤 페인 크기 지정
+			Dimension size = new Dimension();//사이즈를 지정하기 위한 객체 생성
+			System.out.println("comCount 개수!!!!"+comCount);
+			size.setSize(880, comCount*200);//객체의 사이즈를 지정
+			
+			myCart.setPreferredSize(size);//사이즈 정보를 가지고 있는 객체를 이용해 패널의 사이즈 지정
+
+			
+			jsp.setViewportView(myCart);
+			
+			getContentPane().removeAll();
+			
+			getContentPane().add(jsp); //
+			
+			revalidate();
+			repaint();			
+			
+		}else if(panelName.equals("MemberJoin")){	//회원 가입 페이지
+			
+			MemberJoin join = new MemberJoin();
+			join.setVisible(true);
+//			this.setEnabled(false);
+		}
+	}
+	
+
+	public static void main(String[] args) throws Exception {
+		MainFrame win = new MainFrame();
+		win.setLayout(null);
+		win.setTitle("2017 SUMMER SALE!");
+		
+		win.loginPage = new LoginPage(win);
+		win.myDressRoom = new MyDressRoom(win);
+		win.board = new Board(win);
+		win.myCart = new MyCart(win);
+		
+		win.panelChange("LoginPage", id); //시작화면은 로그인 페이지
+		
+		win.setSize(900, 600);
+		win.setVisible(true);
+	}
+
+}

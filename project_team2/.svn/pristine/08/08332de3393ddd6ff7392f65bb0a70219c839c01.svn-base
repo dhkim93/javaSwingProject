@@ -1,0 +1,78 @@
+package com.bs.control;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+
+import com.bs.vo.AdminPageVO;
+import com.bs.vo.NoticeBoardVO;
+
+public class AdminPageDAO {
+
+	public ArrayList<AdminPageVO> getAdminList() throws Exception {
+
+		ArrayList<AdminPageVO> list = new ArrayList<AdminPageVO>();
+		String dml = "select * from cloth_basic";
+
+		Statement stmt = null;
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		AdminPageVO retval = null;
+		try {
+
+			con = DBUtil.getConnection();
+			stmt = con.createStatement();
+			rs = stmt.executeQuery(dml);
+										//"코드\t상품\t사이즈\t브랜드\t가격\t플래그"
+			System.out.println("コ-ド\t商品\tサイズ\tブランド\t価格\tフラグ");
+			while (rs.next()) {
+				retval = new AdminPageVO(rs.getString(1), rs.getString(2),
+						rs.getString(3), rs.getString(4), rs.getInt(5),
+						rs.getString(6), rs.getString(7));
+				list.add(retval);
+				
+				System.out.print(rs.getString(1) +"\t");//rs.get자료형(속성순서 or 속성명) 
+				System.out.print(rs.getString(2) +"\t");
+				System.out.print(rs.getString(3) +"\t");
+				System.out.print(rs.getString(4) +"\t");
+				System.out.print(rs.getInt(5) +"\t");
+				System.out.print(rs.getString(6) +"\t");
+				System.out.print(rs.getString(5) +"\t");
+				System.out.println();
+			}
+		} catch (SQLException se) {
+			System.out.println(se);
+		} catch (Exception e) {
+			System.out.println(e);
+		} finally {
+			try {
+				if (rs != null)
+					rs.close();
+				if (pstmt != null)
+					pstmt.close();
+				if (con != null)
+					con.close();
+			} catch (SQLException se) {
+
+			}
+		}
+		return list;
+		
+	}
+	
+	public static void main(String[] args) throws Exception{
+//		ArrayList<String> columnName = new ArrayList<String>();
+		ArrayList<AdminPageVO> list = null;
+		
+		AdminPageDAO test= new AdminPageDAO();
+		list = test.getAdminList(); 
+		System.out.println(list.get(0).getProductName());
+//		mcdao.getCartList(c_id);
+		
+	}
+
+}

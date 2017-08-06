@@ -1,0 +1,429 @@
+package com.bs.view;
+
+import java.awt.Color;
+import java.awt.Container;
+import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+
+import com.bs.control.MyDressRoomDAO;
+import com.bs.vo.ClosetVO;
+import com.bs.vo.MyDressRoomVO;
+import java.awt.Dimension;
+
+public class MyDressRoom extends JPanel implements ActionListener {
+	
+	private JButton btnNewButton = new JButton("데이터불러오기");
+	private JButton button = new JButton("메인으로");
+	private JComboBox comboBox_1 = new JComboBox();
+	private JComboBox comboBox_2 = new JComboBox();
+	private JComboBox comboBox_3 = new JComboBox();
+	private JComboBox comboBox_4 = new JComboBox();
+	private JPanel panel_man = new JPanel();
+	private JPanel panel_cap = new JPanel();
+	private JPanel panel_up = new JPanel();
+	private JPanel panel_down = new JPanel();
+	private JPanel panel_shoe = new JPanel();
+	private MainFrame win;
+	private JTextField textField;
+	private JTextField textField_1;
+	private JTextField textField_2;
+	private JTextField textField_3;
+	private JTextField textField_4;
+	
+	Container cPane;
+	ImageIcon img;
+	JLabel ImgBox;
+
+	public MyDressRoom(MainFrame win) {
+
+		setBounds(new Rectangle(50, 50, 800, 550));
+		// setTitle("내 옷장");
+		// getContentPane().setLayout(null);
+
+		img = new ImageIcon(".\\src\\img\\boy.png");
+		setLayout(null);
+		
+		ImgBox = new JLabel(img);
+		ImgBox.setBounds(40, 112, 282, 366);
+		
+		panel_man.setBackground(Color.WHITE);
+		panel_man.setBounds(12, 37, 372, 481);
+		
+		panel_man.setLayout(null);
+
+		panel_cap.setBackground(Color.WHITE);
+		panel_cap.setOpaque(false);
+		
+		panel_up.setBackground(Color.WHITE);
+		panel_up.setOpaque(false);
+		
+		panel_down.setBackground(Color.WHITE);
+		panel_down.setOpaque(false);
+		
+		panel_shoe.setBackground(Color.WHITE);
+		panel_shoe.setOpaque(false);
+		
+		panel_man.add(panel_cap);
+		panel_man.add(panel_up);
+		panel_man.add(panel_down);
+		panel_man.add(panel_shoe);
+
+		panel_man.add(ImgBox);
+		add(panel_man);
+
+		JPanel panel_6 = new JPanel();
+		panel_6.setBounds(420, 496, 372, 42);
+		add(panel_6);
+		panel_6.setLayout(null);
+
+		//로그인 화면으로 가기 버튼클릭
+		button.setBounds(224, 10, 136, 23);
+//		button.addActionListener(this);
+		
+		button.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					if (e.getSource() == button) {
+						win.panelChange("LoginPage");
+					}
+				} catch (Exception ex) {
+					System.out.println(ex);
+				}
+			}
+		});
+		
+		panel_6.add(button);
+
+		//데이터 불러오기 버튼클릭		
+		btnNewButton.setBounds(53, 10, 163, 23);
+		panel_6.add(btnNewButton);
+		btnNewButton.addActionListener(this);
+
+		JPanel panel_7 = new JPanel();
+		panel_7.setSize(new Dimension(100, 50));
+		panel_7.setBounds(420, 24, 372, 50);
+		add(panel_7);
+		panel_7.setLayout(null);
+
+		JLabel label_8 = new JLabel("모자 : ");
+		label_8.setBounds(0, 8, 36, 15);
+		panel_7.add(label_8);
+
+		comboBox_1 = new JComboBox();
+		comboBox_1.setBounds(62, 5, 130, 21);
+		comboBox_1.setMaximumRowCount(20);
+		panel_7.add(comboBox_1);
+
+		// 모자 콤보박스 이벤트
+		comboBox_1.addActionListener(ie -> {
+
+			JComboBox c = (JComboBox) ie.getSource();
+			ClosetVO item = (ClosetVO) c.getSelectedItem();
+			System.out.println(item.getProductCode() + " : " + item.getProductName());
+
+			try {
+
+				JLabel ImgBoxCap;
+				ImageIcon imgCap;
+				MyDressRoomDAO mdrdao = new MyDressRoomDAO();
+				ArrayList<MyDressRoomVO> list = mdrdao.getImage(item.getProductCode());
+
+				System.out.println(list.size());
+				for (int i = 0; i < list.size(); i++) {
+
+					if (item.getProductCode().contains("P_CAP")) {
+
+						imgCap = new ImageIcon(list.get(i).getImagePath());
+						ImgBoxCap = new JLabel(imgCap);
+						ImgBoxCap.setBounds(0, 0, imgCap.getIconWidth(), imgCap.getIconHeight());
+
+						panel_cap.setBounds(list.get(i).getxAixs(), list.get(i).getyAixs(), 157, 123);
+						panel_cap.removeAll();
+						panel_cap.setVisible(true);
+						panel_cap.add(ImgBoxCap);
+						panel_cap.revalidate();
+						panel_cap.repaint();
+						panel_cap.updateUI();
+
+					} else if (item.getProductCode().contains("none")) {
+						panel_cap.setVisible(false); // 아무것도 선택 안했을때
+					}
+				}
+			} catch (Exception e) {
+				System.out.println("e=[" + e + "]");
+			}
+
+		});
+
+		JLabel label = new JLabel("총 : ");
+		label.setBounds(215, 8, 24, 15);
+		panel_7.add(label);
+
+		textField_1 = new JTextField();
+		textField_1.setBounds(249, 5, 40, 21);
+		textField_1.setColumns(10);
+		panel_7.add(textField_1);
+
+		JLabel label_4 = new JLabel("개");
+		label_4.setBounds(301, 8, 29, 15);
+		panel_7.add(label_4);
+
+		JPanel panel_8 = new JPanel();
+		panel_8.setSize(new Dimension(100, 50));
+		panel_8.setBounds(420, 76, 372, 50);
+		add(panel_8);
+		panel_8.setLayout(null);
+
+		JLabel label_1 = new JLabel("상의 : ");
+		label_1.setBounds(0, 8, 36, 15);
+		panel_8.add(label_1);
+
+		comboBox_2.setBounds(62, 5, 130, 21);
+		panel_8.add(comboBox_2);
+
+		// 상의 콤보박스 이벤트
+		comboBox_2.addActionListener(ie -> {
+			JComboBox c = (JComboBox) ie.getSource();
+			ClosetVO item = (ClosetVO) c.getSelectedItem();
+			System.out.println(item.getProductCode() + " : " + item.getProductName());
+
+			try {
+				JLabel ImgBoxUp;
+				ImageIcon imgUp;
+				MyDressRoomDAO mdrdao = new MyDressRoomDAO();
+				ArrayList<MyDressRoomVO> list = mdrdao.getImage(item.getProductCode());
+
+				System.out.println(list.size());
+				for (int i = 0; i < list.size(); i++) {
+
+					if (item.getProductCode().contains("P_UP")) {
+
+						imgUp = new ImageIcon(list.get(i).getImagePath());
+						ImgBoxUp = new JLabel(imgUp);
+						ImgBoxUp.setBounds(0, 0, imgUp.getIconWidth(), imgUp.getIconHeight());
+
+						panel_up.setBounds(list.get(i).getxAixs(), list.get(i).getyAixs(), 172, 109);
+						panel_up.removeAll();
+						panel_up.setVisible(true);
+						panel_up.add(ImgBoxUp);
+						panel_up.revalidate();
+						panel_up.repaint();
+						panel_up.updateUI();
+					} else if (item.getProductCode().contains("none")) {
+						panel_up.setVisible(false); // 아무것도 선택 안했을때
+					}
+				}
+			} catch (Exception e) {
+				System.out.println("e=[" + e + "]");
+			}
+		});
+
+		JLabel label_5 = new JLabel("총 : ");
+		label_5.setBounds(215, 8, 24, 15);
+		panel_8.add(label_5);
+
+		textField_2 = new JTextField();
+		textField_2.setBounds(249, 5, 40, 21);
+		textField_2.setColumns(10);
+		panel_8.add(textField_2);
+
+		JLabel label_9 = new JLabel("개");
+		label_9.setBounds(301, 8, 36, 15);
+		panel_8.add(label_9);
+
+		JPanel panel_1 = new JPanel();
+		panel_1.setBounds(420, 137, 372, 50);
+		add(panel_1);
+		panel_1.setLayout(null);
+
+		JLabel label_2 = new JLabel("하의 : ");
+		label_2.setBounds(0, 8, 36, 15);
+		panel_1.add(label_2);
+
+		comboBox_3.setBounds(62, 5, 130, 21);
+		panel_1.add(comboBox_3);
+
+		// 바지 콤보박스 이벤트
+		comboBox_3.addActionListener(ie -> {
+			JComboBox c = (JComboBox) ie.getSource();
+			ClosetVO item = (ClosetVO) c.getSelectedItem();
+			System.out.println(item.getProductCode() + " : " + item.getProductName());
+
+			try {
+				JLabel ImgBoxDown;
+				ImageIcon imgDown;
+				MyDressRoomDAO mdrdao = new MyDressRoomDAO();
+				ArrayList<MyDressRoomVO> list = mdrdao.getImage(item.getProductCode());
+
+				System.out.println(list.size());
+				for (int i = 0; i < list.size(); i++) {
+
+					if (item.getProductCode().contains("P_DOWN")) {
+
+						imgDown = new ImageIcon(list.get(i).getImagePath());
+						ImgBoxDown = new JLabel(imgDown);
+						ImgBoxDown.setBounds(0, 0, imgDown.getIconWidth(), imgDown.getIconHeight());
+
+						panel_down.setBounds(list.get(i).getxAixs(), list.get(i).getyAixs(), 172, 85);
+						panel_down.removeAll();
+						panel_down.setVisible(true);
+						panel_down.add(ImgBoxDown);
+						panel_down.revalidate();
+						panel_down.repaint();
+						panel_down.updateUI();
+					} else if (item.getProductCode().contains("none")) {
+						panel_down.setVisible(false); // 아무것도 선택 안했을때
+					}
+				}
+
+			} catch (Exception e) {
+				System.out.println("e=[" + e + "]");
+			}
+		});
+
+		JLabel label_6 = new JLabel("총 : ");
+		label_6.setBounds(215, 8, 24, 15);
+		panel_1.add(label_6);
+
+		textField_3 = new JTextField();
+		textField_3.setBounds(249, 5, 40, 21);
+		textField_3.setColumns(10);
+		panel_1.add(textField_3);
+
+		JLabel label_10 = new JLabel("개");
+		label_10.setBounds(301, 8, 31, 15);
+		panel_1.add(label_10);
+
+		JPanel panel_2 = new JPanel();
+		panel_2.setBounds(420, 212, 373, 50);
+		add(panel_2);
+		panel_2.setLayout(null);
+
+		JLabel label_3 = new JLabel("신발 : ");
+		label_3.setBounds(0, 0, 36, 15);
+		panel_2.add(label_3);
+
+		comboBox_4.setBounds(62, 0, 130, 21);
+		panel_2.add(comboBox_4);
+
+		// 신발 콤보박스 이벤트
+		comboBox_4.addActionListener(ie -> {
+			JComboBox c = (JComboBox) ie.getSource();
+			ClosetVO item = (ClosetVO) c.getSelectedItem();
+			// System.out.println(item.getProductCode() + " : " +
+			// item.getProductName());
+
+			try {
+				JLabel ImgBoxShoe;
+				ImageIcon imgShoe;
+				MyDressRoomDAO mdrdao = new MyDressRoomDAO();
+				ArrayList<MyDressRoomVO> list = mdrdao.getImage(item.getProductCode());
+
+				System.out.println(list.size());
+				for (int i = 0; i < list.size(); i++) {
+
+					if (item.getProductCode().contains("P_SHOE")) {
+
+						imgShoe = new ImageIcon(list.get(i).getImagePath());
+						ImgBoxShoe = new JLabel(imgShoe);
+						ImgBoxShoe.setBounds(50, 50, imgShoe.getIconWidth(), imgShoe.getIconHeight());
+
+						panel_shoe.setBounds(list.get(i).getxAixs(), list.get(i).getyAixs(), 176, 200);
+						panel_shoe.removeAll();
+						panel_shoe.setVisible(true);
+						panel_shoe.add(ImgBoxShoe);
+						panel_shoe.revalidate();
+						panel_shoe.repaint();
+						panel_shoe.updateUI();
+					} else if (item.getProductCode().contains("none")) {
+						panel_shoe.setVisible(false); // 아무것도 선택 안했을때
+					}
+				}
+
+			} catch (Exception e) {
+				System.out.println("e=[" + e + "]");
+			}
+		});
+
+		JLabel label_7 = new JLabel("총 : ");
+		label_7.setBounds(215, 0, 50, 19);
+		panel_2.add(label_7);
+
+		textField_4 = new JTextField();
+		textField_4.setColumns(10);
+		textField_4.setBounds(249, 0, 40, 21);
+		panel_2.add(textField_4);
+
+		JLabel label_11 = new JLabel("개");
+		label_11.setBounds(301, -2, 36, 19);
+		panel_2.add(label_11);
+
+	}
+
+	// 버튼 클릭 이벤트
+	public void actionPerformed(ActionEvent ae) {
+		String ae_type = ae.getActionCommand();
+		// MyDressRoomVO mdrvo = null;
+		MyDressRoomDAO mdrdao = null;
+		String id = "naehoon";
+		ArrayList<MyDressRoomVO> list = null;
+		ResultSet rs = null;
+		try {
+			mdrdao = new MyDressRoomDAO();
+			list = mdrdao.getClosetList(id);
+			
+		if (ae_type.equals(btnNewButton.getText())) {// 데이터 가져오기 버튼이 클릭되었을 경우
+
+			if (list != null) {
+				// System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"+list.get(0).getProduct());
+				// JOptionPane.showMessageDialog(this, "성공적");
+				comboBox_1.addItem(new ClosetVO("none", "none"));
+				comboBox_2.addItem(new ClosetVO("none", "none"));
+				comboBox_3.addItem(new ClosetVO("none", "none"));
+				comboBox_4.addItem(new ClosetVO("none", "none"));
+
+				for (int i = 0; i < list.size(); i++) { //콤보박스에 요소를 추가시켜준다.
+
+					if (list.get(i).getProductCode().contains("P_CAP")) {
+						comboBox_1.addItem(new ClosetVO(list.get(i).getProductCode(), list.get(i).getProductName()));
+
+					} else if (list.get(i).getProductCode().contains("P_UP")) {
+						comboBox_2.addItem(new ClosetVO(list.get(i).getProductCode(), list.get(i).getProductName()));
+
+					} else if (list.get(i).getProductCode().contains("P_DOWN")) {
+						comboBox_3.addItem(new ClosetVO(list.get(i).getProductCode(), list.get(i).getProductName()));
+
+					} else if (list.get(i).getProductCode().contains("P_SHOE")) {
+						comboBox_4.addItem(new ClosetVO(list.get(i).getProductCode(), list.get(i).getProductName()));
+					}
+				}
+			}
+			// 물품 갯수 표시
+			textField_1.setText(Integer.toString(comboBox_1.getItemCount() - 1));
+			textField_2.setText(Integer.toString(comboBox_2.getItemCount() - 1));
+			textField_3.setText(Integer.toString(comboBox_3.getItemCount() - 1));
+			textField_4.setText(Integer.toString(comboBox_4.getItemCount() - 1));
+			
+		}
+		
+//		else if(ae_type.equals(button.getText())){ //메인으로가기 (로그인화면으로)
+//				//로그인 화면으로 이동하기 
+//				System.out.println("로그인화면으로 갈까");
+//				win.panelChange("LoginPage");
+//		}
+		
+		} catch (Exception e) {
+			System.out.println("e=[" + e + "]");
+		}
+	}
+}

@@ -1,0 +1,92 @@
+package com.bs.vo;
+
+public class ClothVO {
+
+	private String product_code;
+	private String product_name;
+	private String size;
+	private String brand;
+	private int price;
+	private String varchar;
+	private String date;
+
+	public ClothVO() {
+	}
+
+	public ClothVO(String product_code, String product_name, String size,
+			String brand, int price, String varchar, String date) {
+		super();
+		this.product_code = product_code;
+		this.product_name = product_name;
+		this.size = size;
+		this.brand = brand;
+		this.price = price;
+		this.varchar = varchar;
+		this.date = date;
+	}
+
+	public String getProduct_code() {
+		return product_code;
+	}
+
+	public void setProduct_code(String product_code) {
+		this.product_code = product_code;
+	}
+
+	public String getProduct_name() {
+		return product_name;
+	}
+
+	public void setProduct_name(String product_name) {
+		this.product_name = product_name;
+	}
+
+	public String getSize() {
+		return size;
+	}
+
+	public void setSize(String size) {
+		this.size = size;
+	}
+
+	public String getBrand() {
+		return brand;
+	}
+
+	public void setBrand(String brand) {
+		this.brand = brand;
+	}
+
+	public int getPrice() {
+		return price;
+	}
+
+	public void setPrice(int price) {
+		this.price = price;
+	}
+
+	public String getVarchar() {
+		return varchar;
+	}
+
+	public void setVarchar(String varchar) {
+		this.varchar = varchar;
+	}
+
+	public String getDate() {
+		return date;
+	}
+
+	public void setDate(String date) {
+		this.date = date;
+	}
+
+	@Override
+	public String toString() {
+		return "ClothVO [product_code=" + product_code + ", product_name="
+				+ product_name + ", size=" + size + ", brand=" + brand
+				+ ", price=" + price + ", varchar=" + varchar + ", date="
+				+ date + "]";
+	}
+
+}

@@ -1,0 +1,47 @@
+package com.bs.view;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.JFrame;
+
+public class MainFrame extends JFrame{
+	public MainFrame() {
+	}
+
+	public LoginPage loginPage = null ;
+	public MyDressRoom myDressRoom = null;
+
+	// 패널 변경 메서드
+	public void panelChange(String panelName) {
+		
+		//내옷장 화면
+		if (panelName.equals("MyDressRoom")) {
+			getContentPane().removeAll();
+			getContentPane().add(myDressRoom);
+			revalidate();
+			repaint();
+		}
+	}
+	
+	public static void main(String[] args) {
+
+		MainFrame win = new MainFrame();
+		
+		win.setTitle("2017 SUMMER SALE!");
+		win.myDressRoom = new MyDressRoom(win);
+		win.loginPage = new LoginPage(win);
+
+		win.getContentPane().add(win.loginPage); // 로그인 화면
+		
+		win.setSize(900, 600);
+		win.setVisible(true);
+	}
+
+	/*
+	 * try { if(jb.getText().equals(btnNewButton_1.getText())){ // if
+	 * (e.getSource() == btnNewButton_1) { 두 번째 방법 // MemberJoin join = new
+	 * MemberJoin(); // join.setVisible(true); new MemberJoin();
+	 */
+
+}

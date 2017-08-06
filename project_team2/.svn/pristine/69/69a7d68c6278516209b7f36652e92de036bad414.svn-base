@@ -1,0 +1,5 @@
+package com.bs.vo;
+
+public class AdminPageVO {
+
+}

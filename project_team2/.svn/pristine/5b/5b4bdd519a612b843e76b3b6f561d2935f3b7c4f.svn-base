@@ -1,0 +1,157 @@
+/* 
+ * =============================
+ * 프로그램 설명 : MyDressRoom VO
+ * 작성자 : 오내훈
+ * 최초 작성일자 : 
+ * 최종 수정일 : 
+ * 수정 내용 : 
+ * =============================
+ * */
+
+package com.bs.vo;
+
+import java.util.HashMap;
+import java.util.Map;
+
+public class MyDressRoomVO {
+	
+	private String id = null;
+	private String productCode = null;
+	private String productName = null;
+	private String buyDate = null;
+	private String imageName = null;
+	private String imagePath= null;
+	private int gender;
+	private int xAixs;  //이미지 x 축
+	private int yAixs;  //이미지 y 축
+	private int balance;  //이미지 y 축
+	
+	public MyDressRoomVO() {
+	}
+	
+	public MyDressRoomVO(int gender, int balance) {
+		super();
+		this.gender = gender;
+		this.balance = balance;
+		
+		
+	}
+
+
+
+	public MyDressRoomVO(String productCode) {
+		this.productCode = productCode;
+	}
+	
+	public MyDressRoomVO(String imageName, String imagePath, int xAixs, int yAixs, String buyDate) {
+		this.imageName = imageName;
+		this.imagePath = imagePath;
+		this.buyDate = buyDate;
+		this.xAixs = xAixs;
+		this.yAixs = yAixs;
+	}
+	//AdminPageDAO에서 사용
+	public MyDressRoomVO(String imageName, String imagePath, int xAixs,
+			int yAixs) {
+		super();
+		this.imageName = imageName;
+		this.imagePath = imagePath;
+		this.xAixs = xAixs;
+		this.yAixs = yAixs;
+	}
+
+	public MyDressRoomVO(String id, String productCode, String productName, String buyDate, int balance) {
+		this.id = id;
+		this.productCode = productCode;
+		this.productName = productName;
+		this.buyDate = buyDate;
+		this.balance = balance;
+	}
+
+	public String getImageName() {
+		return imageName;
+	}
+	
+
+	public void setImageName(String imageName) {
+		this.imageName = imageName;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public String getProductCode() {
+		return productCode;
+	}
+
+	public void setProductCode(String productCode) {
+		this.productCode = productCode;
+	}
+
+	public String getProductName() {
+		return productName;
+	}
+
+	public void setProductName(String productName) {
+		this.productName = productName;
+	}
+
+	public String getBuyDate() {
+		return buyDate;
+	}
+
+	public void setBuyDate(String buyDate) {
+		this.buyDate = buyDate;
+	}
+	
+	public String getImagePath() {
+		return imagePath;
+	}
+
+	public void setImagePath(String imagePath) {
+		this.imagePath = imagePath;
+	}
+	
+	public int getxAixs() {
+		return xAixs;
+	}
+
+	public void setxAixs(int xAixs) {
+		this.xAixs = xAixs;
+	}
+
+	public int getyAixs() {
+		return yAixs;
+	}
+
+	public void setyAixs(int yAixs) {
+		this.yAixs = yAixs;
+	}
+
+	public int getGender() {
+		return gender;
+	}
+
+	public void setGender(int gender) {
+		this.gender = gender;
+	}
+
+	public int getBalance() {
+		return balance;
+	}
+
+	public void setBalance(int balance) {
+		this.balance = balance;
+	}
+
+	@Override
+	public String toString() {
+		return productCode; 
+	}
+	
+}

@@ -1,0 +1,85 @@
+package com.bs.view;
+
+import javax.swing.JFrame;
+
+import java.awt.GraphicsConfiguration;
+import java.awt.HeadlessException;
+import java.awt.Rectangle;
+
+import javax.swing.JPanel;
+
+import java.awt.Color;
+
+import javax.swing.JLabel;
+
+import java.awt.Font;
+
+public class Board extends JFrame {
+	
+	
+
+	public Board() {
+		
+		setTitle("★게시판★");
+		
+		setBounds(new Rectangle(0, 0, 800, 550));
+		getContentPane().setLayout(null);
+
+		JPanel panel = new JPanel();
+		panel.setBackground(Color.WHITE);
+		panel.setBounds(0, 0, 784, 50);
+		getContentPane().add(panel);
+		panel.setLayout(null);
+
+		JLabel label = new JLabel("공지사항 : 2017/07/11~21 SALE !!!");
+		label.setFont(new Font("굴림", Font.PLAIN, 27));
+		label.setBounds(12, 10, 693, 40);
+		panel.add(label);
+
+		JPanel panel_1 = new JPanel();
+		panel_1.setBackground(Color.WHITE);
+		panel_1.setBounds(10, 90, 370, 420);
+		getContentPane().add(panel_1);
+		panel_1.setLayout(null);
+
+		JLabel label_1 = new JLabel("등록된 게시물이 없습니다.");
+		label_1.setBounds(103, 193, 174, 15);
+		panel_1.add(label_1);
+
+		JPanel panel_2 = new JPanel();
+		panel_2.setBounds(254, 7, 10, 10);
+		panel_2.setBackground(Color.WHITE);
+		panel_1.add(panel_2);
+
+		JPanel panel_3 = new JPanel();
+		panel_3.setBackground(Color.WHITE);
+		panel_3.setBounds(400, 90, 370, 420);
+		getContentPane().add(panel_3);
+		panel_3.setLayout(null);
+
+		JPanel panel_4 = new JPanel();
+		panel_4.setBounds(105, 7, 10, 10);
+		panel_4.setBackground(Color.WHITE);
+		panel_3.add(panel_4);
+
+		JLabel label_2 = new JLabel("등록된 게시물이 없습니다.");
+		label_2.setBounds(105, 190, 201, 15);
+		panel_3.add(label_2);
+
+		JLabel lblNewLabel = new JLabel("구매후기");
+		lblNewLabel.setFont(new Font("굴림", Font.PLAIN, 15));
+		lblNewLabel.setBounds(10, 60, 129, 26);
+		getContentPane().add(lblNewLabel);
+
+		JLabel lblQa = new JLabel("Q&A");
+		lblQa.setFont(new Font("굴림", Font.PLAIN, 15));
+		lblQa.setBounds(400, 66, 129, 26);
+		getContentPane().add(lblQa);
+		
+		setVisible(true);
+	}
+
+	public static void main(String[] arg) {
+		Board board = new Board();
+	}
+}

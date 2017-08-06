@@ -1,0 +1,37 @@
+package com.bs.vo;
+
+public class LoginPageVO {
+	
+	private String balance = null;
+	private int price = 0;
+	
+
+	public LoginPageVO(int price) {
+		super();
+		this.price = price;
+	}
+
+	public LoginPageVO(String balance) {
+		super();
+		this.balance = balance;
+	}
+
+	public String getBalance() {
+		return balance;
+	}
+
+	public void setBalance(String balance) {
+		this.balance = balance;
+	}
+
+	public int getPrice() {
+		return price;
+	}
+
+	public void setPrice(int price) {
+		this.price = price;
+	}
+	
+	
+
+}

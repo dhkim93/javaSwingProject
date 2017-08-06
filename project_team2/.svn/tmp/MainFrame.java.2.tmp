@@ -1,0 +1,79 @@
+package com.bs.view;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.JFrame;
+
+public class MainFrame extends JFrame{
+	public MainFrame() {
+	}
+
+	public LoginPage loginPage = null ;
+	public MyDressRoom myDressRoom = null;
+
+	// 패널 변경 메서드
+	public void panelChange(String panelName) {
+		
+		//내옷장 화면
+		if (panelName.equals("MyDressRoom")) {
+			getContentPane().removeAll();
+			getContentPane().add(myDressRoom);
+			revalidate();
+			repaint();
+		}
+	}
+	
+	public static void main(String[] args) {
+
+		MainFrame win = new MainFrame();
+		
+		win.setTitle("2017 SUMMER SALE!");
+		win.myDressRoom = new MyDressRoom(win);
+		win.loginPage = new LoginPage(win);
+
+		win.getContentPane().add(win.loginPage); // 로그인 화면
+		
+		win.setSize(900, 600);
+		win.setVisible(true);
+	}
+<<<<<<< .mine
+		
+	
+//	public void actionPerformed(ActionEvent e) {
+//		if(e.getSource() == btnNewButton_1) {
+//			textField.setText("");
+//			textField_2.setText("");
+//		}
+//		else if(e.getSource() == btnNewButton_2) {
+//			System.out.println("btnNewButton_2");
+//			String user = "test";
+//			String pass = "test";
+//			if(user .equals(textField.getText()) && pass.equals(String.valueOf(textField.getPassword()))) {
+//				JOptionPane.showMessageDialog(this, "Success");
+//				//메세지 창이 닫히면, 다음으로 System.exit 호출
+//				//같은 if문 조건이기 때문에, 어차피 메시지 창과 같이 동작하기 때문에, 
+//				//System.exit가 단독으로 호출되지는 않음
+//				System.exit(0);
+//				
+//			}
+//		}
+//		
+//}	
+	
+	
+	
+	
+	
+	
+||||||| .r54
+=======
+
+	/*
+	 * try { if(jb.getText().equals(btnNewButton_1.getText())){ // if
+	 * (e.getSource() == btnNewButton_1) { 두 번째 방법 // MemberJoin join = new
+	 * MemberJoin(); // join.setVisible(true); new MemberJoin();
+	 */
+
+>>>>>>> .r77
+}

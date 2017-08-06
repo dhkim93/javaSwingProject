@@ -1,0 +1,73 @@
+package com.bs.view;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+
+import com.bs.control.DBUtil;
+
+public class MainFrame {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		
+	
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+/*		ArrayList<String> columnName = new ArrayList<String>();
+		String sql = "select * from member";
+		Connection con = null;
+		Statement stmt = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+
+
+		try {
+			con = DBUtil.getConnection();
+
+			stmt = con.createStatement();
+			rs = stmt.executeQuery(sql);//쿼리실행
+
+			System.out.println("id\t비번\t이름\t폰번\t플래그\t이메일");
+			
+			while(rs.next()){
+				System.out.print(rs.getString(1) +"\t");//rs.get자료형(속성순서 or 속성명) 
+				System.out.print(rs.getString(2) +"\t");
+				System.out.print(rs.getString(3) +"\t");
+				System.out.print(rs.getString(4) +"\t");
+				System.out.print(rs.getInt(5) +"\t");
+				System.out.print(rs.getString(6) +"\t");
+				System.out.println();
+			}
+			
+			
+		} catch (SQLException se) {
+			System.out.println(se);
+		} catch (Exception e) {
+			System.out.println(e);
+		} finally {
+			try {
+				if (rs != null)
+					rs.close();
+				if (pstmt != null)
+					pstmt.close();
+				if (con != null)
+					con.close();
+			} catch (SQLException se) {
+			}
+		}*/
+		
+	}
+	}
+

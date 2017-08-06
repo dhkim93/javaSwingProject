@@ -1,0 +1,243 @@
+/* 
+ * =============================
+ * 프로그램 설명 : 
+ * 작성자 : 
+ * 최초 작성일자 : 
+ * 최종 수정일 : 
+ * 수정 내용 : 
+ * =============================
+ * */
+
+package com.bs.control;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+
+import javax.swing.JOptionPane;
+
+import com.bs.util.DBUtil;
+import com.bs.vo.AdminPageVO;
+
+public class AdminPageDAO {
+
+	public ArrayList<AdminPageVO> getAdminList() throws Exception {
+
+		ArrayList<AdminPageVO> list = new ArrayList<AdminPageVO>();
+		String dml = "SELECT "
+				+ "PRODUCT_CODE"
+				+ ", PRODUCT_NAME"
+				+ ", SIZE"
+				+ ", BRAND"
+				+ ", PRICE"
+				+ ", MATERIAL"
+				+ ", BUYDATE "
+				+ "FROM CLOTH_BASIC";
+
+		Statement stmt = null;
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		AdminPageVO retval = null;
+		try {
+
+			con = DBUtil.getConnection();
+			stmt = con.createStatement();
+			rs = stmt.executeQuery(dml);
+										//"코드\t상품\t사이즈\t브랜드\t가격\t플래그"
+//			System.out.println("コ-ド\t商品\tサイズ\tブランド\t価格\tフラグ");
+			while (rs.next()) {
+				retval = new AdminPageVO(rs.getString(1)
+													   , rs.getString(2)
+													   , rs.getString(3)
+													   , rs.getString(4)
+													   , rs.getInt(5)
+													    ,rs.getString(6)
+													    ,rs.getString(7));
+				list.add(retval);
+//				System.out.print(rs.getString(1) +"\t");//rs.get자료형(속성순서 or 속성명) 
+//				System.out.print(rs.getString(2) +"\t");
+//				System.out.print(rs.getString(3) +"\t");
+//				System.out.print(rs.getString(4) +"\t");
+//				System.out.print(rs.getInt(5) +"\t");
+//				System.out.print(rs.getString(6) +"\t");
+//				System.out.print(rs.getString(5) +"\t");
+//				System.out.println();
+			}
+		} catch (SQLException se) {
+			se.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (rs != null)
+					rs.close();
+				if (pstmt != null)
+					pstmt.close();
+				if (con != null)
+					con.close();
+			} catch (SQLException se) {
+				se.printStackTrace();
+			}
+		}
+		return list;
+	}
+	
+	
+	//게시물을 수정하는 메서드 
+		public int updateAdminPage(ArrayList list) throws Exception {
+			// 데이터 처리를 위한 SQL 문
+			String dml = "UPDATE CLOTH_BASIC "
+					+ "   SET    "
+					+ "          PRODUCT_NAME = ? "
+					+ "        , SIZE = ? "
+					+ "        , BRAND = ? "
+					+ "        , PRICE = ? "
+					+ "        , MATERIAL = ? "
+					+ "   WHERE  PRODUCT_CODE = ? ";
+
+			Connection con = null;
+			PreparedStatement pstmt = null;
+			int i = 0;
+
+			try {
+				// DBUtil이라는 클래스의 getConnection( )메서드로 데이터베이스와 연결
+				con = DBUtil.getConnection();
+				// 입력받은 사용자 정보를 처리하기 위하여 SQL문장을 생성
+				pstmt = con.prepareStatement(dml);
+				
+				System.out.print("##########" +   list.get(0));
+				System.out.print("##########" +   list.get(1));
+				System.out.print("##########" +   list.get(2));
+				System.out.print("##########" +   list.get(3));
+				System.out.print("##########" +   Integer.parseInt((list.get(4)).toString())           );
+				System.out.println();
+
+				pstmt.setString(1, (String) list.get(1));
+				pstmt.setString(2, (String) list.get(2));
+				pstmt.setString(3, (String) list.get(3));
+				pstmt.setInt(4, Integer.parseInt((list.get(4)).toString())  );
+				pstmt.setString(5, (String) list.get(5));
+				pstmt.setString(6, (String) list.get(0));
+				
+				// SQL문을 수행후 처리 결과를 얻어옴
+				i = pstmt.executeUpdate();
+
+			} catch (SQLException e) {
+				e.printStackTrace();
+			} catch (Exception e) {
+				e.printStackTrace();
+			} finally {
+				try {
+					// 데이터베이스와의 연결에 사용되었던 오브젝트를 해제
+					if (pstmt != null)
+						pstmt.close();
+					if (con != null)
+						con.close();
+				} catch (SQLException e) {
+					// e.printStackTrace();
+				}
+			}
+			return i;
+		}
+		
+		//옷정보 등록
+		public AdminPageVO setAdminList(String productCode, String productName) throws Exception {
+
+			String dml = "INSERT INTO CLOTH_BASIC " + " "
+					+ "(PRODUCT_CODE"				
+					+ ", PRODUCT_NAME"
+					+ ", SIZE"
+					+ ", BRAND"
+					+ ", PRICE"
+					+ ", MATERIAL"
+					+ ", BUYDATE)" 
+					+ " VALUES " + " (?, ?, '', '', 0, '', DATE_FORMAT(now(), '%Y-%m-%d'))";
+
+			Connection con = null;
+			PreparedStatement pstmt = null;
+			AdminPageVO retval = null;
+			try {
+
+				con = DBUtil.getConnection();
+				pstmt = con.prepareStatement(dml);
+				
+				pstmt.setString(1, productCode);
+				pstmt.setString(2, productName);
+				
+				int i = pstmt.executeUpdate();
+				retval = new AdminPageVO();
+				retval.setStatus(i); 
+				
+			} catch (SQLException se) {
+				System.out.println(se);
+				se.printStackTrace();
+			} catch (Exception e) {
+				System.out.println(e);
+				e.printStackTrace();
+			} finally {
+				try {
+					if (pstmt != null)
+						pstmt.close();
+					if (con != null)
+						con.close();
+				} catch (SQLException se) {
+					se.printStackTrace();
+				}
+			}
+			return retval;
+			
+		}
+		
+		//이미지정보 등록
+				public AdminPageVO setImageList(AdminPageVO avo) throws Exception {
+					
+					String dml = "INSERT INTO IMAGE_TABLE " + " "
+							+ "(IMAGE_NAME"				
+							+ ", IMAGE_PATH"
+							+ ", XAXIS"
+							+ ", YAXIS)" 
+							+ " VALUES " + " (?, ?, ?, ?)";
+
+					Connection con = null;
+					PreparedStatement pstmt = null;
+					AdminPageVO retval = null;
+					try {
+
+						con = DBUtil.getConnection();
+						pstmt = con.prepareStatement(dml);
+						
+						pstmt.setString(1, avo.getProductCode());
+						pstmt.setString(2, avo.getProductCode()+".png");
+						pstmt.setInt(3, avo.getxAxis());
+						pstmt.setInt(4, avo.getyAxis());
+						
+						int i = pstmt.executeUpdate();
+						retval = new AdminPageVO();
+						retval.setStatus(i); 
+						
+					} catch (SQLException se) {
+						System.out.println(se);
+						se.printStackTrace();
+					} catch (Exception e) {
+						System.out.println(e);
+						e.printStackTrace();
+					} finally {
+						try {
+							if (pstmt != null)
+								pstmt.close();
+							if (con != null)
+								con.close();
+						} catch (SQLException se) {
+							se.printStackTrace();
+						}
+					}
+					return retval;
+					
+				}
+	
+
+}

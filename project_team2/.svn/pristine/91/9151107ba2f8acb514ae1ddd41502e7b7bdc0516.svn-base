@@ -1,0 +1,66 @@
+package com.bs.view;
+
+import javax.swing.JFrame;
+import java.awt.Rectangle;
+import java.awt.Color;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JTextField;
+import javax.swing.JLabel;
+
+public class BoardDetail extends JFrame{
+	private JTextField textField;
+	private JTextField textField_1;
+	private JTextField textField_2;
+	public BoardDetail() {
+		getContentPane().setBackground(Color.PINK);
+		getContentPane().setLayout(null);
+		
+		JPanel panel = new JPanel();
+		panel.setBounds(12, 149, 760, 353);
+		getContentPane().add(panel);
+		panel.setLayout(null);
+		
+		JTextArea textArea = new JTextArea();
+		textArea.setBounds(25, 43, 705, 234);
+		panel.add(textArea);
+		
+		JButton button = new JButton("등록하기");
+		button.setBounds(516, 301, 97, 23);
+		panel.add(button);
+		
+		JButton button_1 = new JButton("취소하기");
+		button_1.setBounds(625, 301, 97, 23);
+		panel.add(button_1);
+		
+		JComboBox comboBox = new JComboBox();
+		comboBox.setBounds(25, 302, 225, 21);
+		panel.add(comboBox);
+		
+		textField = new JTextField();
+		textField.setBounds(25, 12, 369, 21);
+		panel.add(textField);
+		textField.setColumns(10);
+		
+		JLabel lblNewLabel = new JLabel("작성자");
+		lblNewLabel.setBounds(406, 15, 41, 15);
+		panel.add(lblNewLabel);
+		
+		textField_1 = new JTextField();
+		textField_1.setBounds(446, 12, 116, 21);
+		panel.add(textField_1);
+		textField_1.setColumns(10);
+		
+		JLabel label = new JLabel("날짜");
+		label.setBounds(574, 15, 41, 15);
+		panel.add(label);
+		
+		textField_2 = new JTextField();
+		textField_2.setColumns(10);
+		textField_2.setBounds(614, 12, 116, 21);
+		panel.add(textField_2);
+		setBounds(new Rectangle(800, 550));
+	}
+}

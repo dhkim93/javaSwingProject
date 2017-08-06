@@ -1,0 +1,438 @@
+package com.bs.view;
+
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.GridLayout;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+
+import javax.swing.ButtonGroup;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+
+import com.bs.control.MemberDAO;
+import com.bs.vo.CartVO;
+import com.bs.vo.MemberVO;
+
+public class MemberJoin extends JFrame implements ActionListener, ItemListener {
+
+	JLabel label[] = new JLabel[11]; // Label 배열로 선언
+	JTextField textField[] = new JTextField[6];// TextField 배열로 선언 원래
+	JTextArea textarea = new JTextArea();// TextArea 선언
+	JScrollPane sp;// TextArea의 스크롤바를 위한 ScrollPane 선언
+
+	JRadioButton male, female;// RadioButton 선언
+	JCheckBox travel;// CheckBos 선언
+	ButtonGroup bg;// RadioButton의 그룹핑을 위한 ButtonGroup 선언
+
+	JButton trans, cancel, idCheck ;// Button 선언
+	JComboBox<String> jcb;// ComboBox 선언
+	//String phone[] = { "010", "011", "016", "017", "018", "019", "070" };// ComboBox를
+																			// 위한
+																			// 배열
+																			// 선언
+	
+	
+	
+	
+	String Phone = null ;
+	int gender = 0;
+	int admin_flag = 0;
+	
+	
+	JPanel panel1, panel2, panel3, panel4, panel5, panel6;
+
+	JPanel panel11, panel12, panel21, panel22, panel31, panel32, panel41,
+			panel42;
+
+	
+	
+	
+	public MemberJoin() {
+
+	
+		
+		
+		// setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		// 전체적인 큰 들을 GridLayout으로 설정
+		
+		GridLayout frameLayout = new GridLayout(6, 1);
+
+		
+		
+		frameLayout.setVgap(3);// GridLayout간의 간격 설정
+
+		getContentPane().setLayout(frameLayout);// 설정한
+
+		label[0] = new JLabel("아이디");
+		label[1] = new JLabel("비밀번호");
+		label[2] = new JLabel("이름");
+		label[3] = new JLabel("성별");
+		label[4] = new JLabel("관리자");
+		label[5] = new JLabel("H.P");
+		//label[6] = new JLabel("자기소개");
+		label[6] = new JLabel("이메일");
+		//label[7] = new JLabel("8자 이내");
+		label[8] = new JLabel("*필수입력");
+	
+		
+
+		textField[0] = new JTextField(8);
+		textField[1] = new JTextField(8);
+		textField[2] = new JTextField(8);
+		textField[3] = new JTextField(15);//원래 3
+		//textField[4] = new JTextField(3);
+		textField[5] = new JTextField(20);
+		//textarea = new JTextArea(1, 1);
+
+		male = new JRadioButton("남성");
+		female = new JRadioButton("여성");
+		
+		male.addItemListener(this);
+		female.addItemListener(this);
+
+		bg = new ButtonGroup();
+		bg.add(male);
+		bg.add(female);
+		
+	
+
+		travel = new JCheckBox("(체크)");
+		
+
+		//jcb = new JComboBox<String>(phone);
+
+		trans = new JButton("전송");
+		
+		trans.addActionListener(this);
+
+		cancel = new JButton("취소");
+		
+		cancel.addActionListener(this);
+		
+		idCheck = new JButton("ID 중복체크");
+		
+		idCheck.addActionListener(this);
+
+		panel1 = new JPanel();
+		panel2 = new JPanel();
+		panel3 = new JPanel();
+		panel4 = new JPanel();
+		panel5 = new JPanel();
+		panel6 = new JPanel();
+
+		panel11 = new JPanel();
+		panel12 = new JPanel();
+		panel21 = new JPanel();
+		panel22 = new JPanel();
+		panel31 = new JPanel();
+		panel32 = new JPanel();
+		panel41 = new JPanel();
+		panel42 = new JPanel();
+
+		BorderLayout layout1 = new BorderLayout();
+		BorderLayout layout2 = new BorderLayout();
+		BorderLayout layout3 = new BorderLayout();
+		BorderLayout layout4 = new BorderLayout();
+		BorderLayout layout5 = new BorderLayout();
+		panel1.setLayout(layout1);
+		panel2.setLayout(layout2);
+		panel3.setLayout(layout3);
+		panel4.setLayout(layout4);
+		panel5.setLayout(layout5);
+
+		panel11.add(label[0]);
+		panel11.add(textField[0]);
+		panel12.add(idCheck);
+		panel1.add("West", panel11);
+		panel1.add("East", panel12);
+
+		panel21.add(label[1]);
+		panel21.add(textField[1]);
+		panel22.add(label[2]);
+		panel22.add(textField[2]);
+		panel2.add("West", panel21);
+		panel2.add("East", panel22);
+
+		panel31.add(label[3]);
+		panel31.add(male);
+		panel31.add(female);
+		panel32.add(label[4]);
+		panel32.add(travel);
+		panel3.add("West", panel31);
+		panel3.add("East", panel32);
+
+		panel41.add(label[5]);
+		//panel41.add(jcb);
+		//panel41.add(label[9]);
+		panel41.add(textField[3]);
+		//panel41.add(label[10]);
+		//panel41.add(textField[4]);
+		panel41.add(label[8]);
+		panel4.add("West", panel41);
+		panel4.add("East", panel42);
+
+		panel5.add("West", label[6]);
+		panel5.add(textField[5]);
+		/*panel5.add("West", label[6]);
+		sp = new JScrollPane(textarea);
+		sp.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+		sp.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+		panel5.add(sp);*/
+
+		panel6.add(trans);
+		panel6.add(cancel);
+
+		getContentPane().add(panel1);
+		getContentPane().add(panel2);
+		getContentPane().add(panel3);
+		getContentPane().add(panel4);
+		getContentPane().add(panel5);
+		getContentPane().add(panel6);
+
+		setTitle("회원가입");
+		setSize(330, 300);
+		setVisible(true);
+
+		//화면 중앙에 위치시킬 수 있다.
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		int xPos =(screenSize.width/2)-(this.getSize().width/2);
+		int yPos =(screenSize.height/2)-(this.getSize().height/2);
+		setLocation(xPos, yPos);
+	}
+
+	
+public void itemStateChanged(ItemEvent e) {
+		
+		if( (e.getSource() == male) || e.getSource() == female ){
+			//System.out.println("1@@@@@@@@" + male + "@@@@@@ "+ female);
+			
+			if(male.isSelected()){
+				//System.out.println("2@@@@@@@@" + male + "@@@@@@ "+ female);
+				gender = 1; //남자일 때 1
+			}else{
+				//System.out.println("3@@@@@@@@" + male + "@@@@@@ "+ female);
+				gender = 2;//여자일 때 2
+			}
+		}
+		
+		if(e.getSource() == travel) {
+			if(travel.isSelected()) {
+				admin_flag = 0;//관리자는 0
+			}else {
+				admin_flag = 1;//일반유저는 1
+			}
+		}
+		
+		
+	}
+	
+	
+	
+	
+	
+	@Override
+	public void actionPerformed(ActionEvent ae) {
+		
+		String ae_type = ae.getActionCommand();
+		MemberVO mv = null;
+		MemberDAO edvo = null;
+		boolean sw = false;
+		 String url = "jdbc:mysql://192.168.0.167:3306/team2";
+		 
+		 String id = "team2";
+		 String pass = "1234";
+		 PreparedStatement pstmt = null;
+		 Connection conn = null;
+		
+		if (ae_type.equals(trans.getText())) {// 저장하기 버튼이 클릭되었을 경우
+			try {
+				// 정보를 받아온다.
+					System.out.println(textField[3].getText()+"@@@@@@@@@@@@@@@@2");
+					System.out.println(textField[5].getText()+"@@@@@@@@@@@@@@@@2");
+					System.out.println(admin_flag+"@@@@@@@@@@@@@@@@2");
+					System.out.println(gender+"@@@@@@@@@@@@@@@@2");
+				
+				
+				mv = new MemberVO( 			   textField[0].getText()
+											 , textField[1].getText()
+											 , textField[2].getText()
+											 , textField[3].getText()
+											 , admin_flag
+											 , textField[5]. getText()
+											 ,gender);
+
+/*			if( textField[0].getText().equals(null) ||  textField[0].getText().equals("")  ||  //id 미입력
+						textField[1].getText().equals(null) || textField[1].getText().equals("") || //pass 미입력
+						textField[2].getText().equals(null) || textField[2].getText().equals("")  || // 이름 미입력
+						gender == 0  ||  //성별 미입력, 1은 남자 2는 여자
+					admin_flag != 1 && admin_flag != 0 ||  //관리자 여부 미입력 1과 0만 아니면 됨.
+						textField[3].getText().equals(null) || textField[3].getText().equals("") || //전화번호 미입력 
+						textField[5].getText().equals(null) || textField[5].getText().equals("") ) //이메일 미입력
+				{
+					JOptionPane.showMessageDialog(this, "모든 정보를 기입해주세요.");
+					
+				}
+*/				
+				if( textField[0].getText().equals(null) ||  textField[0].getText().equals("") ){
+					JOptionPane.showMessageDialog(this, "아이디를 기입해주세요.");
+				}else if
+				
+				( textField[1].getText().equals(null) ||  textField[1].getText().equals("") ){
+					JOptionPane.showMessageDialog(this, "비밀번호를 기입해주세요.");
+				}
+				
+				else if( textField[2].getText().equals(null) ||  textField[2].getText().equals("") ){
+					JOptionPane.showMessageDialog(this, "이름을 기입해주세요.");
+				}
+				
+				
+				else if( gender == 0 ){
+					JOptionPane.showMessageDialog(this, "성별을 확인해주세요.");
+				}
+				
+				
+				else if( textField[3].getText().equals(null) ||  textField[3].getText().equals("") ){
+					JOptionPane.showMessageDialog(this, "전화번호를 기입해주세요.");
+				}
+				
+				
+				else if( textField[5].getText().equals(null) ||  textField[5].getText().equals("") ){
+					JOptionPane.showMessageDialog(this, "이메일을 기입해주세요.");
+				}
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				else {
+					edvo = new MemberDAO();
+					
+					edvo.setMemberregiste(mv);
+					sw = true; //위가 조건이 되어 ' 저장이 되었을 경우 sw는 true이다 라는 것이다.'  아우 어렵다.
+				}
+				
+			} catch (Exception e) {
+				System.out.println("e=[" + e + "]");
+			}
+			// edvo에 값이 있으면 성공적으로 저장되었다는 표시
+			if (sw==true)
+				JOptionPane.showMessageDialog(this, textField[2].getText()
+						+ "님이 성공적으로 추가됨");
+		} else if (ae_type.equals(cancel.getText())) {
+			
+			setVisible(false);
+			
+		} else if(ae_type.equals(idCheck.getText())) {
+			String strId = textField[0].getText();
+//			System.out.println(strId);
+			MemberVO retval = null;
+			ArrayList<MemberVO> list = new ArrayList<MemberVO>();
+			boolean idCheck = false;
+				try {
+//					String query = "select * from member where id = ?";
+					String query = "select * from member";
+					
+					conn= DriverManager.getConnection(url, id, pass);
+					
+//					System.out.println("Connection 객체 생성 성공");
+					
+					pstmt = conn.prepareStatement(query);
+//					pstmt.setString(1, strId);
+//					System.out.println("Hello");
+					ResultSet  rs = pstmt.executeQuery();//쿼리실행					
+					while (rs.next()) {
+						retval = new MemberVO(rs.getString(1)
+														, rs.getString(2)
+														, rs.getString(3)
+														, rs.getString(4)
+														, rs.getInt(5)
+														, rs.getString(6)
+														, rs.getInt(7));
+						list.add(retval);
+//						System.out.println("@@@@@"+retval.getId());
+//						System.out.println("!!!!!!"+strId);
+						if(retval.getId().equals(strId)){
+//							System.out.println("X");
+							idCheck = true;
+						}else{
+//							System.out.println("O");
+						}
+						
+					}
+					if(idCheck==true){
+						JOptionPane.showMessageDialog(this,
+								 "사용할 수 없는 ID입니다. ");
+						
+						//System.out.println("사용할수없어연");
+					}else{
+						JOptionPane.showMessageDialog(this,
+								 "사용할 수 있는 ID입니다. ");
+						
+						
+						//System.out.println("사용할수있어연");
+					}
+					
+			/*		ArrayList<MemberVO> list_1 = new ArrayList<MemberVO>();
+					MemberVO mvo = new MemberVO();*/
+					
+					/*if(strId==){
+						System.out.println("사용할 수 없는 ID입니다.");
+					}else{
+						System.out.println("사용할 수 있는 ID입니다.");
+					}*/
+					
+				} catch (SQLException e) {
+					
+					
+					e.printStackTrace();
+				}
+								
+			
+			
+			
+		}
+					
+	}
+	
+	public static void main(String[] args) {
+		new MemberJoin();
+
+	}
+
+	
+	
+}
+	
+	
+	
+
+	
+

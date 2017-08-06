@@ -1,0 +1,461 @@
+/* 
+ * =============================
+ * 프로그램 설명 : 
+ * 작성자 : 
+ * 최초 작성일자 : 
+ * 최종 수정일 : 
+ * 수정 내용 : 
+ * =============================
+ * */
+
+package com.bs.view;
+
+import java.awt.Color;
+import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+
+import com.bs.control.LoginPageDAO;
+import com.bs.control.MyCartDAO;
+import com.bs.vo.CartVO;
+import com.bs.vo.ClosetBasicVO;
+import javax.swing.SwingConstants;
+import java.awt.SystemColor;
+
+public class MyCart extends JPanel implements ActionListener {
+
+	private JButton button_Buy, button_Del, button_Main;// 구매, 삭제, 메인으로가기 버튼
+	private JLabel label_pic1, label_pic2, label_pic3;// 이미지 출력 라벨
+	private JLabel label_num1, label_num2, label_num3;// 장바구니에서 목록 순서(1,2,3...)
+	private JLabel label_picimage;// "총금액이미지라벨 "
+//	private JLabel label_sumCh = new JLabel("総額 ");// "총금액 : "
+	private JPanel panelTop = new JPanel();// 4번 패널
+	private JLabel label_sumNum = new JLabel("0won ");
+	// 서버에서 데이터 가져오기 위해 초기화한 변수 2개
+	private ArrayList<CartVO> list = null;
+	private MyCartDAO mcdao = null;
+	private List<JCheckBox> checkBoxes = new ArrayList<JCheckBox>();
+	static JCheckBox chkButton[] = null;
+	private MainFrame win;
+	private String cartCallBack = "N";// getCartImage() 재호출여부확인
+	private JLabel button_DelLabel, button_BuyLabel, button_MainLabel = null;				//삭제,구매하기,메인가기 알려주는 라벨
+	
+	public MyCart(MainFrame win) {
+		this.getMyCartImage(MainFrame.id);
+		this.win = win;
+		setBounds(new Rectangle(50, 50, 900, 600));
+		setLayout(null);
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent ae) {
+		
+		String ae_type = ae.getActionCommand();
+		
+		System.out.println("@@@@@@@@@@@@@@@@@ae_type" + ae);
+		
+		
+		if (ae_type.equals(button_Del.getText())) {// 삭제하기 버튼이 클릭되었을 경우
+			System.out.println("삭제 하기 버튼 클릭 !!!");
+			try {
+				ArrayList<CartVO> list = null;
+				ArrayList<CartVO> listDel = null;
+
+				list = mcdao.getCartAndImage(MainFrame.id);// 로그인한 유저 cart 안에 있는 정보만을 가져옴
+				String code = null;
+				String delComplete = "N";// 삭제가 잘 됐는지 체크!!!!!!
+				if (list != null) {
+					for (int i = 0; i < list.size(); i++) {
+						JLabel c_id[] = new JLabel[list.size()];
+						c_id[i] = new JLabel();
+						c_id[i].setText(list.get(i).getId());
+						JLabel label_pCode[] = new JLabel[list.size()]; // 제품코드
+						label_pCode[i] = new JLabel();
+						label_pCode[i].setText(list.get(i).getProductCode());// 제품명을 가져와서 글자를 화면에 뿌려줌
+
+						System.out.println(checkBoxes.get(i).isSelected());
+						// 삭제 되는 부분
+						if (checkBoxes.get(i).isSelected()) {// 체크박스가 눌렸을 경우에만  삭제
+							System.out.println("$$$$$$$$$$$$" + (i + 1) + "번째 "+ checkBoxes.get(i).getText() + " 선택됨");
+							code = label_pCode[i].getText();
+							listDel = mcdao.getDelete(MainFrame.id, code);
+							delComplete = "Y";
+							System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$"+ label_pCode[i].getText());
+						}//if end
+					}// for문끝
+						// 체크박스 선택 안하고 삭제버튼 눌렀을때
+					if (delComplete.equals("N")) {
+						JOptionPane.showMessageDialog(null, "商品を選択してください。","お知らせ", 0);//상품을 선택해 주세요.(매개변수 맨 끝에 '0'은 경고(X)표시, '1'은 i(정보)표시)						
+					}// 체크박스 선택 하고 삭제버튼 눌렀을 때
+					else {
+						JOptionPane.showMessageDialog(null, "選択した商品を削除しました。","お知らせ", 1);// "선택한 상품을 삭제하였습니다.", "알림"
+					}
+					repaintScreen();// 화면다시그리기
+				}
+
+			} catch (Exception e) {
+				System.out.println("e=[" + e + "]");
+				e.printStackTrace();
+			}
+
+		}
+		//구매하기 버튼 클릭했을 때
+		else if (ae_type.equals(button_Buy.getText())) {
+			System.out.println("구매버튼 클릭!!!");
+
+			try {
+				LoginPageDAO lpdao = new LoginPageDAO();// 옷장추가용 변수
+				ClosetBasicVO cbvo = null;// 옷장추가용 변수
+				ArrayList<ClosetBasicVO> buyList = new ArrayList();// 옷장추가용 변수
+				String productCode = "";// 옷장추가용 변수
+
+				ArrayList<CartVO> list = null;
+				ArrayList<CartVO> listDel = null;
+
+				list = mcdao.getCartAndImage(MainFrame.id);// 로그인한 유저 cart 안에 있는 정보만을 가져옴
+				String code = null;
+				String addComplete = "N";// 추가가 잘 됐는지 체크!!!!!!
+				if (list != null) {
+					for (int i = 0; i < list.size(); i++) {
+						JLabel c_id[] = new JLabel[list.size()];
+						c_id[i] = new JLabel();
+						c_id[i].setText(list.get(i).getId());
+						JLabel label_pCode[] = new JLabel[list.size()]; // 제품코드
+						label_pCode[i] = new JLabel();
+						label_pCode[i].setText(list.get(i).getProductCode());// 제품명을지정
+
+						if (checkBoxes.get(i).isSelected()) {
+							System.out.println("checkBoxes.is select " + i+ "번째 checkBox");
+							productCode = label_pCode[i].getText();
+							buyList = lpdao.getClothInfo(productCode);
+
+							for (int j = 0; j < buyList.size(); j++) {
+
+								lpdao.setClosetInfo(MainFrame.id, productCode);
+
+								System.out.println("//////////////"+ productCode+ buyList.get(0).getProductName());
+								addComplete = "Y";
+								code = label_pCode[i].getText() + "";
+								listDel = mcdao.getDelete(MainFrame.id, code);
+								System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$"+ label_pCode[i].getText());
+							}
+						}// 체크박스 선택됐나 if end
+					}// for문 끝
+					if (addComplete.equals("N")) {
+						JOptionPane.showMessageDialog(null, "商品を選択してください。","お知らせ", 0);//상품을 선택해 주세요.
+					} else {
+						JOptionPane.showMessageDialog(null, "選択した商品を購入しました。","お知らせ", 1);// "선택한 상품을 구매하였습니다.", "알림"
+					}
+					repaintScreen();// 화면다시그리기
+				}
+
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+
+		}else if(ae_type.equals(button_Main.getText())) {  //메인으로 가기 클릭
+			
+			System.out.println("@@@@@@@@@@@@@@@@@@@@@  : " + ae_type);
+			System.out.println("button_Main.getText()  : " + button_Main.getText());
+			try {
+				win.panelChange("LoginPage", MainFrame.id);
+			} catch (Exception ex) {
+				System.out.println(ex);
+			}
+		}
+	}
+
+	// 메인화면에서 장바구니 버튼 눌렀을때 실행
+	public void getMyCartImage(String id) {
+
+		// 서버에서 가져온 데이터로 글자 지정 부분
+		try {
+			panelTop.setBounds(12, 10, 800, 56);
+			add(panelTop);
+			panelTop.setLayout(null);
+			
+			this.btnMaker(); //버튼 생성 메서드
+
+			int sum = 0;// 합계 저장 변수
+			label_sumNum.setText(sum + "won");
+			
+			ArrayList<CartVO> list = null;
+			mcdao = new MyCartDAO();// 서버에서 가져온 값을 쓰기위해 DAO 객체화
+			list = mcdao.getCartAndImage(id);// 로그인한 유저 cart 안에 있는 정보만을 가져옴
+			ArrayList<CartVO> listDel = null;
+			String code = null;
+			// System.out.println(list.isEmpty());
+			
+			// list에 내용이 없을경우 대화상자 실행
+//			if (list.isEmpty()) {
+//				JOptionPane.showMessageDialog(null, "カ－トが　空いて　います.", "お知らせ ", 1);// 장바구니가 비어있습니다. 알림
+//			}
+			// list에 내용이 있을 경우 실행
+			if (!list.isEmpty()) {
+
+				// System.out.println(list.get(0));
+				// System.out.println("size " + list.size());
+				int jpanelAxis = 70;
+				int yAxis = 10;
+				if (cartCallBack.equals("Y")) {// getMyCartImage()가 재호출 될 경우
+					checkBoxes.clear();
+				} else if (cartCallBack.equals("N")) {// getMyCartImage()가 재호출 되지 않았을경우
+					cartCallBack = "Y";
+				}
+				for (int i = 0; i < list.size(); i++) {
+
+					System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@jpanelAxis :"+ jpanelAxis);
+
+					JPanel jpanel[] = new JPanel[list.size()];
+					jpanel[i] = new JPanel();
+					jpanel[i].setBackground(Color.WHITE);
+
+					jpanel[i].setBounds(10, jpanelAxis, 789, 153);
+					add(jpanel[i]);
+					jpanel[i].setLayout(null);
+
+					JLabel label_num[] = new JLabel[list.size()];
+
+					label_num[i] = new JLabel(Integer.toString(i + 1)); // 카트 순번
+					label_num[i].setBounds(12, 10, 15, 15);
+					jpanel[i].add(label_num[i]);
+					jpanel[i].add(label_num[i]);
+
+					JLabel label_pName[] = new JLabel[list.size()]; // 제품명
+					label_pName[i] = new JLabel();
+					label_pName[i].setBounds(193, 10, 70, 15);
+					jpanel[i].add(label_pName[i]);
+
+					JLabel label_pCode[] = new JLabel[list.size()]; // 제품코드
+					label_pCode[i] = new JLabel();
+					label_pCode[i].setBounds(266, 10, 61, 15);
+					jpanel[i].add(label_pCode[i]);
+					label_pCode[i].setVisible(false);// 코드 안보이게 하기
+
+					JLabel label_price[] = new JLabel[list.size()];// 가격표
+					label_price[i] = new JLabel(); 
+					label_price[i].setBounds(378, 10, 56, 15);
+					jpanel[i].add(label_price[i]);
+
+					chkButton = new JCheckBox[list.size()]; // 체크박스
+					chkButton[i] = (JCheckBox) new JCheckBox(list.get(i).getProductCode()); // 제품모델코드
+					chkButton[i].setBounds(533, 10, 100, 23);
+					chkButton[i].setBackground(Color.WHITE);
+					chkButton[i].setSelected(false);// 체크되어있는 체크박스 focus 끄기
+					this.checkBoxes.add(chkButton[i]);
+					jpanel[i].add(chkButton[i]);
+
+					JPanel panel_pic[] = new JPanel[list.size()]; // 그림 패널
+					panel_pic[i] = new JPanel();
+					panel_pic[i].setBounds(39, 12, 142, 130);
+					jpanel[i].add(panel_pic[i]);
+					jpanel[i].add(panel_pic[i]);
+
+					label_pName[i].setText(list.get(i).getProductName());// 제품명을 가져와서 글자를 화면에 뿌려줌
+					label_price[i].setText(list.get(i).getPrice() + "won");// 가격을　가져와서 글자를 화면에 뿌려줌									
+					label_pCode[i].setText(list.get(i).getProductCode());// 제품코드를 가져와서 글자를 화면에 뿌려줌
+					sum += Integer.parseInt(list.get(i).getPrice());// 값을 모두더해서 sum에 저장
+
+					ImageIcon imgProd[] = new ImageIcon[list.size()];
+//					imgProd[i] = new ImageIcon(list.get(i).getImagePath());// 이미지 경로 받아옴
+					imgProd[i] = new ImageIcon(getClass().getClassLoader().getResource(list.get(i).getImagePath()));// 이미지 경로 받아옴
+
+					System.out.println("!!!!!!!!!!!!!!" + list.get(i));
+
+					JLabel label_pic[] = new JLabel[list.size()];//그림 라벨
+					label_pic[i] = new JLabel();
+
+					label_pic[i] = new JLabel(imgProd[i]);
+					label_pic[i].setBounds(50, 0, imgProd[i].getIconWidth(),imgProd[i].getIconHeight());//그림 크기 지정
+					panel_pic[i].add(label_pic[i]);
+
+					jpanelAxis += 165;
+
+				}// for end
+				System.out.println("버튼 누르기 전@@@@@@   체크어레이 개수"	+ checkBoxes.size());
+				// System.out.println("버튼 누르기 전@@@@@@   생성된 체크박스 개수"+chkButton.length);
+				label_sumNum.setText(sum + "won");// 총액 화면에 출력
+
+			} // end if
+
+		} catch (Exception e) {
+			System.out.println("e=[" + e + "]");
+			e.printStackTrace();
+		}
+
+	}
+
+	// 화면 다시그리기
+	public void repaintScreen() {
+
+		repaint();
+		revalidate();
+		removeAll();
+		try {
+			System.out.println("다시그리기!!!");
+			ArrayList<CartVO> list = null;
+			mcdao = new MyCartDAO();// 서버에서 가져온 값을 쓰기위해 DAO 객체화
+			list = mcdao.getCartAndImage(MainFrame.id);// 로그인한 유저 cart 안에 있는 정보만을 가져옴
+			ArrayList<CartVO> listDel = null;
+			String code = null;
+
+			panelTop.setBounds(12, 10, 789, 56);
+			add(panelTop);
+			panelTop.setLayout(null);
+
+			this.btnMaker(); //버튼 생성 메서드
+			
+			int sum = 0;// 합계 저장 변수
+			label_sumNum.setText(sum + "won");
+
+			
+
+			// list에 내용이 없을경우 대화상자 실행
+			if (list.isEmpty()) {
+				JOptionPane.showMessageDialog(null, "カ－トが　空いて　います", "お知らせ ", 1);// 장바구니가 비어있습니다. 알림
+			}
+			// list에 내용이 있을 경우 실행
+			else {
+				System.out
+						.println("===========================================================================================");
+				// System.out.println(list.get(0));
+				// System.out.println("size " + list.size());
+
+				int jpanelAxis = 70;
+				int yAxis = 10;
+				checkBoxes.clear();//체크박스 어레이리스트에 들어있는 정보 삭제
+				for (int i = 0; i < list.size(); i++) {
+					JPanel jpanel[] = new JPanel[list.size()];
+					jpanel[i] = new JPanel();
+					jpanel[i].setBackground(Color.WHITE);
+
+					jpanel[i].setBounds(10, jpanelAxis, 789, 153);
+					add(jpanel[i]);
+					jpanel[i].setLayout(null);
+
+					JLabel label_num[] = new JLabel[list.size()];
+
+					label_num[i] = new JLabel(Integer.toString(i + 1)); // 카트 순번
+					label_num[i].setBounds(12, 10, 15, 15);
+					jpanel[i].add(label_num[i]);
+
+					JLabel label_pName[] = new JLabel[list.size()]; // 제품명
+					label_pName[i] = new JLabel();
+					label_pName[i].setBounds(193, 10, 70, 15);
+					jpanel[i].add(label_pName[i]);
+
+					JLabel label_pCode[] = new JLabel[list.size()]; // 제품코드
+					label_pCode[i] = new JLabel();
+					label_pCode[i].setBounds(266, 10, 61, 15);
+					jpanel[i].add(label_pCode[i]);
+					label_pCode[i].setVisible(false);// 코드 안보이게 하기
+
+					JLabel label_price[] = new JLabel[list.size()];
+
+					label_price[i] = new JLabel(); // 가격표
+					label_price[i].setBounds(378, 10, 56, 15);
+					jpanel[i].add(label_price[i]);
+
+					chkButton = new JCheckBox[list.size()]; // 체크박스
+					chkButton[i] = (JCheckBox) new JCheckBox(list.get(i).getProductCode()); // 제품모델명
+					chkButton[i].setBounds(533, 10, 100, 23);
+					chkButton[i].setBackground(Color.WHITE);
+					chkButton[i].setSelected(false);// 체크되어있는 체크박스 focus 끄기
+					this.checkBoxes.add(chkButton[i]);
+					jpanel[i].add(chkButton[i]);
+
+					JPanel panel_pic[] = new JPanel[list.size()]; // 그림 패널
+					panel_pic[i] = new JPanel();
+					panel_pic[i].setBounds(39, 12, 142, 130);
+					jpanel[i].add(panel_pic[i]);
+
+					label_pName[i].setText(list.get(i).getProductName());
+					label_price[i].setText(list.get(i).getPrice() + "won");// 가격을 가져와서 글자를 화면에 뿌려줌
+					label_pCode[i].setText(list.get(i).getProductCode());// 제품명을 가져와서 글자를 화면에 뿌려줌
+					sum += Integer.parseInt(list.get(i).getPrice());// 값을 모두더해서 sum에 저장
+
+					ImageIcon imgProd[] = new ImageIcon[list.size()];
+					imgProd[i] = new ImageIcon(getClass().getClassLoader().getResource(list.get(i).getImagePath()));// 이미지 경로 받아옴
+
+					JLabel label_pic[] = new JLabel[list.size()];
+					label_pic[i] = new JLabel();
+
+					label_pic[i] = new JLabel(imgProd[i]);
+					label_pic[i].setBounds(50, 0, imgProd[i].getIconWidth(),imgProd[i].getIconHeight());//이미지 크기 지정
+					panel_pic[i].add(label_pic[i]);
+
+					jpanelAxis += 165;
+
+				}// for end
+				System.out.println("버튼 누른후 @@@@@@   체크어레이 개수"+ checkBoxes.size());
+				// System.out.println("버튼 누른후@@@@@@   생성된 체크박스 개수"+chkButton.length);
+				label_sumNum.setText(sum + "won");// 합계가 0이 아닐때의 총액 화면에 출력
+			} // end if
+		} catch (Exception e) {
+			System.out.println("e=[" + e + "]");
+			e.printStackTrace();
+		}
+	}
+	
+	//버튼 생성 메서드
+	public void btnMaker(){
+		
+//		//구매 확정버튼 
+		button_Buy = new JButton("button_Buy", new ImageIcon(getClass().getClassLoader().getResource("cart4.png")));// "구매확정"
+		button_Buy.setBorder(null);
+		button_Buy.setBounds(480, 5, 64, 40);
+		button_BuyLabel = new JLabel("購買確定 ");	//라벨
+		button_Buy.setBorderPainted(false);
+		button_Buy.setContentAreaFilled(false);
+		button_Buy.setFocusPainted(false);
+		button_Buy.addActionListener(this);
+		button_BuyLabel.setBounds(485,43,104,15);
+		panelTop.add(button_BuyLabel);
+		panelTop.add(button_Buy);
+
+		//삭제 버튼
+		button_Del = new JButton("button_Del", new ImageIcon(getClass().getClassLoader().getResource("cart3.png")));// "삭제"
+		button_Del.setBorder(null); 
+		button_Del.setBounds(555, 5,  64, 40);
+		button_DelLabel = new JLabel("削除");	//라벨
+		button_Del.setBorderPainted(false);
+		button_Del.setContentAreaFilled(false);
+		button_Del.setFocusPainted(false);
+		button_Del.addActionListener(this);
+		button_DelLabel.setBounds(570,43,104,15);
+		panelTop.add(button_DelLabel);
+		panelTop.add(button_Del);
+		
+		// 메인으로 가기 버튼
+		button_Main = new JButton("button_Main", new ImageIcon(getClass().getClassLoader().getResource("main.png")));
+		button_Main.setBorder(null);
+		button_Main.setBounds(630, 5, 64, 40);
+		button_MainLabel = new JLabel("メイン画面");	//라벨
+		button_Main.setBorderPainted(false);
+		button_Main.setContentAreaFilled(false);
+		button_Main.setFocusPainted(false);
+		button_Main.addActionListener(this);
+		button_MainLabel.setBounds(620,43,104,15);
+		panelTop.add(button_MainLabel);
+		panelTop.add(button_Main);
+
+		label_picimage = new JLabel(new ImageIcon(getClass().getClassLoader().getResource("money.png")));	//합계이미지
+		label_picimage.setBorder(null);
+		label_picimage.setBounds(700,5,60,40);
+		panelTop.add(label_picimage);
+		label_sumNum.setBounds(700, 43, 100, 15);
+		panelTop.add(label_sumNum);
+		
+	}
+	
+}
+

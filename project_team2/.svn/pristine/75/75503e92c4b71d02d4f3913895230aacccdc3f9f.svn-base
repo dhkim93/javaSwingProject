@@ -1,0 +1,12 @@
+package project_team2;
+
+public class Test {
+
+	public static void main(String[]args){
+		System.out.println("test");
+		System.out.println("한줄추가");
+		System.out.println("한 줄 더 추가요");
+		
+	}
+
+}

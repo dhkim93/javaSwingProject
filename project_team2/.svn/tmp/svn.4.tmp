@@ -1,0 +1,7 @@
+package com.bs.view;
+
+public class AdminPage {
+public static void main(String[] args){
+	
+}
+}

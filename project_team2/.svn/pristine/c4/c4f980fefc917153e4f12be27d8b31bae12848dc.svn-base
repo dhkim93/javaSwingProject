@@ -1,0 +1,255 @@
+package com.bs.view;
+
+import java.awt.Color;
+import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.util.ArrayList;
+
+import javax.swing.ButtonGroup;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+
+import com.bs.control.MemberDAO;
+import com.bs.control.MyCartDAO;
+import com.bs.vo.CartVO;
+import com.bs.vo.MemberVO;
+
+public class MyCart extends JPanel implements ActionListener {
+	
+//	JRadioButton radioButton, radioButton_1, radioButton_2; // RadioButton 선언
+	JButton button_Buy, button_Del, button_Main;
+	JLabel label_pic1, label_pic2, label_pic3;// 이미지 출력 라벨
+	JLabel label_num1, label_num2, label_num3;// 장바구니에서 목록 순서(1,2,3...)
+	JLabel label_sumCh = new JLabel("총금액 : ");
+	JPanel panel_bottom = new JPanel();// 4번째 패널
+	JLabel label_sumNum = new JLabel("5000원 : ");
+	int sum = 0;// 합계 저장 변수
+	// 서버에서 데이터 가져오기 위해 초기화한 변수 2개
+	ArrayList<CartVO> list = null;
+	MyCartDAO mcdao = null;
+//	int listSize=0; 
+	// cart에 있는 id값
+	String c_id = "deokhyeon";
+	ButtonGroup bg = new ButtonGroup();
+	JRadioButton radioButton[]= new JRadioButton[13];//라디오 버튼 수동으로 만들어줌(라디오버튼 정보를 받아오기 위함)
+	
+	public MyCart(MainFrame win) {
+		setBounds(new Rectangle(50, 50, 800, 550));
+
+		setLayout(null);
+		
+		//패널4
+		panel_bottom.setBounds(12, 10, 789, 56);
+		add(panel_bottom);
+		panel_bottom.setLayout(null);
+		
+		button_Buy = new JButton("구매확정");
+		button_Buy.setBounds(226, 10, 130, 23);
+		panel_bottom.add(button_Buy);
+		
+		button_Del = new JButton("삭제");
+		button_Del.addActionListener(this);
+		button_Del.setBounds(368, 10, 79, 23);		
+		panel_bottom.add(button_Del);
+		
+		label_sumCh.setBounds(643, 10, 48, 15);
+		panel_bottom.add(label_sumCh);
+		
+		label_sumNum.setBounds(703, 10, 55, 15);
+		panel_bottom.add(label_sumNum);
+		
+		//메인으로 가기 버튼
+		button_Main = new JButton("메인화면");
+		button_Main.setBounds(459, 10, 104, 23);
+		button_Main.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					if (e.getSource() == button_Main) {
+						win.panelChange("LoginPage");
+					}
+				} catch (Exception ex) {
+					System.out.println(ex);
+				}
+			}
+		});
+		
+//		panel_bottom.setLayout(new GridBagLayout());
+		panel_bottom.add(button_Main);
+//		
+//		JScrollPane sc = new JScrollPane(this, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS
+//				,ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+//		sc.setViewportView(this);
+//		sc.setPreferredSize(new Dimension(100, 100));
+		
+		
+		//서버에서 가져온 데이터로 글자 지정 부분
+		try {
+			
+			ArrayList<CartVO> list = null;
+			mcdao = new MyCartDAO();//서버에서 가져온 값을 쓰기위해 DAO 객체화
+			list = mcdao.getCartAndImage(c_id);//cart에 있는 id정보를 가져옴(deokhyoen으로 설정한 것만...)
+			ArrayList<CartVO> listDel = null;
+			String code=null;
+//			String id=null;	
+//			listSize = list.size();
+			
+			//list에 내용이 있을경우 실행
+			if (list != null){
+				
+				System.out.println(list.get(0));
+				System.out.println("size " + list.size());
+				
+				int jpanelAxis = 70;
+				int yAxis = 10;
+
+				for (int i = 0; i < list.size(); i++) {
+					
+						
+						System.out.println("jpanelAxis :" + jpanelAxis);
+					
+						JPanel jpanel[] =  new JPanel[list.size()];
+						jpanel[i] = new JPanel();
+						jpanel[i].setBackground(Color.WHITE);
+						
+						jpanel[i].setBounds(10, jpanelAxis, 789, 153);
+						add(jpanel[i]);
+						jpanel[i].setLayout(null);						
+						
+						JLabel label_num[] = new JLabel[list.size()];
+						
+						label_num[i] = new JLabel(Integer.toString(i+1)); //카트 순번
+						label_num[i].setBounds(12, 10, 15, 15);
+						jpanel[i].add(label_num[i]);
+						
+						JLabel label_pName[] = new JLabel[list.size()]; //제품명 
+						label_pName[i] = new JLabel();
+						label_pName[i].setBounds(193, 10, 61, 15);
+						jpanel[i].add(label_pName[i]);
+						
+						JLabel label_pCode[] = new JLabel[list.size()]; //제품코드
+						label_pCode[i] = new JLabel();
+						label_pCode[i].setBounds(266, 10, 61, 15);
+						jpanel[i].add(label_pCode[i]);
+						label_pCode[i].setVisible(false);//코드 안보이게 하기
+						
+						JLabel label_price[] = new JLabel[list.size()];
+						
+						label_price[i] = new JLabel(); //가격표 
+						label_price[i].setBounds(378, 10, 56, 15);
+						jpanel[i].add(label_price[i]);
+						
+//						JRadioButton radioButton[] = new JRadioButton[list.size()]; //라디오 버튼 
+						radioButton[i] = (JRadioButton) new JRadioButton("선택");
+						radioButton[i].setBounds(533, 10, 67, 23);
+						radioButton[i].setBackground(Color.WHITE);
+						jpanel[i].add(radioButton[i]);
+						bg.add(radioButton[i]);
+						
+						JPanel panel_pic[] = new JPanel[list.size()]; //그림 패널
+						panel_pic[i] = new JPanel();
+						panel_pic[i].setBounds(39, 12, 142, 130);
+						jpanel[i].add(panel_pic[i]);
+						
+						
+//						&& list.get(i).getProductCode().contains("P_CAP")
+						label_pName[i].setText(list.get(i).getProductName());
+						label_price[i].setText(list.get(i).getPrice()+"원");//가격을 가져와서 글자를 화면에 뿌려줌
+						label_pCode[i].setText(list.get(i).getProductCode());//제품명을 가져와서 글자를 화면에 뿌려줌
+						sum +=Integer.parseInt(list.get(i).getPrice());//값을 모두더해서 sum에 저장
+						
+						ImageIcon imgProd[] = new ImageIcon[list.size()];  
+						imgProd[i] = new ImageIcon(list.get(i).getImagePath());//이미지 경로 받아옴
+						
+						System.out.println("!!!!!!!!!!!!!!" + list.get(i));
+						
+						JLabel label_pic[] = new JLabel[list.size()];
+						label_pic[i] = new JLabel();
+						
+						label_pic[i] = new JLabel(imgProd[i]);
+						label_pic[i].setBounds(50, 0, imgProd[i].getIconWidth(), imgProd[i].getIconHeight());
+						
+						panel_pic[i].add(label_pic[i]);
+						
+						
+						
+						jpanelAxis += 165;
+					
+				}//for end
+				
+				label_sumNum.setText(sum+"원");//총액 화면에 출력
+				
+			} //end if
+			
+		}catch (Exception e) { 
+			System.out.println("e=[" + e + "]");
+			e.printStackTrace();
+		}
+	}
+
+	public void itemStateChanged(ItemEvent e) {
+//		System.out.println("###############################");
+		if( (e.getSource() == radioButton[0] ) || e.getSource() == radioButton[1] ){
+//			System.out.println("###############################");	
+			if(radioButton[0].isSelected()){
+				System.out.println("radioButton[0]선택");
+			}else if(radioButton[1].isSelected()){
+				System.out.println("radioButton[1]선택");
+				}
+		}			
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent ae) {
+		
+		String ae_type = ae.getActionCommand();
+		
+		if (ae_type.equals(button_Del.getText())) {// 삭제하기 버튼이 클릭되었을 경우
+			try {
+				ArrayList<CartVO> list = null;
+				ArrayList<CartVO> listDel = null;
+				
+				list = mcdao.getCartAndImage(c_id);//cart에 있는 id정보를 가져옴(deokhyoen으로 설정한 것만...)
+				String code=null;
+				String id=null;				
+				if(list !=null){
+					for(int i=0;i<list.size();i++){
+						JLabel c_id[] = new JLabel[list.size()];
+						c_id[i] = new JLabel();
+						c_id[i].setText(list.get(i).getId());
+						JLabel label_pCode[] = new JLabel[list.size()]; //제품코드
+						label_pCode[i] = new JLabel();
+						label_pCode[i].setText(list.get(i).getProductCode());//제품명을 가져와서 글자를 화면에 뿌려줌
+						
+						
+				/*		System.out.println(label_pCode[i].getText());
+						System.out.println(radioButton[i].getText());		
+						System.out.println(c_id[i].getText());		*/
+						//삭제 되는 부분
+						if(radioButton[i].isSelected()){
+							code=label_pCode[i].getText()+"";
+							id=c_id[i].getText()+"";
+							listDel = mcdao.getDelete(id, code);
+							System.out.println(label_pCode[i].getText());
+						}
+					}
+					
+				}
+				
+			}catch (Exception e) {
+				System.out.println("e=[" + e + "]");
+				e.printStackTrace();
+			}
+		} else if (ae_type.equals(button_Buy.getText())) {
+			
+			setVisible(false);
+			
+			}
+					
+	}
+}

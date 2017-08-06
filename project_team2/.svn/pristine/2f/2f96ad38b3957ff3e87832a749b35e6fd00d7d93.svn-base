@@ -1,0 +1,46 @@
+package com.bs.vo;
+
+public class MyCartVO {
+	private String Product_name;
+	private int price;
+	private int sum;
+
+	public MyCartVO(String product_name, int price) {
+
+		Product_name = product_name;
+		this.price = price;
+	}
+
+	public MyCartVO() {
+	}
+
+	public String getProduct_name() {
+		return Product_name;
+	}
+
+	public void setProduct_name(String product_name) {
+		Product_name = product_name;
+	}
+
+	public int getPrice() {
+		return price;
+	}
+
+	public void setPrice(int price) {
+		this.price = price;
+	}
+
+	public int getSum() {
+		return sum;
+	}
+
+	public void setSum(int sum) {
+		this.sum = sum;
+	}
+
+	@Override
+	public String toString() {
+		return getProduct_name() + "," + getPrice();
+	}
+
+}

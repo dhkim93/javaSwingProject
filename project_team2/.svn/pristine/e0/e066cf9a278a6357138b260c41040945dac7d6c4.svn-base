@@ -1,0 +1,116 @@
+/* 
+ * =============================
+ * 프로그램 설명 : 
+ * 작성자 : 
+ * 최초 작성일자 : 
+ * 최종 수정일 : 
+ * 수정 내용 : 
+ * =============================
+ * */
+
+package com.bs.vo;
+
+public class AdminPageVO {
+	private String productCode;
+	private String productName;
+	private String size;
+	private String brand;
+	private int price;
+	private String material;
+	private String buydate;
+	private int status;	
+	private int xAxis=0;
+	private int yAxis=0;
+	public AdminPageVO() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+	public AdminPageVO(String productCode, String productName, String size,
+			String brand, int price, String material, String buydate) {
+		super();
+		this.productCode = productCode;
+		this.productName = productName;
+		this.size = size;
+		this.brand = brand;
+		this.price = price;
+		this.material = material;
+		this.buydate = buydate;
+	}
+	
+	public AdminPageVO(String productCode, int xAxis,
+			int yAxis) {
+		this.productCode = productCode;
+		this.xAxis = xAxis;
+		this.yAxis = yAxis;
+	}
+	public String getProductCode() {
+		return productCode;
+	}
+	public void setProductCode(String productCode) {
+		this.productCode = productCode;
+	}
+	public String getProductName() {
+		return productName;
+	}
+	public void setProductName(String productName) {
+		this.productName = productName;
+	}
+	public String getSize() {
+		return size;
+	}
+	public void setSize(String size) {
+		this.size = size;
+	}
+	public String getBrand() {
+		return brand;
+	}
+	public void setBrand(String brand) {
+		this.brand = brand;
+	}
+	public int getPrice() {
+		return price;
+	}
+	public void setPrice(int price) {
+		this.price = price;
+	}
+	public String getMaterial() {
+		return material;
+	}
+	public void setMaterial(String material) {
+		this.material = material;
+	}
+	public String getBuydate() {
+		return buydate;
+	}
+	public void setBuydate(String buydate) {
+		this.buydate = buydate;
+	}
+	
+	public int getStatus() {
+		return status;
+	}
+	public void setStatus(int status) {
+		this.status = status;
+	}
+	
+	public int getxAxis() {
+		return xAxis;
+	}
+	public void setxAxis(int xAxis) {
+		this.xAxis = xAxis;
+	}
+	public int getyAxis() {
+		return yAxis;
+	}
+	public void setyAxis(int yAxis) {
+		this.yAxis = yAxis;
+	}
+	@Override
+	public String toString() {
+		return getProductCode()+","+getProductName();
+	}
+	
+	
+	
+
+}

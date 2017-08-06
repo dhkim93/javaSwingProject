@@ -1,0 +1,65 @@
+package com.bs.view;
+
+import javax.swing.JFrame;
+
+public class MainFrame extends JFrame{
+	
+	public MainFrame() {
+		
+	}
+
+	public LoginPage loginPage = null ;
+	public MyDressRoom myDressRoom = null;
+	public Board board = null;
+	public MyCart myCart = null;
+
+	// 패널 변경 메서드
+	public void panelChange(String panelName) {
+		
+		if (panelName.equals("MyDressRoom")) { //내옷장 화면
+			getContentPane().removeAll();
+//			win.myDressRoom = new MyDressRoom(win);
+			getContentPane().add(myDressRoom);
+			revalidate();
+			repaint();
+			
+		}else if(panelName.equals("LoginPage")){		//로그인 페이지 
+			
+			getContentPane().removeAll();
+			getContentPane().add(loginPage);
+			revalidate();
+			repaint();
+			
+		}else if(panelName.equals("Board")){		//게시판 페이지 
+			
+			getContentPane().removeAll();
+			getContentPane().add(board);
+//			win.board = new Board(win);
+			revalidate();
+			repaint();
+			
+		}else if(panelName.equals("MyCart")){		//장바구니 페이지 
+			getContentPane().removeAll();
+			getContentPane().add(myCart);
+			revalidate();
+			repaint();
+		}
+	}
+	
+	public static void main(String[] args) {
+		
+		MainFrame win = new MainFrame();
+
+		win.setTitle("2017 SUMMER SALE!");
+		win.loginPage = new LoginPage(win);
+		win.myDressRoom = new MyDressRoom(win);
+		win.board = new Board(win);
+		win.myCart = new MyCart(win);
+		
+		win.getContentPane().add(win.loginPage); // 로그인 화면
+		
+		win.setSize(900, 600);
+		win.setVisible(true);
+	}
+
+}

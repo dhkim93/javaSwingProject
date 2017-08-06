@@ -1,0 +1,128 @@
+package com.bs.view;
+
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextPane;
+
+import com.bs.control.BoardDAO;
+import com.bs.vo.NoticeBoardVO;
+
+public class Board extends JFrame implements ActionListener {
+
+	private JPanel jp[] = new JPanel[6];
+	private JLabel jl[] = new JLabel[6];
+	private JTextPane jt[] = new JTextPane[6];
+	private JButton jb1;
+	private JButton jb2;
+
+	BoardDAO bdao = null;
+	ArrayList<NoticeBoardVO> list = null;
+
+	String subject = "hh";
+	int i;
+
+	public Board() {
+		getContentPane().setBackground(Color.WHITE);
+
+		setBounds(new Rectangle(0, 0, 800, 550));
+		getContentPane().setLayout(null);
+
+		setTitle("★게시판★");
+		setResizable(false);
+
+		try {
+			bdao = new BoardDAO();
+			list = bdao.getBoardList();
+
+		} catch (Exception e) {
+			System.out.println(e);
+		}
+
+		for (int i = 0; i < 4; i++) {
+			jp[i] = new JPanel();
+			jp[i].setBackground(Color.PINK);
+			getContentPane().add(jp[i]);
+			jp[i].setLayout(null);
+
+			if (i == 0) {
+				jp[i].setBackground(Color.CYAN);
+				jp[i].setBounds(0, 10, 784, 35);
+				jl[i] = new JLabel("공지사항 : 2017/07/11~21 SALE !!!");
+				jp[i].add(jl[i]);
+				jl[i].setBounds(10, 7, 693, 25);
+				jl[i].setFont(new Font("굴림", Font.PLAIN, 17));
+				getContentPane().add(jp[i]);
+
+			} else if (i == 1) {
+
+				jp[i].setBounds(10, 90, 370, 357);
+				jt[i] = new JTextPane();
+				jt[i].setText(list.get(i - 1).getSubject());
+				jt[i].setBounds(33, 27, 299, 21);
+				jt[i].setBackground(Color.PINK);
+				jp[i].add(jt[i]);
+				getContentPane().add(jp[i]);
+
+			} else if (i == 2) {
+				jp[i].setBounds(400, 90, 370, 357);
+				jt[i] = new JTextPane();
+				jt[i].setText(list.get(i - 1).getSubject());
+				jt[i].setBounds(33, 27, 299, 21);
+				jt[i].setBackground(Color.PINK);
+				jp[i].add(jt[i]);
+				getContentPane().add(jp[i]);
+
+			}
+
+		}
+
+		jl[i] = new JLabel("구매후기");
+		jl[i].setFont(new Font("굴림", Font.PLAIN, 15));
+		jl[i].setBounds(10, 60, 129, 26);
+		getContentPane().add(jl[i]);
+
+		jl[i + 1] = new JLabel("Q&A");
+		jl[i + 1].setFont(new Font("굴림", Font.PLAIN, 15));
+		jl[i + 1].setBounds(400, 66, 129, 26);
+		getContentPane().add(jl[i + 1]);
+		getContentPane().add(jp[i]);
+		getContentPane().add(jp[i]);
+
+		jb1 = new JButton("메인으로");
+		jb1.addActionListener(this);
+		jb1.setBounds(649, 479, 123, 23);
+		getContentPane().add(jb1);
+
+		jb2 = new JButton("글 등록하기");
+		jb2.addActionListener(this);
+		jb2.setBounds(487, 479, 129, 23);
+		getContentPane().add(jb2);
+
+		jb1.setOpaque(false);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setVisible(true);
+
+	}
+
+	public void actionPerformed(ActionEvent ae) {
+		String jb_type = ae.getActionCommand();
+		if (jb_type.equals(jb1.getText())) {
+			MainFrame mf = new MainFrame();
+		} else if (jb_type.equals(jb2.getText())) {
+			BoardDetail bd = new BoardDetail();
+		}
+	}
+
+	public static void main(String[] arg) {
+		Board board = new Board();
+	}
+}

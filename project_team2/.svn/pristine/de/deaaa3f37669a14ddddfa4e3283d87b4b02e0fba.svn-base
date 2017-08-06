@@ -1,0 +1,81 @@
+package com.bs.vo;
+
+public class MemberVO {
+
+	private String id;
+	private String password;
+	private String name;
+	private String phone;
+	private String admin_flag;
+	private String email;
+
+	public MemberVO() {
+	}
+
+	public MemberVO(String id, String password, String name, String phone,
+			String admin_flag, String email) {
+		super();
+		this.id = id;
+		this.password = password;
+		this.name = name;
+		this.phone = phone;
+		this.admin_flag = admin_flag;
+		this.email = email;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+
+	public String getAdmin_flag() {
+		return admin_flag;
+	}
+
+	public void setAdmin_flag(String admin_flag) {
+		this.admin_flag = admin_flag;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	@Override
+	public String toString() {
+		return "MemberVO [id=" + id + ", password=" + password + ", name="
+				+ name + ", phone=" + phone + ", admin_flag=" + admin_flag
+				+ ", email=" + email + "]";
+	}
+
+}

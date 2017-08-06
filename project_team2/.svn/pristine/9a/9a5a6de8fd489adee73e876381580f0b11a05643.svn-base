@@ -1,0 +1,222 @@
+package com.bs.control;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+
+import com.bs.vo.MemberVO;
+import com.bs.vo.NoticeBoardVO;
+
+public class BoardDetail {
+
+	public NoticeBoardVO setBoardDetail(NoticeBoardVO nbvo) throws Exception {
+		//  데이터 처리를 위한 SQL 문
+		
+		String dml = "INSERT INTO NOTICE_BOARD "
+				+ "(NO "
+				+ ", WRITER"
+				+ ", SUBJECT"
+				+ ", CONTENT"
+				+ ", DATE"
+				+ ", FLAG"
+				+ ") VALUES (?, ?, ?, ?, ?, ?)";
+		
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		
+		NoticeBoardVO retval = null;
+		try {
+			//  DBUtil이라는 클래스의 getConnection( )메서드로 데이터베이스와 연결
+			con = DBUtil.getConnection();
+			//  입력받은 사용자 정보를 처리하기 위하여 SQL문장을 생성
+			pstmt = con.prepareStatement(dml);
+			
+			pstmt.setInt(1, nbvo.getNo());
+			pstmt.setString(2, nbvo.getWriter());
+			pstmt.setString(3, nbvo.getSubject());
+			pstmt.setString(4, nbvo.getContent());
+			pstmt.setString(5, nbvo.getDate());
+			pstmt.setInt(6,  nbvo.getFlag());
+			//  SQL문을 수행후 처리 결과를 얻어옴
+			int i = pstmt.executeUpdate();
+			
+			retval = new NoticeBoardVO();
+			//retval.setStatus(i + "");
+			System.out.println(retval.getSubject());
+			
+			
+			
+		} catch (SQLException e) {
+			System.out.println("e=[" + e + "]");
+			e.printStackTrace();
+		} catch (Exception e) {
+			System.out.println("e=[" + e + "]");
+			e.printStackTrace();
+		} finally {
+			try {
+				//  데이터베이스와의 연결에 사용되었던 오브젝트를 해제
+				if (pstmt != null)
+					pstmt.close();
+				if (con != null)
+					con.close();
+			} catch (SQLException e) {
+//				e.printStackTrace();
+			}
+		}
+		return retval;
+	}	
+	
+	public static void main(String[] ar) throws Exception{
+		NoticeBoardVO nbvo =new NoticeBoardVO();
+		BoardDetail nb = new BoardDetail();
+//		
+		nb.setBoardDetail(nbvo);
+//		System.out.println(nbvo.getSubject());
+	}
+/*public ArrayList<NoticeBoardVO> getBoardList() throws Exception{
+		
+		ArrayList<NoticeBoardVO> list = new ArrayList<NoticeBoardVO>();
+		String dml = "select * from notice_board ";
+		
+		Statement stmt = null;
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		NoticeBoardVO retval = null;
+		
+		try{
+			con = DBUtil.getConnection();
+			stmt = con.createStatement();
+			rs = stmt.executeQuery(dml);
+			
+//			pstmt.setString(3, subject);
+			
+			
+			System.out.println("no\t유저\t제목\t내용\t날짜\t플래그");
+			while(rs.next()){
+				retval = new NoticeBoardVO(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getInt(6));
+				
+				list.add(retval);
+				System.out.print(rs.getInt(1) +"\t");//rs.get자료형(속성순서 or 속성명) 
+				System.out.print(rs.getString(2) +"\t");
+				System.out.print(rs.getString(3) +"\t");
+				System.out.print(rs.getString(4) +"\t");
+				System.out.print(rs.getString(5) +"\t");
+				System.out.print(rs.getInt(6) +"\t");
+				System.out.println();
+			}
+		}catch (SQLException se){
+			System.out.println(se);
+		}catch (Exception e){
+			System.out.println(e);
+		}finally{
+			try{
+				if(rs !=null)
+					rs.close();
+				if(pstmt !=null)
+					pstmt.close();
+				if(con !=null)
+					con.close();
+		}catch(SQLException se){
+			
+		}
+		
+	}
+		return list;
+	}
+	
+	public static void main(String[] args) throws Exception{
+//		ArrayList<String> columnName = new ArrayList<String>();
+		ArrayList<NoticeBoardVO> list = null;
+		
+		BoardDAO test= new BoardDAO();
+		list = test.getBoardList(); 
+		System.out.println(list.get(0).getSubject());
+//		mcdao.getCartList(c_id);
+		
+	}
+	
+	//게시판 조회
+	public ArrayList<NoticeBoardVO> getBoardTotal() {
+		ArrayList<NoticeBoardVO> list = new ArrayList<NoticeBoardVO>();
+		String tml = "select * from notice_board";
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		NoticeBoardVO nbVo = null;
+		try {
+			con = DBUtil.getConnection();
+			pstmt = con.prepareStatement(tml);
+			rs = pstmt.executeQuery();
+			while (rs.next()) {
+//				(Integer no, String writer, String subject,String content, String date, int flag)
+				nbVo = new NoticeBoardVO(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getInt(6));
+				list.add(nbVo);
+			}
+		} catch (SQLException se) {
+			System.out.println(se);
+		} catch (Exception e) {
+			System.out.println(e);
+		} finally {
+			try {
+				if (rs != null)
+					rs.close();
+				if (pstmt != null)
+					pstmt.close();
+				if (con != null)
+					con.close();
+			} catch (SQLException se) {
+			}
+		}
+		return list;
+	}
+	
+	
+	//테이블 컬럼 네임 가져오기
+	public ArrayList<String> getColumnName() {
+		ArrayList<String> columnName = new ArrayList<String>();
+		String sql = "select NO"
+				+ "				, SUBJECT"
+				+ "				, WRITER"
+				+ "				, DATE"
+				+ "     from notice_board";
+		
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		// ResultSetMetaData 객체 변수 선언
+		ResultSetMetaData rsmd = null;
+		try {
+			con = DBUtil.getConnection();
+			pstmt = con.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+			rsmd = rs.getMetaData();
+//			System.out.println(rsmd+"@@@@@@@@@@@@@@@@@@@@");
+			
+			int cols = rsmd.getColumnCount();
+			for (int i = 1; i <= cols; i++) {
+				columnName.add(rsmd.getColumnName(i));
+			}
+		} catch (SQLException se) {
+			System.out.println(se);
+		} catch (Exception e) {
+			System.out.println(e);
+		} finally {
+			try {
+				if (rs != null)
+					rs.close();
+				if (pstmt != null)
+					pstmt.close();
+				if (con != null)
+					con.close();
+			} catch (SQLException se) {
+			}
+		}
+		return columnName;
+	}*/
+	
+}

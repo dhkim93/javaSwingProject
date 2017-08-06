@@ -1,0 +1,172 @@
+package com.bs.view;
+import java.awt.BorderLayout;
+import java.awt.GridLayout;
+
+import javax.swing.ButtonGroup;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+public class MemberJoin extends JFrame {
+		
+JLabel label [] = new JLabel[11]; //Label 배열로 선언
+JTextField textField[] = new JTextField[5];//TextField 배열로 선언
+JTextArea textarea = new JTextArea();//TextArea 선언
+JScrollPane sp;//TextArea의 스크롤바를 위한 ScrollPane 선언
+
+JRadioButton male, female;//RadioButton 선언
+JCheckBox travel;// CheckBos 선언
+ButtonGroup bg;//RadioButton의 그룹핑을 위한 ButtonGroup 선언
+
+JButton trans, cancel;//Button 선언
+JComboBox<String> jcb;//ComboBox 선언
+String phone[] = {"010", "011", "016", "017", "018", "019", "070"};//ComboBox를 위한 배열 선언
+
+JPanel panel1, panel2, panel3, panel4, panel5, panel6;
+
+JPanel panel11, panel12, panel21, panel22, panel31, panel32, panel41, panel42;
+
+public MemberJoin(){
+	
+	this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	
+	//전체적인 큰 들을 GridLayout으로 설정
+	GridLayout frameLayout = new GridLayout(6,1);
+	
+	frameLayout.setVgap(3);//GridLayout간의 간격 설정
+	
+	this.setLayout(frameLayout);//설정한 
+	
+	label[0] = new JLabel("아이디");
+	label[1] = new JLabel("비밀번호");
+	label[2] = new JLabel("이름");
+	label[3] = new JLabel("성별");
+	label[4] = new JLabel("관리자");
+	label[5] = new JLabel("H.P");
+	label[6] = new JLabel("자기소개");
+	label[7] = new JLabel("8자 이내");
+	label[8] = new JLabel("*필수입력");
+	label[9] = new JLabel("-");
+	label[10] = new JLabel("-");
+	
+	textField[0] = new JTextField(8);
+	textField[1] = new JTextField(8);
+	textField[2] = new JTextField(8);
+	textField[3] = new JTextField(3);
+	textField[4] = new JTextField(3);
+	textarea = new JTextArea(1, 1);
+	
+	male = new JRadioButton("남성");
+	female = new JRadioButton("여성");
+	
+	bg= new ButtonGroup();
+	bg.add(male);
+	bg.add(female);
+	
+	travel = new JCheckBox("(체크)");
+	
+	jcb = new JComboBox<String>(phone);
+	
+	trans = new JButton("전송");
+	cancel = new JButton("취소");
+	
+	panel1 = new JPanel();
+	panel2 = new JPanel();
+	panel3 = new JPanel();
+	panel4 = new JPanel();
+	panel5 = new JPanel();
+	panel6 = new JPanel();
+	
+	panel11 = new JPanel();
+	panel12 = new JPanel();
+	panel21 = new JPanel();
+	panel22 = new JPanel();
+	panel31 = new JPanel();
+	panel32 = new JPanel();
+	panel41 = new JPanel();
+	panel42 = new JPanel();
+	
+	BorderLayout layout1 = new BorderLayout();
+	BorderLayout layout2 = new BorderLayout();
+	BorderLayout layout3 = new BorderLayout();
+	BorderLayout layout4 = new BorderLayout();
+	BorderLayout layout5 = new BorderLayout();
+	panel1.setLayout(layout1);
+	panel2.setLayout(layout2);
+	panel3.setLayout(layout3);
+	panel4.setLayout(layout4);
+	panel5.setLayout(layout5);
+	
+	panel11.add(label[0]);
+	panel11.add(textField[0]);
+	panel12.add(label[7]);
+	panel1.add("West", panel11);
+	panel1.add("East", panel12);
+	
+	panel21.add(label[1]);
+	panel21.add(textField[1]);
+	panel22.add(label[2]);
+	panel22.add(textField[2]);
+	panel2.add("West", panel21);
+	panel2.add("East", panel22);
+	
+	panel31.add(label[3]);
+	panel31.add(male);
+	panel31.add(female);
+	panel32.add(label[4]);
+	panel32.add(travel);
+	panel3.add("West", panel31);
+	panel3.add("East", panel32);
+	
+	panel41.add(label[5]);
+	panel41.add(jcb);
+	panel41.add(label[9]);
+	panel41.add(textField[3]);
+	panel41.add(label[10]);
+	panel41.add(textField[4]);
+	panel41.add(label[8]);
+	panel4.add("West", panel41);
+	panel4.add("East", panel42);
+	
+	panel5.add("West", label[6]);
+	sp = new JScrollPane(textarea);
+	sp.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+	sp.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+	panel5.add(sp);
+	
+	panel6.add(trans);
+	panel6.add(cancel);
+	
+	this.add(panel1);
+	this.add(panel2);
+	this.add(panel3);
+	this.add(panel4);
+	this.add(panel5);
+	this.add(panel6);
+	
+	setTitle("회원가입");
+	setSize(800, 550);
+	setVisible(true);
+	
+}
+	public static void main(String[] args) {
+		new MemberJoin();
+		
+	}
+	
+}
+	
+	
+	
+	
+	
+
+
+
+	

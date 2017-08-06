@@ -1,0 +1,700 @@
+/* 
+ * =============================
+ * 프로그램 설명 : 
+ * 작성자 : 
+ * 최초 작성일자 : 
+ * 최종 수정일 : 
+ * 수정 내용 : 
+ * =============================
+ * */
+
+package com.bs.view;
+
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
+
+import com.bs.control.LoginPageDAO;
+import com.bs.control.MyDressRoomDAO;
+import com.bs.vo.ClothBasicVO;
+import com.bs.vo.MemberVO;
+import com.bs.vo.MyDressRoomVO;
+
+public class LoginPage extends JPanel implements ActionListener , MouseMotionListener, MouseListener{
+	
+	private JPanel panel = new JPanel();
+	private JPanel panel1 = new JPanel();
+	private JPanel panel2 = new JPanel();
+	private JPanel[] jpanelPdt; //상품정보를 담는 패널
+	
+	private JButton btnLogin = new JButton("ログイン");//"로그인"
+	private JButton btnJoin = new JButton("会員加入");//"회원가입"
+	private JButton btnLogout = new JButton("ログアウト");//"로그아웃"
+	private JButton btnMyDressRoom = new JButton("私のたんす ");//"내 옷장"
+	private JButton btnAdmin = new JButton("管理者");//"관리자 페이지
+	private JButton btnBoard = new JButton("掲示板");//"게시판"
+	private JButton btnMyCart = new JButton("カート");//"장바구니보기 버튼
+	private JButton btnCartInsert = new JButton(new ImageIcon(getClass().getClassLoader().getResource("cart.png")));//"카트담기"
+	private JButton btnBuy = new JButton(new ImageIcon(getClass().getClassLoader().getResource("get.png")));	//"구매하기"
+	
+	private JLabel label_9 = null;
+	private JLabel label_pCode[] = null; // 제품코드
+	private JLabel label_pName[] = null; // 제품명
+	private JLabel label_pSize[] = null; // 제품사이즈
+	private JLabel label_pBrand[] = null; // 제품브랜드
+	private JLabel label_pMaterial[] = null; // 제품브랜드
+	private JLabel labelwm = new JLabel();	//움직이는수박이미지라벨
+	private JLabel lbId = new JLabel("ID");  //ID 라벨
+	private JLabel lbPass = new JLabel("Pass"); //password 라벨
+	private JLabel lbLogin = new JLabel("ログイン");//로그인라벨
+	private JLabel lbBuybtn = new JLabel("購買する");	//라벨
+	private JLabel lbCartbtn = new JLabel("カートに入れる");	//라벨
+	
+	private JPasswordField textFieldPass = new JPasswordField(); //password 텍스트 필드
+	private JTextField textFieldId = new JTextField();  //ID 텍스트 필드
+	
+	private int adminFlag; //관리자 여부
+	private int sum = 0;// 합계 저장 변수
+	private String loginFlag = "N"; // 로그인 여부
+	private LoginPageDAO lpdao = null;
+	private List<JCheckBox> checkBoxes = new ArrayList<JCheckBox>();
+	private JCheckBox chkButton[] = null;
+	private ArrayList<ClothBasicVO> list = null;
+	
+
+	public LoginPage(MainFrame win) {
+		
+		//관리자 버튼 클릭이벤트
+		btnAdmin.addActionListener(new ActionListener() { 
+			public void actionPerformed(ActionEvent e) {
+				try {
+					if (e.getSource() == btnAdmin && loginFlag.equals("N")) { // 로그인을안했을경우
+						JOptionPane.showMessageDialog(null, "ログイン後使に用可能です。.", "警告", 0);//"로그인후 사용가능합니다.", "경고"
+						return;
+					} else {
+						win.panelChange("AdminPage", textFieldId.getText());
+						for (int i = 0; i < checkBoxes.size(); i++) { //셀렉트 박스 체크 해제하기 
+							checkBoxes.get(i).setSelected(false);
+						}
+					}
+				} catch (Exception ex) {
+					ex.printStackTrace();
+				}
+			}
+		});
+
+		//	게시판 버튼 클릭 이벤트 
+		btnBoard.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					if (e.getSource() == btnBoard && loginFlag.equals("N")) { // 로그인을안했을경우
+						JOptionPane.showMessageDialog(null, "ログイン後使に用可能です。.", "警告", 0);//"로그인후 사용가능합니다.", "경고"
+						return;
+					} else {
+						win.panelChange("Board", textFieldId.getText());
+						for (int i = 0; i < checkBoxes.size(); i++) { //셀렉트 박스 체크 해제하기 
+							checkBoxes.get(i).setSelected(false);
+						}
+					}
+				} catch (Exception ex) {
+					System.out.println(ex);
+				}
+			}
+		});
+		
+		//내 장바구니 확인 버튼 클릭 이벤트(카트)
+		btnMyCart.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					if (e.getSource() == btnMyCart && loginFlag.equals("N")) { // 로그인을안했을경우
+						JOptionPane.showMessageDialog(null, "ログイン後に使用可能です。.", "警告", 0);//"로그인 후 사용가능합니다.", "경고"
+						return;
+					} else {
+						win.panelChange("MyCart", textFieldId.getText());
+						for (int i = 0; i < checkBoxes.size(); i++) { //셀렉트 박스 체크 해제하기 
+							checkBoxes.get(i).setSelected(false);
+						}
+					}
+				} catch (Exception ex) {
+					System.out.println(ex);
+				}
+			}
+		});
+
+		// 내옷장으로 가기 버튼 클릭 이벤트
+		btnMyDressRoom.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					MyDressRoomDAO mdrdao = null;
+					ArrayList<MyDressRoomVO> list = null;
+					mdrdao = new MyDressRoomDAO();
+					list = mdrdao.getClosetList(MainFrame.id);
+					
+					if (e.getSource() == btnMyDressRoom && loginFlag.equals("N")) { // 로그인을안했을경우
+						JOptionPane.showMessageDialog(null, "ログイン後に使用可能です。.", "警告", 0);//"로그인 후 사용가능합니다.", "경고"
+						return;
+					}else if(list.size() ==0){ //구매한 상품이 없을경우
+						JOptionPane.showMessageDialog(null, "購入した商品がありません。", "警告", 0);// "구매한 상품이 없습니다.", "경고"
+						return;
+					}else {
+						win.panelChange("MyDressRoom", textFieldId.getText()); //내 옷장으로 패널 변경하기 
+						
+						for (int i = 0; i < checkBoxes.size(); i++) { //셀렉트 박스 체크 해제하기 
+							checkBoxes.get(i).setSelected(false);
+						}
+					}
+				} catch (Exception ex) {
+					ex.printStackTrace();
+				}
+			}
+		});
+		
+		btnLogin.addActionListener(new ActionListener() { //로그인 버튼 눌렀을때
+			public void actionPerformed(ActionEvent e) {
+				try {
+					panel.setVisible(true);
+
+					if (textFieldId.getText().equals("")) { // 아이디를 입력하지 않았을때
+						JOptionPane.showMessageDialog(null, "IDを入力してください.", "警告", 0);//"아이디를 입력해주세요", "경고"
+						System.out.println("아이디를 입력해주세요. ");//
+						return;
+					} else if (textFieldPass.getText().equals("")) { // 패스워드를 입력안했을때
+						JOptionPane.showMessageDialog(null, "パスワードを入力してください.", "警告", 0);//"패스워드를 입력해주세요", "경고"
+						System.out.println("パスワードを入力してください.");//"패스워드를 입력해주세요. "
+						return;
+					} else if (textFieldId.getText() != null && textFieldPass.getText() != null) { // 둘다//
+																									// 입력했으면
+						LoginPageDAO lpdao = new LoginPageDAO();
+						ArrayList<MemberVO> list = lpdao.getMemberList(textFieldId.getText()); // DB조회
+							
+						if (list.size() == 0) { // 조회를 못해왔으면
+							
+							JOptionPane.showMessageDialog(null, "該当する使用者がいないです.", "警告", 0);//"해당하는 사용자가 없습니다.", "경고"
+							System.out.println("해당하는 사용자가 없습니다.");//"해당하는 사용자가 없습니다."
+							return;
+
+						}else if (!list.get(0).getId().equals(textFieldId.getText())){
+							JOptionPane.showMessageDialog(null, "아이디 대소문자를 확인해주세요.", "警告", 0);//"해당하는 사용자가 없습니다.", "경고"
+						
+						}else if (!list.get(0).getPassword().equals(textFieldPass.getText())) { // 패스워드
+																									// 틀리면
+							JOptionPane.showMessageDialog(null, "パスワードが間違っています。", "警告", 0);//"패스워드가 틀렸습니다.", "경고"
+							System.out.println("패스워드가 틀렸습니다.");//
+							return;
+							
+						} else if(list.get(0).getAdmin_flag()==0){ // 아이디 패스워드가 맞으면 (일반사용자)
+							adminFlag = list.get(0).getAdmin_flag();
+							
+							System.out.println("ログインに成功!!!");//"로그인 성공!!!"
+							loginFlag = "Y"; // 로그인 여부 Y 로 변경
+							MainFrame.id = textFieldId.getText(); // id 넘겨주기
+							panel.setVisible(false);
+							panel2.setBackground(Color.WHITE);
+							panel2.setBounds(12, 26, 220, 205);
+							panel2.setLayout(null);
+							panel2.setVisible(true);
+							labelwm = new JLabel(new ImageIcon(getClass().getClassLoader().getResource("wm.gif")));	//"수박이미지"
+							labelwm.setBounds(50,15,100,100);
+							label_9 = new JLabel(textFieldId.getText() + " 様 ようこそ。"); // 환영메시지출력//" 님 환영합니다"
+							label_9.setBounds(50, 80, 200, 50);
+							btnLogout.setBounds(60, 130, 100, 25);
+							panel2.add(labelwm);
+							panel2.add(btnLogout); //로그아웃 버튼 넣어준다.
+							panel2.add(label_9);
+							add(panel2);
+						}else if(list.get(0).getAdmin_flag()==1){ //관리자로 로그인했을때
+							adminFlag = list.get(0).getAdmin_flag();
+							btnAdmin.setVisible(true);
+							System.out.println("ログインに成功!!!");//"로그인 성공!!!"
+							loginFlag = "Y"; // 로그인 여부 Y 로 변경
+							MainFrame.id = textFieldId.getText(); // id 넘겨주기
+							panel.setVisible(false);
+							panel2.setBackground(Color.WHITE);
+							panel2.setBounds(12, 26, 220, 205);
+							panel2.setLayout(null);
+							panel2.setVisible(true);
+							labelwm = new JLabel(new ImageIcon(getClass().getClassLoader().getResource("wm.gif")));	//"수박이미지"
+							labelwm.setBounds(50,15,100,100);
+							label_9 = new JLabel(textFieldId.getText() + " 様 ようこそ。"); // 환영메시지출력//" 님 환영합니다"
+							label_9.setBounds(50, 80, 200, 50);
+							btnLogout.setBounds(60, 130, 100, 25);
+							panel2.add(labelwm);
+							panel2.add(btnLogout); //로그아웃 버튼 넣어준다.
+							panel2.add(label_9);
+							add(panel2);
+						}
+					}
+				} catch (Exception ex) {
+					ex.printStackTrace();
+				}
+			}
+		});
+		
+		btnJoin.addActionListener(new ActionListener() { //회원가입 버튼 이벤트
+			public void actionPerformed(ActionEvent e) {
+				try {
+					
+					MemberJoin join = new MemberJoin();
+					join.setVisible(true);
+					
+				} catch (Exception ex) {
+					ex.printStackTrace();
+				}
+			}
+		});
+		
+		btnCartInsert.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					if (e.getSource() == btnCartInsert && loginFlag.equals("Y")) { // 카트에담기버튼클릭했을때(로그인상태일때)
+						
+						System.out.println("카트에 담기 버튼 클릭함");//"카트에 담기 버튼 클릭함"
+						
+						int selectCnt = 0; // 선택된 콤보박스 갯수
+						for (int i = 0; i < checkBoxes.size(); i++) {
+							if (checkBoxes.get(i).isSelected()) {
+								selectCnt++;
+							}
+						}
+
+						if (selectCnt == 0) {
+							JOptionPane.showMessageDialog(null, "商品が選択されていません。", "お知らせ ", 0);//"선택한 상품이 없습니다.", "알림"
+							return;
+						}
+						
+						try {
+							LoginPageDAO lpdao = new LoginPageDAO();
+							ArrayList<ClothBasicVO> cartList = new ArrayList();
+							String productCode = "";
+
+							for (int i = 0; i < checkBoxes.size(); i++) {
+								if (checkBoxes.get(i).isSelected()) {
+									System.out.println("checkBoxes.is select " + checkBoxes.get(i).getText());
+									productCode = checkBoxes.get(i).getText();
+									int result = lpdao.setCartInfo(productCode, MainFrame.id); 
+									if (result == 0) {
+										JOptionPane.showMessageDialog(btnLogin, "カート盛り失敗.", "警告", 0);// "카트담기 실패.", "경고"
+									}
+								}
+							}
+							JOptionPane.showMessageDialog(null, "選択した商品をカートに入れました。", "お知らせ", 1);//"선택한 상품을 카트에 담았습니다.", "알림"
+							
+							for (int i = 0; i < checkBoxes.size(); i++) { //셀렉트 박스 체크 해제하기 
+								checkBoxes.get(i).setSelected(false);
+							}
+							
+
+						} catch (Exception ex) {
+							ex.printStackTrace();
+						}
+					}else if (e.getSource() == btnCartInsert && loginFlag.equals("N")) { // 로그인안됬을때
+						JOptionPane.showMessageDialog(null, "ログイン後使に用可能です。", "警告", 0);// "로그인후 사용가능합니다.", "경고"
+					}
+				} catch (Exception ex) {
+					ex.printStackTrace();
+				}
+			}
+		});
+		
+		
+		
+		btnBuy.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					
+					if (e.getSource() == btnBuy && loginFlag.equals("Y")) { // 구매하기버튼클릭했을때(로그인상태일때)
+
+						System.out.println("구매버튼 클릭함");//
+
+						int selectCnt = 0; // 선택된 콤보박스 갯수
+						for (int i = 0; i < checkBoxes.size(); i++) {
+							if (checkBoxes.get(i).isSelected()) {
+								selectCnt++;
+								// System.out.println("!checkBoxes.get(i).isSelected()"
+								// + !checkBoxes.get(i).isSelected());
+							}
+						}
+
+						if (selectCnt == 0) {
+							JOptionPane.showMessageDialog(null, "選択した商品がありません.", "お知らせ", 0);//"선택한 상품이 없습니다.", "알림"
+							return;
+						}
+
+						int dialogResult = JOptionPane.showConfirmDialog(null, "選択した商品を購買しますか。", "お知らせ", 0); // "선택한 상품을 구매하시겠습니까?", "Warning"
+						if (dialogResult == JOptionPane.YES_OPTION) {
+
+							try {
+								LoginPageDAO lpdao = new LoginPageDAO();
+								String productCode = "";
+
+								for (int i = 0; i < checkBoxes.size(); i++) {
+									if (checkBoxes.get(i).isSelected()) {
+										System.out.println("checkBoxes.is select " + checkBoxes.get(i).getText());
+										productCode = checkBoxes.get(i).getText();
+										int result = lpdao.setClosetInfo(MainFrame.id, productCode);
+										if (result == 0) { // DB에 입력이 실패
+											JOptionPane.showMessageDialog(null, "製品の購入失敗.", "警告", 0);// "제품구매 실패.", "경고"
+										}
+									}
+								}
+								JOptionPane.showMessageDialog(null, "選択した商品を購入しました。", "お知らせ ", 1);// "선택한 상품을 구매하였습니다.", "알림"
+								
+								for (int i = 0; i < checkBoxes.size(); i++) { //셀렉트 박스 체크 해제하기 
+										checkBoxes.get(i).setSelected(false);
+								}
+								
+							} catch (Exception ex) {
+								ex.printStackTrace();
+							}
+
+						} else { // 아니오 버튼 선택했을때
+							return;
+						}
+
+					} else if (e.getSource() == btnBuy && loginFlag.equals("N")) {
+						JOptionPane.showMessageDialog(null, "ログイン後に使用可能です。", "警告", 0);// "로그인후 사용가능합니다.", "경고"
+
+					}
+					
+				} catch (Exception ex) {
+					ex.printStackTrace();
+				}
+			}
+		});
+		
+		btnLogout.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					
+					if (e.getSource() == btnLogout && loginFlag.equals("Y")) {
+						System.out.println("로그아웃 버튼 클릭");//
+						
+						loginFlag = "N"; // 로그인 플래그 N
+						textFieldId.setText(""); // 텍스트 필드 초기화
+						textFieldPass.setText(""); // 텍스트 필드 초기화
+						
+						panel2.removeAll();  //로그아웃창 내용을 모두 지운다.
+						panel2.setVisible(false); // 로그아웃창 안보이게
+						panel.setVisible(true); // 로그인창 보이게
+						btnAdmin.setVisible(false);
+					}
+					
+				} catch (Exception ex) {
+					ex.printStackTrace();
+				}
+			}
+		});
+		
+	}
+	
+	public int refreshList(){ //상품 패널 재조회 하기
+		
+		btnAdmin.setVisible(false); //관리자 페이지 버튼안보이게 하기 
+		
+		setBackground(Color.white);
+		setBounds(new Rectangle(50, 50, 900, 600)); //패널 사이즈 
+		setLayout(null); //레이아웃 없애기
+
+		panel.setBackground(Color.WHITE);
+		panel.setBounds(12, 26, 220, 205);
+		add(panel);
+		panel.setLayout(null);
+
+		// 로그인 버튼
+		btnLogin.setBounds(121, 159, 87, 23);
+		panel.add(btnLogin);
+		
+		lbId.setBounds(18, 58, 29, 15);//ID 라벨 
+		panel.add(lbId);
+
+		lbPass.setBounds(18, 89, 29, 15);//password 라벨
+		panel.add(lbPass);
+
+		lbLogin.setBounds(18, 9, 69, 15);//로그인라벨
+		panel.add(lbLogin);
+
+		textFieldPass.setBounds(58, 86, 116, 21); //password 텍스트 필드
+		panel.add(textFieldPass);
+		textFieldPass.setColumns(10);
+		
+		btnJoin.setBounds(18, 159, 91, 23);
+		panel.add(btnJoin);
+		
+
+		textFieldId.setBounds(58, 55, 116, 21);
+		panel.add(textFieldId);
+		textFieldId.setColumns(10);
+		
+		
+		//"カートに入れる"
+//		btnCartInsert = new JButton(new ImageIcon(getClass().getClassLoader().getResource("cart.png")));//"카트담기"
+		btnCartInsert.setBorder(null);
+		btnCartInsert.setBounds(669, 5, 50, 50);
+		
+		lbCartbtn.setBounds(656,55,104,15);
+		add(lbCartbtn);
+		add(btnCartInsert);
+		
+		//購買する
+//		btnBuy = new JButton(new ImageIcon(getClass().getClassLoader().getResource("get.png")));	//"구매하기"
+		btnBuy.setBackground(new Color(240, 240, 240));
+		btnBuy.setBorder(null);
+		btnBuy.setBounds(765, 5, 50, 50);
+		
+		add(btnBuy);
+		
+		lbBuybtn.setBounds(765,55,53,15);//		jl2 = new JLabel("購買する");	//라벨
+		add(lbBuybtn);
+
+		
+		
+		btnMyDressRoom.setBounds(44, 260, 158, 40);  //내옷장으로 가기 버튼
+		add(btnMyDressRoom);
+		
+		btnBoard.setBounds(44, 340, 158, 40); //게시판 페이지 버튼
+		add(btnBoard);
+		
+		btnMyCart.setBounds(44, 420, 158, 40); //내 장바구니 보기 버튼
+		add(btnMyCart);
+		
+		btnAdmin.setBounds(44, 500, 158, 40); //관리자 페이지 버튼 
+		add(btnAdmin);
+		
+		panel1.setBackground(Color.WHITE);
+		panel1.setBounds(12, 244, 220, 308);
+		add(panel1);
+		
+		if(loginFlag.equals("Y") && adminFlag==0){ // 
+			btnAdmin.setVisible(false); //관리자 페이지 버튼 안보이게 
+			MainFrame.id = textFieldId.getText(); // id 넘겨주기
+			panel.setVisible(false);
+			panel2.setBackground(Color.WHITE);
+			panel2.setBounds(12, 26, 220, 205);
+			panel2.setLayout(null);
+			panel2.setVisible(true);
+			labelwm = new JLabel(new ImageIcon(getClass().getClassLoader().getResource("wm.gif")));	//"수박이미지"
+			labelwm.setBounds(50,15,100,100);
+			label_9 = new JLabel(textFieldId.getText() + " 様 ようこそ。"); // 환영메시지출력//" 님 환영합니다"
+			label_9.setBounds(50, 80, 200, 50);
+			btnLogout.setBounds(60, 130, 100, 25);
+			panel2.add(labelwm);
+			panel2.add(btnLogout); //로그아웃 버튼 넣어준다.
+			panel2.add(label_9);
+			add(panel2);
+			
+		}else if(loginFlag.equals("Y") && adminFlag ==1){ //관리자로 로그인했을때
+			btnAdmin.setVisible(true);  //관리자 페이지 버튼 보이게
+			MainFrame.id = textFieldId.getText(); // id 넘겨주기
+			panel.setVisible(false);
+			panel2.setBackground(Color.WHITE);
+			panel2.setBounds(12, 26, 220, 205);
+			panel2.setLayout(null);
+			panel2.setVisible(true);
+			labelwm = new JLabel(new ImageIcon(getClass().getClassLoader().getResource("wm.gif")));	//"수박이미지"
+			labelwm.setBounds(50,15,100,100);
+			label_9 = new JLabel(textFieldId.getText() + " 様 ようこそ。"); // 환영메시지출력//" 님 환영합니다"
+			label_9.setBounds(50, 80, 200, 50);
+			btnLogout.setBounds(60, 130, 100, 25);
+			panel2.add(labelwm);
+			panel2.add(btnLogout); //로그아웃 버튼 넣어준다.
+			panel2.add(label_9);
+			add(panel2);
+		}
+
+		setVisible(true);
+		
+		int compCnt = 0; //상품 갯수
+
+		try { // 상품 화면 조회하기0
+			// ArrayList<ClosetBasicVO> list = null;
+			lpdao = new LoginPageDAO();// 서버에서 가져온 값을 쓰기위해 DAO 객체화
+			list = lpdao.getProductInfo();//
+			
+			// list에 내용이 있을경우 실행
+			if (list != null) {
+				
+				compCnt = list.size();
+
+				int jpanelAxisLeft = 70; // 패널 위치 변수
+				int jpanelAxisRight = 70; // 패널 위치 변수
+
+				for (int i = 0; i < list.size(); i++) {
+					
+					System.out.println("jpanelAxis :" + jpanelAxisLeft);
+					
+					jpanelPdt = new JPanel[list.size()];
+					jpanelPdt[i] = new JPanel();
+					jpanelPdt[i].setBackground(Color.WHITE);
+					
+					if (i % 2 == 0) {  //짝수번째 상품일경우 왼쪽
+						jpanelPdt[i].setBounds(250, jpanelAxisLeft, 290, 153);
+						jpanelAxisLeft += 165;  //X 축 증가
+					} else {  //홀수번째 상품일경우 오른쪽
+						jpanelPdt[i].setBounds(550, jpanelAxisRight, 290, 153);
+						jpanelAxisRight += 165; //X 축 증가
+					}
+
+					add(jpanelPdt[i]);
+					jpanelPdt[i].setLayout(null);
+
+					JLabel label_num[] = new JLabel[list.size()];
+					label_num[i] = new JLabel(Integer.toString(i + 1)); // 상품 순번
+					label_num[i].setBounds(12, 10, 15, 15);
+					jpanelPdt[i].add(label_num[i]);
+
+					JLabel label_pName[] = new JLabel[list.size()]; // 제품명
+					label_pName[i] = new JLabel();
+					label_pName[i].setBounds(193, 10, 70, 15);
+					jpanelPdt[i].add(label_pName[i]);
+
+					JLabel label_pSize[] = new JLabel[list.size()]; // 제품사이즈
+					label_pSize[i] = new JLabel(); // 사이즈
+					label_pSize[i].setBounds(193, 30, 70, 15);
+					jpanelPdt[i].add(label_pSize[i]);
+
+					JLabel label_pBrand[] = new JLabel[list.size()]; // 제품브랜드
+					label_pBrand[i] = new JLabel(); // 사이즈
+					label_pBrand[i].setBounds(193, 50, 70, 15);
+					jpanelPdt[i].add(label_pBrand[i]);
+
+					JLabel label_pMaterial[] = new JLabel[list.size()]; // 제품소재
+					label_pMaterial[i] = new JLabel(); // 사이즈
+					label_pMaterial[i].setBounds(193, 70, 70, 15);
+					jpanelPdt[i].add(label_pMaterial[i]);
+
+					JLabel label_pCode[] = new JLabel[list.size()]; // 제품코드
+					label_pCode[i] = new JLabel();
+					// label_pCode[i].setBounds(193, 80, 70, 15);
+					jpanelPdt[i].add(label_pCode[i]);
+					// label_pCode[i].setVisible(false);// 코드 안보이게 하기
+
+					JLabel label_price[] = new JLabel[list.size()];
+
+					label_price[i] = new JLabel(); // 가격표
+					label_price[i].setBounds(193, 90, 70, 15);
+					jpanelPdt[i].add(label_price[i]);
+
+					chkButton = new JCheckBox[list.size()]; // 체크박스
+					chkButton[i] = (JCheckBox) new JCheckBox(list.get(i).getProductCode()); // 제품
+																							// 모델명을넣어준다.
+					chkButton[i].setBounds(193, 110, 150, 23);
+					chkButton[i].setBackground(Color.WHITE);
+					this.checkBoxes.add(chkButton[i]);
+					jpanelPdt[i].add(chkButton[i]);
+
+					JPanel panel_pic[] = new JPanel[list.size()]; // 그림 패널
+					panel_pic[i] = new JPanel();
+					panel_pic[i].setBounds(39, 12, 142, 130);
+					jpanelPdt[i].add(panel_pic[i]);
+					jpanelPdt[i].addMouseListener(this);
+						
+					label_pName[i].setText("- " + list.get(i).getProductName()); // 제품명
+					label_price[i].setText(list.get(i).getPrice() + "won");// 가격
+
+					label_pCode[i].setText(list.get(i).getProductCode());// 제품코드
+					// chkButton[i].add(label_pCode[i]); //체크 박스에 제품코드를 추가한다.
+
+					label_pSize[i].setText("- " + list.get(i).getSize());// 제품사이즈
+					label_pBrand[i].setText("- " + list.get(i).getBrand());// 제품
+																			// 브랜드
+					label_pMaterial[i].setText("- " + list.get(i).getMaterial());// 제품
+																					// 소재
+					sum += list.get(i).getPrice();// 값을 모두더하기
+
+					ImageIcon imgProd[] = new ImageIcon[list.size()];
+//					imgProd[i] = new ImageIcon(getClass().getClassLoader().getResource(list.get(i).getImagePath())); //이미지 경로 가져오기
+					imgProd[i] = new ImageIcon("D:\\kwork\\project_team2\\img\\" + list.get(i).getImagePath()); //이미지 경로 가져오기
+					
+					
+					System.out.println("!!!!!!!!!!!!!!" + list.get(i));
+
+					JLabel label_pic[] = new JLabel[list.size()];
+					label_pic[i] = new JLabel();
+					label_pic[i] = new JLabel(imgProd[i]);
+					label_pic[i].setBounds(50, 0, imgProd[i].getIconWidth(), imgProd[i].getIconHeight());
+					panel_pic[i].add(label_pic[i]);
+					
+				} // for end
+
+			} // end if
+
+		} catch (Exception e) {
+			System.out.println("e=[" + e + "]");
+			e.printStackTrace();
+		}
+		
+		return compCnt;
+	}
+
+	@Override
+	public void mouseDragged(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void mouseMoved(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+		System.out.println("@@@@@@@@@@@@@@@@@" + e);
+	}
+
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+		System.out.println("@@@@@mouseEntered@@@@@@@@@");
+		e.getComponent().setBackground(Color.lightGray);
+	}
+
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+		System.out.println("@@@@@mouseExited@@@@@@@@@");
+		e.getComponent().setBackground(Color.white);
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+}

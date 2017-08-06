@@ -1,0 +1,53 @@
+package com.bs.vo;
+
+import java.util.ArrayList;
+
+public class MyDressRoomVO {
+	
+	private String id = null;
+	private String productCode = null;
+	private String productName = null;
+	private String buyDate = null;
+	
+	public MyDressRoomVO(String id, String productCode, String productName, String buyDate) {
+		this.id = id;
+		this.productCode = productCode;
+		this.productName = productName;
+		this.buyDate = buyDate;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public String getProductCode() {
+		return productCode;
+	}
+
+	public void setProductCode(String productCode) {
+		this.productCode = productCode;
+	}
+
+	public String getProductName() {
+		return productName;
+	}
+
+	public void setProductName(String productName) {
+		this.productName = productName;
+	}
+
+	public String getBuyDate() {
+		return buyDate;
+	}
+
+	public void setBuyDate(String buyDate) {
+		this.buyDate = buyDate;
+	}
+	
+	
+	
+}

@@ -1,0 +1,111 @@
+package com.bs.control;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
+
+import javax.swing.JFrame;
+
+import com.bs.vo.MyCartVO;
+import com.bs.vo.MyDressRoomVO;
+
+
+public class MyCartDAO extends JFrame{
+	//장바구니 정보를 불러오는 함수
+	public ArrayList<MyCartVO> getCartList(String c_id) throws Exception {
+		//id 조건 설정 
+		ArrayList<MyCartVO> list = new ArrayList<MyCartVO>();
+		String dml = "select * from cart where c_id = ?";//c_id가 deokhyeon인 자료만 가져옴
+		
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		MyCartVO retval = null;
+//		HashMap<String, String> product = new HashMap<String, String>();
+		
+		try {
+			con = DBUtil.getConnection();
+			
+			pstmt = con.prepareStatement(dml);
+			//조회 조건 
+			pstmt.setString(1, c_id);
+			
+			rs = pstmt.executeQuery();
+			while (rs.next()) {
+				retval = new MyCartVO(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getString(7));
+//				product.put(rs.getString(2), rs.getString(3));
+//				retval = new MyDressRoomVO(rs.getString(1), product , rs.getString(4));
+				list.add(retval);
+			}
+		} catch (SQLException se) {
+			System.out.println(se);
+		} catch (Exception e) {
+			System.out.println(e);
+		} finally {
+			try {
+				if (rs != null)
+					rs.close();
+				if (pstmt != null)
+					pstmt.close();
+				if (con != null)
+					con.close();
+			} catch (SQLException se) {
+			}
+		}
+		return list;
+	}
+	/*//이미지를 불러오는 메서드 
+		public ArrayList<MyCartVO> getImage(String imageName) throws Exception {
+			//no, name 조건 설정 
+			ArrayList<MyCartVO> list = new ArrayList<MyCartVO>();
+			String dml = "select * from image_table where image_name = ?";
+			
+			Connection con = null;
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
+			MyCartVO retval = null;
+			
+			try {
+				con = DBUtil.getConnection();
+				
+				pstmt = con.prepareStatement(dml);
+				//조회 조건 
+				pstmt.setString(1, imageName);
+				
+				rs = pstmt.executeQuery();
+				while (rs.next()) {
+					retval = new MyCartVO(rs.getString(1), rs.getString(2));
+					list.add(retval);
+				}
+			} catch (SQLException se) {
+				System.out.println(se);
+			} catch (Exception e) {
+				System.out.println(e);
+			} finally {
+				try {
+					if (rs != null)
+						rs.close();
+					if (pstmt != null)
+						pstmt.close();
+					if (con != null)
+						con.close();
+				} catch (SQLException se) {
+				}
+			}
+			return list;
+		}*/
+		
+	
+	
+
+
+public static void main(String[] args){
+	new MyCartDAO();
+	
+}
+
+}
+

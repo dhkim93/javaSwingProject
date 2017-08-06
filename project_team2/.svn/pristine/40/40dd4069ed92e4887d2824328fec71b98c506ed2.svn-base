@@ -1,0 +1,5 @@
+package com.bs.control;
+
+public class BoardDAO {
+
+}

@@ -1,0 +1,244 @@
+package com.bs.view;
+
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JTextField;
+
+public class LoginPage extends JPanel implements ActionListener {
+	
+	private JButton button_2;
+	private JButton button_3;
+	private JButton btnNewButton_2;
+	private JTextField textField_1;
+	private JTextField textField_3;
+	private JButton button = new JButton("회원가입");
+	private JButton btnNewButton = new JButton("내 옷장");
+
+	public LoginPage(MainFrame win) {
+		setBackground(Color.WHITE);
+		this.setOpaque(false);
+		setBounds(new Rectangle(50, 50, 800, 550));
+		setLayout(null);
+
+		final ImageIcon icon1 = new ImageIcon(".\\src\\img\\P_UP_01.png");
+		final ImageIcon icon2 = new ImageIcon(".\\src\\img\\P_UP_02.png");
+		final ImageIcon icon3 = new ImageIcon(".\\src\\img\\P_UP_03.png");
+		final ImageIcon icon4 = new ImageIcon(".\\src\\img\\P_UP_04.png");
+		
+		JLabel ImgBox1;
+		JLabel ImgBox2;
+		JLabel ImgBox3;
+		JLabel ImgBox4;
+
+		button_3 = new JButton("카트담기");
+		button_3.setBounds(443, 487, 127, 23);
+		add(button_3);
+
+		button_2 = new JButton("구매하기");
+		button_2.setBounds(582, 487, 127, 23);
+		add(button_2);
+
+		
+		btnNewButton.setBounds(44, 272, 158, 40);
+		add(btnNewButton);
+
+		btnNewButton_2 = new JButton("로그인");
+		btnNewButton_2.setBounds(139, 190, 74, 23);
+		add(btnNewButton_2);
+
+		JLabel lblNewLabel = new JLabel("Pass");
+		lblNewLabel.setBounds(28, 133, 47, 20);
+		add(lblNewLabel);
+
+		JLabel label_6 = new JLabel("로그인");
+		label_6.setBounds(28, 49, 57, 15);
+		add(label_6);
+
+		JLabel label_7 = new JLabel("ID");
+		label_7.setBounds(28, 85, 57, 15);
+		add(label_7);
+
+		textField_1 = new JTextField();
+		textField_1.setColumns(10);
+		textField_1.setBounds(85, 82, 91, 21);
+		add(textField_1);
+
+		textField_3 = new JTextField();
+		textField_3.setColumns(10);
+		textField_3.setBounds(85, 133, 91, 21);
+		add(textField_3);
+
+		//회원가입 버튼 
+		button.setBounds(28, 190, 91, 23);
+		button.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					if (e.getSource() == button) {
+						win.panelChange("MemberJoin");
+					}
+				} catch (Exception ex) {
+					System.out.println(ex);
+				}
+			}
+		});
+		
+		add(button);
+		JButton button_1 = new JButton("게시판");
+		button_1.setBounds(44, 355, 158, 40);
+		
+
+		button_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					if (e.getSource() == button_1) {
+						win.panelChange("Board");
+					}
+				} catch (Exception ex) {
+					System.out.println(ex);
+				}
+			}
+		});
+		
+		add(button_1);
+
+		JButton button_4 = new JButton("장바구니");
+		button_4.setBounds(44, 444, 158, 40);
+		button_4.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					if (e.getSource() == button_4) {
+						win.panelChange("MyCart");
+					}
+				} catch (Exception ex) {
+					System.out.println(ex);
+				}
+			}
+		});
+		
+		add(button_4);
+		
+		ImgBox1 = new JLabel(icon1);
+		JPanel panel_10 = new JPanel();
+		panel_10.setBackground(Color.WHITE);
+		panel_10.setBounds(286, 63, 175, 170);
+		panel_10.add(ImgBox1);
+		add(panel_10);
+
+		JRadioButton radioButton_3 = new JRadioButton("선택");
+		radioButton_3.setOpaque(false);
+		radioButton_3.setBounds(469, 106, 70, 23);
+		add(radioButton_3);
+
+		JLabel label_8 = new JLabel("4,900원");
+		label_8.setBounds(472, 85, 57, 15);
+		add(label_8);
+
+		JPanel panel_11 = new JPanel() {
+			public void paintComponent(Graphics g) {
+			}
+		};
+		panel_11.setBackground(Color.WHITE);
+		panel_11.setBounds(286, 272, 174, 170);
+		add(panel_11);
+
+		JLabel label_9 = new JLabel("4,900원");
+		label_9.setBounds(469, 297, 57, 15);
+		add(label_9);
+
+		JRadioButton radioButton_4 = new JRadioButton("선택");
+		radioButton_4.setOpaque(false);
+		radioButton_4.setBounds(469, 318, 70, 23);
+		add(radioButton_4);
+
+		JPanel panel_12 = new JPanel() {
+			public void paintComponent(Graphics g) {
+			}
+		};
+		panel_12.setBackground(Color.WHITE);
+		panel_12.setBounds(534, 63, 175, 170);
+		add(panel_12);
+
+		JLabel label_10 = new JLabel("4,900원");
+		label_10.setBounds(721, 85, 57, 15);
+		add(label_10);
+
+		JRadioButton radioButton_5 = new JRadioButton("선택");
+		radioButton_5.setOpaque(false);
+		radioButton_5.setBounds(723, 106, 70, 23);
+		add(radioButton_5);
+
+		JPanel panel_13 = new JPanel() {
+			public void paintComponent(Graphics g) {
+			}
+		};
+		panel_13.setBackground(Color.WHITE);
+		panel_13.setBounds(532, 272, 177, 170);
+		add(panel_13);
+
+		JLabel label_11 = new JLabel("4,900원");
+		label_11.setBounds(721, 297, 57, 15);
+		add(label_11);
+
+		JRadioButton radioButton_6 = new JRadioButton("선택");
+		radioButton_6.setOpaque(false);
+		radioButton_6.setBounds(721, 318, 70, 23);
+		add(radioButton_6);
+		btnNewButton_2.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		
+		btnNewButton.addActionListener(this);
+		
+		JPanel panel = new JPanel();
+		panel.setBackground(Color.WHITE);
+		panel.setBounds(12, 26, 240, 205);
+		add(panel);
+		
+		JPanel panel_1 = new JPanel();
+		panel_1.setBackground(Color.WHITE);
+		panel_1.setBounds(12, 244, 240, 266);
+		add(panel_1);
+		
+		//내옷장으로 가기 버튼 클릭
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					if (e.getSource() == btnNewButton) {
+						win.panelChange("MyDressRoom");
+					}
+				} catch (Exception ex) {
+					System.out.println(ex);
+				}
+			}
+		});
+		
+		setVisible(true);
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+//		// TODO Auto-generated method stub
+//		JButton jb = (JButton) e.getSource();
+//		try {
+////			System.out.println("실행 되나 안되나 ");
+//
+//			if (e.getSource() == button) {
+//				MemberJoin join = new MemberJoin();
+//				join.setVisible(true);
+//			}
+//		} catch (Exception ex) {
+//			System.out.println(ex);
+//		}
+	}
+
+}

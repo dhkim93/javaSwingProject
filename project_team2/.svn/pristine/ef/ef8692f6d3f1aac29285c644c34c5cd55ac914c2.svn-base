@@ -1,0 +1,158 @@
+package com.bs.view;
+
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+
+import javax.swing.*;
+
+import java.awt.*;
+
+public class MyCart extends JFrame {
+
+	JRadioButton select; // RadioButton 선언
+	JButton buy, del; // Button 선언
+
+	JPanel panel6;
+
+	public MyCart() {
+		setBounds(new Rectangle(50, 50, 800, 550));
+
+		final ImageIcon icon1 = new ImageIcon("C:\\1.png");
+		final ImageIcon icon2 = new ImageIcon("C:\\2.png");
+		final ImageIcon icon3 = new ImageIcon("C:\\3.png");
+
+		JPanel panel_1 = new JPanel();
+		panel_1.setBackground(Color.WHITE);
+		panel_1.setBounds(12, 22, 673, 144);
+		getContentPane().add(panel_1);
+		panel_1.setLayout(null);
+
+		JLabel label_1 = new JLabel("1");
+		label_1.setBounds(12, 33, 24, 15);
+		panel_1.add(label_1);
+
+		JLabel lblNewLabel = new JLabel("검은 티 :");
+		lblNewLabel.setBounds(217, 65, 57, 15);
+		panel_1.add(lblNewLabel);
+
+		JLabel lblNewLabel_1 = new JLabel("5000원");
+		lblNewLabel_1.setBounds(304, 65, 57, 15);
+		panel_1.add(lblNewLabel_1);
+
+		JRadioButton rdbtnNewRadioButton = new JRadioButton("선택");
+		rdbtnNewRadioButton.setBackground(Color.WHITE);
+		rdbtnNewRadioButton.setBounds(458, 61, 121, 23);
+		panel_1.add(rdbtnNewRadioButton);
+
+		JPanel panel_4 = new JPanel() {
+			public void paintComponent(Graphics g) {
+				g.drawImage(icon1.getImage(), 0, 0, null);
+				setOpaque(false);
+				super.paintComponent(g);
+			}
+		};
+		panel_4.setBounds(40, 10, 145, 136);
+		panel_1.add(panel_4);
+		panel_4.setLayout(null);
+
+		buy = new JButton("구매");
+		buy.setBounds(270, 5, 68, 23);
+		del = new JButton("삭제");
+		del.setBounds(371, 5, 68, 23);
+		panel6 = new JPanel();
+		panel6.setBounds(12, 484, 728, 33);
+		panel6.setLayout(null);
+
+		panel6.add(buy); // 구매
+		panel6.add(del); // 지우기
+		getContentPane().setLayout(null);
+		getContentPane().add(panel6);
+
+		JLabel label_4 = new JLabel("총금액 : ");
+		label_4.setBounds(584, 5, 48, 15);
+		panel6.add(label_4);
+
+		JLabel label_5 = new JLabel("50000원");
+		label_5.setBounds(637, 5, 58, 15);
+		panel6.add(label_5);
+
+		JPanel panel = new JPanel();
+		panel.setLayout(null);
+		panel.setBackground(Color.WHITE);
+		panel.setBounds(12, 176, 673, 144);
+		getContentPane().add(panel);
+
+		JLabel label = new JLabel("2");
+		label.setBounds(12, 33, 24, 15);
+		panel.add(label);
+
+		JLabel label_2 = new JLabel("검은 티 :");
+		label_2.setBounds(217, 65, 57, 15);
+		panel.add(label_2);
+
+		JLabel label_3 = new JLabel("5000원");
+		label_3.setBounds(304, 65, 57, 15);
+		panel.add(label_3);
+
+		JRadioButton radioButton = new JRadioButton("선택");
+		radioButton.setBackground(Color.WHITE);
+		radioButton.setBounds(458, 61, 121, 23);
+		panel.add(radioButton);
+
+		JPanel panel_2 = new JPanel() {
+			public void paintComponent(Graphics g) {
+				g.drawImage(icon2.getImage(), 0, 0, null);
+				setOpaque(false);
+				super.paintComponent(g);
+			}
+		};
+		panel_2.setLayout(null);
+		panel_2.setBounds(40, 10, 145, 136);
+		panel.add(panel_2);
+
+		JPanel panel_3 = new JPanel();
+		panel_3.setLayout(null);
+		panel_3.setBackground(Color.WHITE);
+		panel_3.setBounds(12, 330, 673, 144);
+		getContentPane().add(panel_3);
+
+		JLabel label_6 = new JLabel("3");
+		label_6.setBounds(12, 33, 24, 15);
+		panel_3.add(label_6);
+
+		JLabel label_7 = new JLabel("검은 티 :");
+		label_7.setBounds(217, 65, 57, 15);
+		panel_3.add(label_7);
+
+		JLabel label_8 = new JLabel("5000원");
+		label_8.setBounds(304, 65, 57, 15);
+		panel_3.add(label_8);
+
+		JRadioButton radioButton_1 = new JRadioButton("선택");
+		radioButton_1.setBackground(Color.WHITE);
+		radioButton_1.setBounds(458, 61, 121, 23);
+		panel_3.add(radioButton_1);
+
+		JPanel panel_5 = new JPanel() {
+			public void paintComponent(Graphics g) {
+				g.drawImage(icon3.getImage(), 0, 0, null);
+				setOpaque(false);
+				super.paintComponent(g);
+			}
+		};
+		panel_5.setLayout(null);
+		panel_5.setBounds(40, 10, 145, 136);
+		panel_3.add(panel_5);
+
+		setTitle("장바구니");
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setVisible(true);
+
+	}
+
+	public static void main(String[] args) {
+		new MyCart();
+	}
+}

@@ -1,0 +1,66 @@
+package com.bs.control;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
+import com.bs.vo.MemberVO;
+
+public class MemberDAO {
+
+	public MemberVO setMemberregiste(MemberVO evo) throws Exception {
+		//  데이터 처리를 위한 SQL 문
+		
+		String dml = "INSERT INTO MEMBER "
+				+ "(ID"
+				+ ", PASSWORD"
+				+ ", NAME"
+				+ ", PHONE"
+				+ ", ADMIN_FLAG"
+				+ ", EMAIL"
+				+ ", GENDER"
+				+ ") VALUES (?, ?, ?, ?, ?, ?, ?)";
+		
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		
+		MemberVO retval = null;
+		try {
+			//  DBUtil이라는 클래스의 getConnection( )메서드로 데이터베이스와 연결
+			con = DBUtil.getConnection();
+			//  입력받은 사용자 정보를 처리하기 위하여 SQL문장을 생성
+			pstmt = con.prepareStatement(dml);
+			
+			pstmt.setString(1, evo.getId());
+			pstmt.setString(2, evo.getPassword());
+			pstmt.setString(3, evo.getName());
+			pstmt.setString(4, evo.getPhone());
+			pstmt.setInt(5, evo.getAdmin_flag());
+			pstmt.setString(6,  evo.getEmail());
+			pstmt.setInt(7, evo.getGender());
+			//  SQL문을 수행후 처리 결과를 얻어옴
+			int i = pstmt.executeUpdate();
+			
+			retval = new MemberVO();
+			//retval.setStatus(i + "");
+		} catch (SQLException e) {
+			System.out.println("e=[" + e + "]");
+		} catch (Exception e) {
+			System.out.println("e=[" + e + "]");
+		} finally {
+			try {
+				//  데이터베이스와의 연결에 사용되었던 오브젝트를 해제
+				if (pstmt != null)
+					pstmt.close();
+				if (con != null)
+					con.close();
+			} catch (SQLException e) {
+			}
+		}
+		return retval;
+	}
+
+	
+
+	
+}

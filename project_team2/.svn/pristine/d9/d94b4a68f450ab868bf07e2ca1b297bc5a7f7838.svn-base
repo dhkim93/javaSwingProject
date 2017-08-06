@@ -1,0 +1,235 @@
+package com.bs.view;
+
+import java.awt.Font;
+import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.util.ArrayList;
+
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
+import javax.swing.event.TableModelListener;
+import javax.swing.table.DefaultTableModel;
+
+import com.bs.control.BoardDAO;
+import com.bs.vo.NoticeBoardVO;
+
+public class Board extends JPanel implements ActionListener, MouseListener {
+
+	private JLabel jl[] = new JLabel[3];
+	private JLabel name;
+	private JButton jb1, jb2, jb3, jb4;
+	private JTable table;
+	private int i;
+	BoardModel bb;
+	BoardModel bm = new BoardModel(null);
+	BoardDAO bdao = null;
+	ArrayList<NoticeBoardVO> list = null;
+
+	ImageIcon img, img2;
+
+	public Board(MainFrame win) {
+
+		setBounds(new Rectangle(0, 0, 900, 600));
+
+		for (int i = 0; i < 3; i++) {
+
+			if (i == 0) {
+				img2 = new ImageIcon(".\\src\\img\\gg.png");
+				jl[i] = new JLabel(img2);
+				jl[i].setBounds(12, 5, 290, 110);
+				// jl[i].setFont(new Font("굴림", Font.PLAIN, 48));
+				add(jl[i]);
+			} else if (i == 1) {
+				jl[i] = new JLabel("공지사항");
+				jl[i].setBounds(404, 60, 70, 25);
+				jl[i].setFont(new Font("굴림", Font.PLAIN, 15));
+				add(jl[i]);
+
+			} else if (i == 2) {
+				jl[i] = new JLabel("♡♥ 2017/07/11~21 SALE !!! ♡♥");
+				jl[i].setBounds(320, 80, 226, 25);
+				jl[i].setFont(new Font("굴림", Font.PLAIN, 15));
+
+				add(jl[i]);
+			}
+		}
+		img = new ImageIcon(".\\src\\img\\g.png");
+		name = new JLabel(img);
+		name.setBounds(586, 0, 290, 122);
+		add(name);
+
+		table = new JTable(new BoardModel(null));
+		table.getColumnModel().getColumn(1).setPreferredWidth(402);
+		table.getColumnModel().getColumn(2).setPreferredWidth(98);
+		table.getColumnModel().getColumn(3).setPreferredWidth(118);
+		table.setBounds(25, 110, 850, 400);
+		table.setColumnSelectionAllowed(true);
+		JScrollPane scrollPane = new JScrollPane(table);
+		scrollPane.setLocation(25, 110);
+		scrollPane.setSize(850, 400);
+		add(scrollPane);
+		setLayout(null);
+
+		
+		
+		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		table.addMouseListener(this);
+		table.addMouseListener(new MouseListener() {
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void mouseClicked(MouseEvent me) {
+				// TODO Auto-generated method stub
+				try {
+					if (me.getSource() == jb3) {
+						win.panelChange("BoardDetail", null);
+
+					}
+				} catch (Exception e) {
+					System.out.println(e);
+				}
+			}
+		});
+
+		// DefaultTableModel model = new DefaultTableModel(data, columns);
+
+		/*
+		 * for(int j = 0; j<=bm.getRowCount();j++){ bm = new BoardModel ();
+		 * TableModelListener l; bm.addTableModelListener(l);
+		 * bm.addTableModelListener(l){ public void { try { if (e.getSource() ==
+		 * jb1) { win.panelChange("LoginPage", null); } } catch (Exception ex) {
+		 * System.out.println(ex); } } });
+		 * 
+		 * 
+		 * }
+		 * 
+		 * try{
+		 * 
+		 * 
+		 * }catch (Exception e) { System.out.println(e); }
+		 */
+
+		jb1 = new JButton("메인으로");
+		jb1.setBounds(187, 520, 120, 23);
+		jb1.addActionListener(this);
+		jb1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					if (e.getSource() == jb1) {
+						win.panelChange("LoginPage", null);
+					}
+				} catch (Exception ex) {
+					System.out.println(ex);
+				}
+			}
+		});
+
+		// jb1.setOpaque(true);
+
+		jb2 = new JButton("작성하기");
+		jb2.setBounds(319, 520, 120, 23);
+		jb2.addActionListener(this);
+		jb2.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					if (e.getSource() == jb2) {
+						win.panelChange("BoardDetail", null);
+					}
+				} catch (Exception ex) {
+					System.out.println(ex);
+				}
+			}
+		});
+
+		jb3 = new JButton("수정하기");
+		jb3.setBounds(451, 520, 120, 23);
+
+		jb4 = new JButton("삭제하기");
+		jb4.setBounds(583, 520, 120, 23);
+
+		add(jb1);
+		add(jb2);
+		add(jb3);
+		add(jb4);
+
+		setVisible(true);
+	}
+
+	private Object getRowCount() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent arg0) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent me) {
+		// TODO Auto-generated method stub
+		/*
+		 * try{ if(me.getSource()==jb3){ win.panelChange("Board",null);
+		 * 
+		 * } }catch (Exception e){ System.out.println(e); } }
+		 */
+
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+}

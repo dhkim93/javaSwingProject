@@ -1,0 +1,373 @@
+/* 
+ * =============================
+ * 프로그램 설명 : 
+ * 작성자 : 
+ * 최초 작성일자 : 
+ * 최종 수정일 : 
+ * 수정 내용 : 
+ * =============================
+ * */
+
+package com.bs.view;
+
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.GridLayout;
+import java.awt.Image;
+import java.awt.Label;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.util.ArrayList;
+
+import javax.swing.ButtonGroup;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JRadioButton;
+import javax.swing.JTextField;
+
+import com.bs.control.MemberDAO;
+import com.bs.vo.MemberVO;
+import java.awt.Rectangle;
+
+public class MemberJoin extends JFrame implements ActionListener, ItemListener {
+
+	JLabel label[] = new JLabel[8]; 
+	JTextField textField[] = new JTextField[5];
+	JPanel panel1, panel2, panel3, panel4, panel5, panel6;
+	
+	JPanel panel11, panel12, panel21, panel22, panel31, panel32, panel41, panel42;
+	
+	JRadioButton male, female;
+	JCheckBox travel;
+	ButtonGroup bg;
+	JButton trans, cancel, idCheck;// Button 선언
+	
+	String Phone = null;
+	int gender = 0;
+	int admin_flag = 0;
+	
+	 private Image img;
+	 
+	boolean sw = false; // 저장 성공 시 저장 성공했다는 걸 알 수 있도록 표시할 수 있도록 하는 장치
+	boolean idDuplFlag = false; // 입력한 아이디가 중복되었는 지 알아보는 장치
+	boolean checkedFlag = false; // 중복버튼을 눌렀는지 확인할 수 있도록 해주는 장치
+
+	
+	
+	public MemberJoin() {
+				
+		setBounds(new Rectangle(50, 50, 700, 550));
+		getContentPane().setBounds(new Rectangle(50, 50, 700, 550));
+		Dimension dim = new Dimension(900,550);
+		
+		setPreferredSize(dim);
+		
+
+		 Image img = new ImageIcon().getImage();
+		
+		 JPanel panel = new JPanel() {
+	            private static final long serialVersionUID = 1L;
+	            
+	            ImageIcon icon = new ImageIcon(".\\img\\1.jpg");
+	            
+	            
+	            public void paintComponent(Graphics g) {
+	                  g.drawImage(icon.getImage(), 0, 0,  getWidth (), getHeight (),    null);
+	                  setOpaque(false);
+	                  super.paintComponent(g);
+	            }
+	        };
+		 panel.setBounds(new Rectangle(20, 20, 700, 550));
+		 panel.setBounds(0, 0, 351, 517);
+		
+		BorderLayout layout1 = new BorderLayout();
+		BorderLayout layout2 = new BorderLayout();
+		BorderLayout layout3 = new BorderLayout();
+		BorderLayout layout4 = new BorderLayout();
+		BorderLayout layout5 = new BorderLayout();
+		
+		
+			
+		//***************(1/6)***************************
+		panel1 = new JPanel();
+		panel1.setOpaque(false);
+		panel11 = new JPanel();
+		panel11.setOpaque(false);
+		panel12 = new JPanel();
+		panel12.setOpaque(false);
+		label[0] = new JLabel("ID");
+		textField[0] = new JTextField(8);
+		idCheck = new JButton("ID チェック");//ID 중복체크
+		idCheck.setOpaque(false);
+		idCheck.addActionListener(this);
+		panel1.setLayout(layout1); //id와 중복버튼
+		panel1.add("West", panel11);//1줄에 아이디
+		panel1.add("East", panel12);//1줄에 ID 중복체크
+		panel11.add(label[0]); //id패널에 id 라벨넣기
+		panel11.add(textField[0]);
+		panel12.add(idCheck);//중복버튼 패널에 중복버튼 넣기
+		panel.add(panel1);
+		
+		//***************(2/6)***************************
+		panel2 = new JPanel();
+		panel2.setOpaque(false);
+		panel21 = new JPanel();
+		panel21.setOpaque(false);
+		panel22 = new JPanel();
+		panel22.setOpaque(false);
+		label[1] = new JLabel("パスワード");//"비밀번호"
+		label[1].setOpaque(false);
+		label[2] = new JLabel("名前");//"이름"
+		label[2].setOpaque(false);
+		textField[1] = new JTextField(8);
+		textField[1] = new JPasswordField(8);//비밀번호를 *로 표시하라
+		textField[2] = new JTextField(8);
+		panel2.setLayout(layout2); //비밀번호와 이름
+		panel2.add("West", panel21);//2줄에 비밀번호
+		panel2.add("East", panel22);//2줄에 이름 
+		panel21.add(label[1]);//비밀번호 패널에 비밀번호 라벨넣기
+		panel21.add(textField[1]);//비밀번호 패널에 비밀번호 텍필
+		panel22.add(label[2]);//이름 패널에 이름 라벨넣기
+		panel22.add(textField[2]);//이름 패널에 이름 텍필 넣기
+		panel.add(panel2);
+		
+		//***************(3/6)***************************
+		panel3 = new JPanel();
+		panel3.setOpaque(false);
+		panel31 = new JPanel();//성별
+		panel31.setOpaque(false);
+		panel32 = new JPanel();//관리자
+		panel32.setOpaque(false);
+		label[3] = new JLabel("性別");//"성별"
+		label[4] = new JLabel("管理者");//"관리자"
+		male = new JRadioButton("男性");
+		male.setOpaque(false);
+		male.addItemListener(this);		
+		female = new JRadioButton("女性");
+		female.setOpaque(false);
+		female.addItemListener(this);
+		bg = new ButtonGroup();
+		bg.add(male);
+		bg.add(female);
+		panel3.setLayout(layout3); //성별하고 관리자
+		panel3.add("West", panel31);//3줄에 성별
+		panel3.add("East", panel32);//3줄에 관리자
+		panel31.add(label[3]);//성별 패널에 성별 라벨넣기
+		panel31.add(male);//성별 패널에 남자 버튼
+		panel31.add(female);//성별 패널에 여자 버튼
+		panel32.add(label[4]);//관리자 패널에 관리자 라벨넣기
+		travel = new JCheckBox("(チェック)");//"(체크)"
+		travel.setOpaque(false);
+		panel32.add(travel);//관리자 패널에 관리자 체크 
+		panel.add(panel3);
+		
+		//***************(4/6)***************************
+		panel4 = new JPanel();
+		panel4.setOpaque(false);
+		panel41 = new JPanel();
+		panel41.setOpaque(false);
+		panel42 = new JPanel();
+		panel42.setOpaque(false);
+		label[5] = new JLabel("H.P");
+		label[6] = new JLabel("*番号だけ入力");//"*번호만 입력"
+		textField[3] = new JTextField(15);
+		panel4.setLayout(layout4);//전화번호 
+		panel4.add("West", panel41);//4줄에 전화번호
+		panel4.add("East", panel42);//4줄에 필수입력
+		panel41.add(label[5]);//전화번호 패널에 전화번호 라벨넣기
+		panel41.add(textField[3]);//전화번호 패널에 전화번호 텍필 넣기
+		panel41.add(label[6]);//전화번호 패널에 필수입력 라벨넣기
+		panel.add(panel4);
+		
+		//***************(5/6)***************************
+		panel5 = new JPanel();
+		panel5.setOpaque(false);
+		label[7] = new JLabel("メール");//"이메일"
+		textField[4] = new JTextField(20);
+		panel5.setLayout(layout5);//이메일
+		panel5.add("West", label[7]);//5줄에 이메일
+		panel5.add(textField[4]);//5줄에 이메일 텍필
+		panel.add(panel5);
+		//***************(6/6)***************************
+		panel6 = new JPanel();
+		panel6.setOpaque(false);
+		trans = new JButton("伝送");//"전송"
+		trans.addActionListener(this);
+		cancel = new JButton("キャンセル");//"취소"
+		cancel.addActionListener(this);
+		getContentPane().setLayout(null);
+		panel6.add(trans);//6줄에 전송버튼
+		panel6.add(cancel);//6줄에 취소버튼
+		panel.add(panel6);
+		//*****************(프레임에 구현)**************************
+	/*	getContentPane().add(panel1);
+		getContentPane().add(panel2);
+		getContentPane().add(panel3);
+		getContentPane().add(panel4);
+		getContentPane().add(panel5); 
+		getContentPane().add(panel6);
+*/
+		
+		  getContentPane().add(panel);
+		
+		
+		
+		
+		setSize(361,555);
+		setResizable(false); 
+		setTitle("会員加入");//"회원가입"
+		setVisible(true);
+
+		// 화면 중앙에 위치시킬 수 있다.
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		int xPos = (screenSize.width / 2) - (this.getSize().width / 2);
+		int yPos = (screenSize.height / 2) - (this.getSize().height / 2);
+		setLocation(xPos, yPos);
+		
+	}
+	
+
+
+	public void itemStateChanged(ItemEvent e) {
+
+							//성별 체크, 남자와 여자 중 선택할 시
+		if ((e.getSource() == male) || e.getSource() == female) {
+																
+			if (male.isSelected()) { // 남자를 선택할 시
+				gender = 1; // 남자일 때 1
+			} else {
+				gender = 2;// 여자일 때 2
+			}
+		}
+
+		if (e.getSource() == travel) { // 관리자 체크 버튼을 누를 시
+			if (travel.isSelected()) {
+				admin_flag = 0;// 관리자는 0
+			} else {
+				admin_flag = 1;// 일반유저는 1
+			}
+		}
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent ae) {
+
+		// DB하고 연결
+		String ae_type = ae.getActionCommand();
+		MemberVO mv = null;
+		MemberDAO edvo = null;
+
+		//저장버튼 클릭했을때
+		System.out.println("ae_type " + ae_type + "trans.getText()" + trans.getText());
+		
+		if(ae_type.equals(trans.getText())){
+			
+			try {
+				// 자료들을 다 받아와서 mv에 담는다.
+				mv = new MemberVO(textField[0].getText(), textField[1].getText(), textField[2].getText(),
+						textField[3].getText(), admin_flag, textField[4].getText(), gender);
+
+				// 회원가입창에서 기입을 하지 않았다면 그것을 표시해줄 수 있도록 하는 기능
+				if (textField[0].getText().equals(null) || textField[0].getText().equals("")) {
+					JOptionPane.showMessageDialog(this, "IDを記入してください");//"아이디를 기입해주세요."
+
+				} else if (textField[1].getText().equals(null) || textField[1].getText().equals("")) {
+					JOptionPane.showMessageDialog(this, "パスワードを記入してください");//"비밀번호를 기입해주세요."
+				
+				}else if (textField[2].getText().equals(null) || textField[2].getText().equals("")) {
+					JOptionPane.showMessageDialog(this, "名前を記入してください");//"이름을 기입해주세요."
+				
+				}else if (gender == 0) {
+					JOptionPane.showMessageDialog(this, "性別を確認してください");//"성별을 확인해주세요."
+				
+				}else if (textField[3].getText().equals(null) || textField[3].getText().equals("")) {
+					JOptionPane.showMessageDialog(this, "電話番号を記入してください");//"전화번호를 기입해주세요."
+				
+				}else if (textField[4].getText().equals(null) || textField[4].getText().equals("")) {
+					JOptionPane.showMessageDialog(this, "メールを記入してください");//"이메일을 기입해주세요."
+
+				// 저장버튼을 눌렀을 때 아이디 중복체크를 안 눌렀을 경우				
+				}else if (checkedFlag == false) {
+					JOptionPane.showMessageDialog(this, "ID チェックをしてください");//"아이디 중복체크를 해주세요."
+					return;// 상태표 띄워주고 반환해준다.
+
+				// 저장버튼을 눌렀을 때 아이디 중복체크를 다 마쳤을 경우
+				}else if(checkedFlag == true){
+					edvo = new MemberDAO();
+					edvo.setMemberregiste(mv);
+					JOptionPane.showMessageDialog(this, textField[0].getText() + "様が 成功的に加入されました。");//"님이 성공적으로 추가됨"
+					//	sw = true; // DB에 저장이 되었을 경우 sw는 true가 되어
+					//	if (sw == true){// 성공했다는 것을 창에 띄워주고 회원가입창을 닫는다.
+					dispose();// 저장 후 창 닫음
+
+				}
+				
+			} catch (Exception e) {
+				JOptionPane.showMessageDialog(this, "会員加入失敗しました。");// "회원가입 실패"
+				System.out.println("e=[" + e + "]");
+			}
+			
+		}
+
+		// 회원가입창 취소버튼을 눌렀을 때 창을 안 보이게 한다.
+		if (ae_type.equals(cancel.getText())) {
+				setVisible(false);
+		}
+		
+		//중복 체크 버튼 클릭했을때		
+		if (ae_type.equals(idCheck.getText())) {
+			
+			System.out.println("idCheck.getText()"  + idCheck.getText());
+			
+			checkedFlag = true; // checkedFlag를 false에서 true로 바뀌어 중복체크를 했다는 것을 알수 있다.
+			String strId = textField[0].getText(); // Id를 변수에 저장
+			System.out.println("strId@@@"  +strId);
+			
+//			MemberVO retval = null; // MemberVO의 빈 값을 주어
+			ArrayList<MemberVO> list = new ArrayList<MemberVO>();// ArrayList 객체생성
+			MemberDAO mdao = new MemberDAO();
+			
+			try {
+				list = mdao.getMemberExist(strId);
+
+				if(list!=null){
+//					System.out.println("22222222222"+ strId);
+//					System.out.println("@@@@@@@@@@@" + list.get(0).getId());
+					
+					if (list.get(0).getId().equals(strId) &&  !textField[0].getText().equals("")) {
+						idDuplFlag = true; // idCheck를 true로 주어 중복되었다는 걸 알려준다.
+						// 아이디가 중복되었을 때 사용할 수 없다는 표시를 하고 ID의 텍스트필드에 기입된 내용을 지운다.
+						JOptionPane.showMessageDialog(this, "使用できないIDです。");//"사용할 수 없는 ID입니다. "
+						textField[0].setText("");
+					}else if(textField[0].getText().equals(null) || textField[0].getText().equals("")){
+						JOptionPane.showMessageDialog(this, "IDを記入してください");//"아이디를 기입해주세요."
+						return;
+					}
+				}
+			} catch (Exception e) {
+				JOptionPane.showMessageDialog(this, "使用できるIDです。");//"사용가능한  ID입니다. "
+				textField[0].setEditable(false);
+				idDuplFlag = false;
+				System.out.println(e);
+			}
+
+		}
+	}
+
+	public static void main(String[] args) {
+		new MemberJoin();
+	}
+
+}

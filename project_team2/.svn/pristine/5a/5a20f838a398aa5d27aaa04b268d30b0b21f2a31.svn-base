@@ -1,0 +1,28 @@
+package com.bs.vo;
+
+public class ImageVO {
+
+	private String image_table;
+
+	public ImageVO() {
+	}
+
+	public ImageVO(String image_table) {
+		super();
+		this.image_table = image_table;
+	}
+
+	public String getImage_table() {
+		return image_table;
+	}
+
+	public void setImage_table(String image_table) {
+		this.image_table = image_table;
+	}
+
+	@Override
+	public String toString() {
+		return "ImageVO [image_table=" + image_table + "]";
+	}
+
+}

@@ -1,0 +1,246 @@
+package com.bs.view;
+
+import java.awt.Font;
+import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.util.ArrayList;
+
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+
+import com.bs.control.BoardDAO;
+import com.bs.vo.NoticeBoardVO;
+
+public class Board extends JPanel implements ActionListener, MouseListener{
+
+	private JLabel jl[] = new JLabel[3];
+	private JLabel name;
+	private JButton jbtnMain = new JButton("메인으로");
+	private JButton jbtnWrite = new JButton("작성하기");
+	private JButton jbtnUdt = new JButton("수정하기");
+	private JButton jbtnDel = new JButton("삭제하기");
+	private JTable table;
+	private int i;
+	private BoardModel bb;
+	private BoardModel bm = new BoardModel(null);
+	private BoardDAO bdao = null;
+	private ArrayList<NoticeBoardVO> list = null;
+	private ImageIcon img, img2;
+	public static int selectedNum = 0;
+	private MainFrame win;
+
+	public Board(MainFrame win) {
+		this.win = win; 
+
+		//메인으로 가기 버튼 액션리스너
+		jbtnMain.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					if (e.getSource() == jbtnMain) {
+						win.panelChange("LoginPage", MainFrame.id);
+						selectedNum = 0;
+					}
+				} catch (Exception ex) {
+					System.out.println(ex);
+				}
+			}
+		});
+		
+		//작성하기 버튼 액션리스너
+		jbtnWrite.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					if (e.getSource() == jbtnWrite) {
+						win.panelChange("BoardInsert", MainFrame.id);
+					}
+				} catch (Exception ex) {
+					System.out.println(ex);
+				}
+			}
+		});
+		
+		//삭제하기 버튼 액션리스너
+		jbtnDel.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					if (e.getSource() == jbtnDel) {
+						System.out.println("삭제버튼 클릭됬다.");
+						try{
+							
+							if(selectedNum == 0){
+								JOptionPane.showMessageDialog(null, "삭제하실 게시물을 선택해주세요.", "경고", 0);
+								return;
+							}
+							
+							int dialogResult = JOptionPane.showConfirmDialog(null, "선택한 게시글을 삭제하시겠습니까?", "선택", 0); // 컨펌
+							if (dialogResult == JOptionPane.YES_OPTION) { //예 눌렀을때
+//								System.out.println("@@@@@@@@@@@@@@@@@@" + selectedNum);
+								BoardDAO bdao = new BoardDAO();
+								int i = bdao.delBoardContent(selectedNum);  //게시글 번호로 조회해서 삭제 
+								
+								if(i<=0){ //삭제 실패
+									JOptionPane.showMessageDialog(null, "삭제를 실패했습니다", "경고", 0);
+									return;
+									
+								}else{
+									JOptionPane.showMessageDialog(null, "삭제성공", "알림", 0);
+									win.panelChange("Board", MainFrame.id);
+									selectedNum = 0; //선택한 번호 초기화
+								}
+							}else{ //아니요 눌렀을때 
+								return;
+							}
+							
+						}catch(Exception ex){
+							ex.printStackTrace();
+						}
+						
+//						win.panelChange("Board", MainFrame.id);
+					}
+					
+				} catch (Exception ex) {
+					System.out.println(ex);
+				}
+			}
+		});
+		
+		//
+		//수정 버튼 액션리스너
+		jbtnUdt.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					
+					if (e.getSource() == jbtnUdt) {
+						
+						if(selectedNum == 0){
+							JOptionPane.showMessageDialog(null, "수정하실 게시물을 선택해주세요.", "경고", 0);
+							return;
+							
+						}else{
+							win.panelChange("BoardUpdate", MainFrame.id);
+						}
+					}
+				} catch (Exception ex) {
+					System.out.println(ex);
+				}
+			}
+		});
+	}
+	
+	//게시판을 새로고침한다.
+	public void getBoardRefresh(String id){
+		
+		setBounds(new Rectangle(0, 0, 900, 600));
+
+		for (int i = 0; i < 3; i++) {
+
+			if (i == 0) {
+				img2 = new ImageIcon(".\\src\\img\\gg.png");
+				jl[i] = new JLabel(img2);
+				jl[i].setBounds(12, 5, 290, 110);
+				// jl[i].setFont(new Font("굴림", Font.PLAIN, 48));
+				add(jl[i]);
+			}
+
+		}
+		
+		img = new ImageIcon(".\\src\\img\\g.png");
+		name = new JLabel(img);
+		name.setBounds(586, 0, 290, 122);
+		add(name);
+		
+		setLayout(null);
+
+		jbtnMain.setBounds(187, 520, 120, 23);
+		jbtnWrite.setBounds(319, 520, 120, 23);
+		jbtnUdt.setBounds(451, 520, 120, 23);
+		jbtnDel.setBounds(583, 520, 120, 23);
+
+		add(jbtnMain);
+		add(jbtnWrite);
+		add(jbtnUdt);
+		add(jbtnDel);
+		
+		table = new JTable(new BoardModel(null)); //게시판 재조회
+		table.getTableHeader().setResizingAllowed(false);
+		table.getTableHeader().setReorderingAllowed(false);
+		
+		table.getColumnModel().getColumn(1).setPreferredWidth(402);
+		table.getColumnModel().getColumn(2).setPreferredWidth(98);
+		table.getColumnModel().getColumn(3).setPreferredWidth(118);
+		
+		table.setBounds(25, 110, 850, 400);
+		table.setColumnSelectionAllowed(true);
+		table.addMouseListener(this);
+		
+		JScrollPane scrollPane = new JScrollPane(table);
+		scrollPane.setLocation(25, 110);
+		scrollPane.setSize(850, 400);
+		add(scrollPane);
+		setVisible(true);
+		
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent arg0) {
+		
+		//System.out.println("##############3" + arg0);
+		int row = table.getSelectedRow();
+		int column = 0;
+		selectedNum = (int)table.getValueAt(row, column);
+//		System.out.println("@@@@@@@@@@@@@@@@" + table.getValueAt(row, column2) +"선택했습니다.");
+		
+		if(table.getSelectedColumn()==1){ //제목을 클릭했을때
+			
+//			System.out.println("@################" + table.getName());
+//			System.out.println("table.getSelectedColumn()" + table.getSelectedColumn());
+			try {
+				win.panelChange("BoardDetail", MainFrame.id); //게시글 상세보기 페이지
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+			
+		}
+		
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseExited(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mousePressed(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+}

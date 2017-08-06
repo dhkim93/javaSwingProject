@@ -1,0 +1,82 @@
+package com.bs.control;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+
+import javax.swing.JFrame;
+
+import com.bs.vo.MyCartVO;
+import com.bs.vo.NoticeBoardVO;
+
+public class BoardDAO {
+
+
+	
+	public ArrayList<NoticeBoardVO> getBoardList() throws Exception{
+		
+		ArrayList<NoticeBoardVO> list = new ArrayList<NoticeBoardVO>();
+		String dml = "select * from notice_board ";
+		
+		Statement stmt = null;
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		NoticeBoardVO retval = null;
+		
+		try{
+			con = DBUtil.getConnection();
+			stmt = con.createStatement();
+			rs = stmt.executeQuery(dml);
+			
+//			pstmt.setString(3, subject);
+			
+			
+			System.out.println("no\t유저\t제목\t내용\t날짜\t플래그");
+			while(rs.next()){
+				retval = new NoticeBoardVO(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getInt(6));
+				
+				list.add(retval);
+				System.out.print(rs.getInt(1) +"\t");//rs.get자료형(속성순서 or 속성명) 
+				System.out.print(rs.getString(2) +"\t");
+				System.out.print(rs.getString(3) +"\t");
+				System.out.print(rs.getString(4) +"\t");
+				System.out.print(rs.getString(5) +"\t");
+				System.out.print(rs.getInt(6) +"\t");
+				System.out.println();
+			}
+		}catch (SQLException se){
+			System.out.println(se);
+		}catch (Exception e){
+			System.out.println(e);
+		}finally{
+			try{
+				if(rs !=null)
+					rs.close();
+				if(pstmt !=null)
+					pstmt.close();
+				if(con !=null)
+					con.close();
+		}catch(SQLException se){
+			
+		}
+		
+	}
+		return list;
+	}
+	public static void main(String[] args) throws Exception{
+//		ArrayList<String> columnName = new ArrayList<String>();
+		ArrayList<NoticeBoardVO> list = null;
+		
+		BoardDAO test= new BoardDAO();
+		list = test.getBoardList(); 
+		System.out.println(list.get(0).getSubject());
+//		mcdao.getCartList(c_id);
+		
+	}
+}
+
+

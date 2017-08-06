@@ -1,0 +1,335 @@
+/* 
+ * =============================
+ * 프로그램 설명 : 
+ * 작성자 : 
+ * 최초 작성일자 : 
+ * 최종 수정일 : 
+ * 수정 내용 : 
+ * =============================
+ * */
+
+package com.bs.view;
+
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+import java.awt.Panel;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.util.ArrayList;
+
+import javax.swing.ButtonGroup;
+import javax.swing.JButton;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.table.DefaultTableModel;
+
+import com.bs.control.AdminPageDAO;
+import com.bs.util.LabelAccessory;
+import com.bs.vo.AdminPageVO;
+
+public class AdminPage extends JPanel implements ActionListener {
+	private JButton btnProdIns;
+	private JRadioButton rbutton1;
+	private MainFrame win = null;
+
+	public AdminPage(MainFrame win) {
+		this.win = win;
+	}
+
+	// 화면 새로 고침 메서드
+	public void getRefresh(String id) throws Exception {
+		
+		 JButton btn1, btn2;
+		 JTable adminTable;
+		 DefaultTableModel tablemodel; /* addRow를 호출하기 위한 선언 */
+		 
+		 ButtonGroup ct;
+		 JRadioButton rbutton2, rbutton3, rbutton4;
+		 JButton btnMain = new JButton("메인으로");
+		 btnProdIns = new JButton("물품등록");
+		 JButton btnProdDel = new JButton("물품삭제");
+		 JButton btnUdt = new JButton("수정사항저장");
+
+		adminTable = new JTable(new AdminModel(null)); // 테이블 생성
+		adminTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
+		JScrollPane scrollPane = new JScrollPane(adminTable);
+		scrollPane.setLocation(0, 0);
+		scrollPane.setSize(600, 600);
+		add(scrollPane);
+
+		JPanel panel_comp = new JPanel();
+		/* DefaultTableModel을 구현하여 JTable을 생성한다. */
+		setLayout(null);
+
+		panel_comp.setBounds(600, 30, 300, 450);
+		// panel_comp.setBackground(Color.WHITE);
+		add(panel_comp);
+		panel_comp.setLayout(null);
+
+		setLayout(null);
+
+		Panel panel = new Panel(new FlowLayout());
+		panel.setBounds(471, 0, 313, 512);
+
+		// "모 자"
+		rbutton1 = new JRadioButton("帽　　子");
+		rbutton1.setBounds(0, 30, 100, 20);
+		panel_comp.add(rbutton1);
+		System.out.println(rbutton1.getText());
+		// "상 의"
+		rbutton2 = new JRadioButton("上　　着");
+		rbutton2.setBounds(0, 130, 100, 20);
+		panel_comp.add(rbutton2);
+		// "하 의"
+		rbutton3 = new JRadioButton("ズ　ボ　ン");
+		rbutton3.setBounds(0, 230, 100, 20);
+		panel_comp.add(rbutton3);
+		// "신 발"
+		rbutton4 = new JRadioButton("　　靴　　");
+		rbutton4.setBounds(0, 330, 100, 20);
+		panel_comp.add(rbutton4);
+
+		ct = new ButtonGroup();
+		ct.add(rbutton1);
+		ct.add(rbutton2);
+		ct.add(rbutton3);
+		ct.add(rbutton4);
+
+		btnProdDel.setBounds(150, 100, 100, 23);
+		btnMain.setBounds(150, 160, 100, 23);
+		btnUdt.setBounds(150, 220, 100, 23);
+		btnProdIns.setBounds(150, 280, 100, 23);
+
+		btnProdIns.addActionListener(this);
+		panel_comp.add(btnProdDel);
+		panel_comp.add(btnProdIns);
+		panel_comp.add(btnUdt);
+		panel_comp.add(btnMain);
+
+		/* 화면의 레이아웃을 구성함 */
+
+		add(panel);
+		add(adminTable.getTableHeader(), BorderLayout.NORTH);
+		setSize(900, 600);
+		setVisible(true);
+
+		btnUdt.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				ArrayList list = new ArrayList();
+				AdminPageDAO apdao = new AdminPageDAO();
+				int result = 0;
+
+				try {
+					
+					if (e.getSource() == btnUdt && !AdminModel.udtList.isEmpty()) { //수정사항이 있다면. (수정된 행번호를 리스트로가져온다.)
+						
+						System.out.println("AdminModel.udtList.get(0)" + AdminModel.udtList.get(0));
+						
+						int dialogResult = JOptionPane.showConfirmDialog(null, "수정사항을 저장하시겠습니까?", "お知らせ", 0); // 수정사항을 저장하시겠습니까?
+						if (dialogResult == JOptionPane.YES_OPTION) {
+							
+							for (int i = 0; i < AdminModel.udtList.size(); i++) { //데이터 row 만큼 update 한다.
+								
+								for (int j = 0; j < 6; j++) { // 물품명, 사이즈, 브랜드 , 가격, 소재
+									// System.out.print(AdminModel.data[i][j]);
+									list.add(AdminModel.data[Integer.parseInt(AdminModel.udtList.get(i).toString())][j]);//data[row][column]
+								}
+								
+								result += apdao.updateAdminPage(list);
+								//list.removeAll(list);
+								list.clear();
+								
+							}
+							
+							
+							if (result != AdminModel.udtList.size()) { //모든행을 업데이트 하지 않았을경우
+								JOptionPane.showMessageDialog(null, "데이터 변경을 실패했습니다.", "경고", 0);// "경고"
+								return;
+							}else{
+								JOptionPane.showMessageDialog(null, "데이터 변경을 성공했습니다.", "알림", 0);// "경고"
+							}
+							AdminModel.udtList.clear();
+						}
+					}else if(e.getSource() == btnUdt && AdminModel.udtList.isEmpty()){
+						JOptionPane.showMessageDialog(null, "데이터 수정사항이 없습니다.", "알림", 0);// "경고"
+					}
+					
+				} catch (Exception ex) {
+					JOptionPane.showMessageDialog(null, "데이터 변경을 실패했습니다.", "경고", 0);// "경고"
+					ex.printStackTrace();
+				}
+			}
+		});
+
+		btnMain.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					if (e.getSource() == btnMain) {
+						win.panelChange("LoginPage", MainFrame.id);
+					}
+				} catch (Exception ex) {
+					ex.printStackTrace();
+				}
+			}
+		});
+	}
+
+	public void actionPerformed(ActionEvent e) {
+
+		// Object obj = e.getSource();
+
+		/* 추가 버튼이 눌린 경우 */
+		try {
+			//System.out.println("@@@@@@@@@@@@@@@@@ae_type" + e);
+			int test = 1;
+			System.out.println(test);
+			AdminPageDAO apdao = new AdminPageDAO();
+			AdminPageVO avo = new AdminPageVO();
+			ArrayList<AdminPageVO> list = null;
+
+			list = apdao.getAdminList();
+			String pCode = null;
+			String plusCode = null;
+
+			int cp = 0;// 맨마지막값을 가져오기위해 사용하는 변수
+			int plusNum = 0;// +1해주기 위한 변수
+			if (e.getSource() == btnProdIns && rbutton1.isSelected()) {
+				System.out.println("모자버튼이 눌렸음");
+				JFileChooser fs = new JFileChooser(new File("c:\\"));// 파일 오픈 경로
+				fs.setDialogTitle("Open a File");// 파일 오픈 시 다이얼로그 제목
+				fs.setFileFilter(new FileNameExtensionFilter("jpg", "png"));// 오픈할수
+																			// 있는
+																			// 파일
+																			// 종류
+				LabelAccessory accessory = new LabelAccessory(fs);
+				fs.setAccessory(accessory);
+				fs.addPropertyChangeListener(JFileChooser.SELECTED_FILE_CHANGED_PROPERTY,accessory);
+				int result = fs.showSaveDialog(this);
+				if (result == JFileChooser.APPROVE_OPTION) {
+					try {
+						System.out.println("당신의 선택은"
+								+ fs.getSelectedFile().getName());// 파일이름
+						File fi = fs.getSelectedFile();
+						BufferedReader br = new BufferedReader(new FileReader(
+								fi.getPath()));
+						System.out.println("이미지 경로는" + fi.getPath());// 파일경로
+						if (list != null) {
+							for (int i = 0; i < list.size(); i++) {
+								if (list.get(i).getProductCode()
+										.contains("P_CAP")) {
+									if (i > cp) {
+										cp = i;
+										// System.out.println(cp);
+										// System.out.println(i);
+										// System.out.println("가져온것"+list.get(i).getProductCode());
+										pCode = list.get(i).getProductCode();
+									}
+								}
+							}
+							System.out.println("pCode 저장!!" + pCode);
+							String lastNum = pCode.substring(
+									pCode.length() - 2, pCode.length());
+							plusNum = Integer.parseInt(lastNum) + 1;
+							plusCode = String.format(
+									pCode.substring(0, pCode.length() - 2)
+											+ "%02d", plusNum);
+							System.out.println("change2 값   : " + plusCode);
+							apdao.setAdminList(plusCode, "H");// +1한 값과 'H'를
+																// 제품코드와 제품명으로
+																// db에 저장
+							
+//							System.out.println(getClass().getClassLoader().getResource("wm.gif"));
+							
+//							File file = new File("c:\\2.png");
+							File file = new File(fi.getPath()); //잘된거
+							System.out.println("원본경로:"+fi.getPath());
+							
+//							File fileToMove = new File("c:\\P_CAP_13.png");
+							System.out.println("경로확인!!!!!!!!! " +fi.getParent()+plusCode + ".png");
+							File fileToMove = new File(fi.getParent()+"\\\\"+plusCode+".png");
+//							System.out.println("경로확인!!!!!!!!! " +fi.getParent()+ "\\"+plusCode + ".png");
+							
+							if(file.exists()){
+								System.out.println("@@@@@@@@파일 존재 ");
+								file.renameTo(fileToMove);
+							}
+								
+							
+//							boolean isMoved = file.renameTo(fileToMove);
+//							System.out.println("MOve 됐냐 !!!"+isMoved);
+
+
+						}
+
+						String line = "";
+						String s = "";
+						while ((s = br.readLine()) != null) {
+							line += s;
+						}
+
+						if (br != null)
+							br.close();
+
+					} catch (Exception e2) {
+						JOptionPane.showMessageDialog(null, e2.getMessage());
+					}
+				}
+			} else {
+				System.out.println("radio버튼을 선택하세요!!!");
+			}
+
+			/*
+			 * if ((JButton) obj == btn1)
+			 * 
+			 * {
+			 * 
+			 * TextField에 입력된 데이터를 JTable에 삽입함
+			 * 
+			 * 이쪽에서 자동저장할 수 있게금 삽입하면 됩니다.
+			 * 
+			 * }
+			 * 
+			 * 삭제 버튼이 눌린 경우
+			 * 
+			 * else if ((JButton) obj == btn2)
+			 * 
+			 * {
+			 * 
+			 * 예외처리. 선택된 row가 있어야 한다
+			 * 
+			 * if (table.getSelectedRow() >= 0)
+			 * 
+			 * {
+			 * 
+			 * tablemodel.removeRow(table.getSelectedRow());
+			 * 
+			 * }
+			 * 
+			 * }
+			 */
+		} catch (Exception ee) {
+			ee.printStackTrace();
+		}
+
+	}
+
+	// public void tableChanged(TableModelEvent e) {
+	// // TODO Auto-generated method stub
+	// int row = e.getFirstRow();
+	// int column = e.getColumn();
+	// TableModel model = (TableModel) e.getSource();
+	// String columnName = model.getColumnName(column);
+	// Object data = model.getValueAt(row, column);
+	// System.out.println(e);
+	// }
+}

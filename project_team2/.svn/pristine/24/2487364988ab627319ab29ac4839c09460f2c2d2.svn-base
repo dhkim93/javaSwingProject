@@ -1,0 +1,322 @@
+package com.bs.control;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+
+import com.bs.vo.CartVO;
+import com.bs.vo.ClosetBasicVO;
+import com.bs.vo.ClosetVO;
+import com.bs.vo.MemberVO;
+
+public class LoginPageDAO {
+	
+	//등록된 상품리스트를 모두 가져온다.
+	public ArrayList<ClosetBasicVO> getProductInfo() throws Exception {
+		ArrayList<ClosetBasicVO> list = new ArrayList<ClosetBasicVO>();
+		String dml = "SELECT "
+				+ "  product_code"
+				+ ", product_name"
+				+ ", size"
+				+ ", price"
+				+ ", brand"
+				+ ", material"
+				+ ", image_path "
+				+ "FROM "
+				+ "  cloth_basic"
+				+ ", image_table "
+				+ "WHERE"
+				+ "  product_code = image_name "
+				;
+		
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		ClosetBasicVO retval = null;
+		
+		try {
+			con = DBUtil.getConnection();
+			
+			pstmt = con.prepareStatement(dml);
+			//조회 조건 
+//			pstmt.setString(1, c_id);
+//			pstmt.setString(2, imageName);
+			
+			rs = pstmt.executeQuery();
+			while (rs.next()) {
+				retval = new ClosetBasicVO(rs.getString(1), rs.getString(2), rs.getString(3), rs.getInt(4), rs.getString(5), rs.getString(6), rs.getString(7));
+				list.add(retval);
+//				System.out.println(retval);
+			}
+		} catch (SQLException se) {
+			System.out.println(se);
+		} catch (Exception e) {
+			System.out.println(e);
+		} finally {
+			try {
+				if (rs != null)
+					rs.close();
+				if (pstmt != null)
+					pstmt.close();
+				if (con != null)
+					con.close();
+			} catch (SQLException se) {
+			}
+		}
+		return list;
+	}
+	
+	//사용자 정보를 조회한다.
+	public ArrayList<MemberVO> getMemberList(String id) throws Exception {
+		ArrayList<MemberVO> list = new ArrayList<MemberVO>();
+		String dml = "SELECT "
+				+ "ID"
+				+ ",PASSWORD"
+				+ ",NAME"
+				+ ",PHONE"
+				+ ",ADMIN_FLAG"
+				+ ",EMAIL"
+				+ ",GENDER"
+				+ " FROM MEMBER WHERE ID =?";
+		
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		MemberVO retval = null;
+		
+		try {
+			con = DBUtil.getConnection();
+			
+			pstmt = con.prepareStatement(dml);
+			//조회 조건 
+			pstmt.setString(1, id);
+			
+			rs = pstmt.executeQuery();
+			while (rs.next()) {
+				retval = new MemberVO(			  rs.getString(1)
+												, rs.getString(2)
+												, rs.getString(3)
+												, rs.getString(4)
+												, rs.getInt(5)
+												, rs.getString(6)
+												, rs.getInt(7));
+				list.add(retval);
+//				System.out.println(retval);
+			}
+		} catch (SQLException se) {
+			System.out.println(se);
+		} catch (Exception e) {
+			System.out.println(e);
+		} finally {
+			try {
+				if (rs != null)
+					rs.close();
+				if (pstmt != null)
+					pstmt.close();
+				if (con != null)
+					con.close();
+			} catch (SQLException se) {
+			}
+		}
+		return list;
+	}
+	
+	//선택한 물건을 카트에 담는다 
+	public CartVO setCartInfo(CartVO cvo) throws Exception {
+		
+		String dml = "INSERT INTO CART values (?, ?, ?, ? ,? ,? ,?)";
+		
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		CartVO retval = null;
+		
+		try {
+			con = DBUtil.getConnection();
+			
+			pstmt = con.prepareStatement(dml);
+			pstmt.setString(1, cvo.getId());
+			pstmt.setString(2, cvo.getProductCode());
+			pstmt.setString(3, cvo.getProductName());
+			pstmt.setString(4, cvo.getSize());
+			pstmt.setString(5, cvo.getPrice());
+			pstmt.setString(6, cvo.getBrand());
+			pstmt.setString(7, cvo.getMaterial());
+			
+			int i = pstmt.executeUpdate();
+			retval = new CartVO();
+			retval.setStatus(i); 
+			
+		} catch (SQLException e) { //예외처리
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				
+				if (pstmt != null)
+					pstmt.close();
+				if (con != null)
+					con.close();
+			} catch (SQLException e) {
+			}
+		}
+		return retval;
+	}
+	
+	//옷정보를 조회한다.
+	public ArrayList<ClosetBasicVO> getClothInfo(String productCode) throws Exception {
+		
+		ArrayList<ClosetBasicVO> list = new ArrayList<ClosetBasicVO>();
+		
+		String dml = "SELECT "
+				+ "PRODUCT_CODE"
+				+ ",PRODUCT_NAME"
+				+ ",SIZE"
+				+ ",BRAND"
+				+ ",MATERIAL"
+				+ ",BUYDATE"
+				+ ",PRICE"
+				+ " FROM "
+				+ "CLOTH_BASIC "
+				+ "WHERE PRODUCT_CODE =?";
+		
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		ClosetBasicVO retval = null;
+		
+		try {
+			con = DBUtil.getConnection();
+			
+			pstmt = con.prepareStatement(dml);
+			//조회 조건 
+			pstmt.setString(1, productCode);
+			
+			rs = pstmt.executeQuery();
+			while (rs.next()) {
+				retval = new ClosetBasicVO(rs.getString(1)
+												, rs.getString(2)
+												, rs.getString(3)
+												, rs.getString(4)
+												, rs.getString(5)
+												, rs.getString(6)
+												, rs.getInt(7));
+				list.add(retval);
+//				System.out.println(retval);
+			}
+		} catch (SQLException se) {
+			System.out.println(se);
+		} catch (Exception e) {
+			System.out.println(e);
+		} finally {
+			try {
+				if (rs != null)
+					rs.close();
+				if (pstmt != null)
+					pstmt.close();
+				if (con != null)
+					con.close();
+			} catch (SQLException se) {
+			}
+		}
+		return list;
+	}
+	
+	
+
+	//선택한 물건을 카트에 담는다 
+	public ArrayList<ClosetBasicVO> setCartInfo(ArrayList<ClosetBasicVO> list, String id) throws Exception {
+		
+		String dml = "INSERT INTO CART (C_ID"
+				+ ",C_PRODUCT_NAME"
+				+ ",C_PRODUCT_CODE"
+				+ ",C_SIZE"
+				+ ",C_PRICE"
+				+ ",C_BRAND"
+				+ ",C_MATERIAL"
+				+ ")VALUES (?, ?, ?, ? ,? ,?, ?)";
+		
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		CartVO retval = null;
+		
+		try {
+			con = DBUtil.getConnection();
+			
+			pstmt = con.prepareStatement(dml);
+			
+				pstmt.setString(1, id);
+				pstmt.setString(2, list.get(0).getProductName());
+				pstmt.setString(3, list.get(0).getProductCode());
+				pstmt.setString(4, list.get(0).getSize());
+				pstmt.setInt(5, list.get(0).getPrice());
+				pstmt.setString(6, list.get(0).getBrand());
+				pstmt.setString(7, list.get(0).getMaterial());
+			
+			int i = pstmt.executeUpdate();
+			retval = new CartVO();
+			retval.setStatus(i); 
+			
+		} catch (SQLException e) { //예외처리
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				
+				if (pstmt != null)
+					pstmt.close();
+				if (con != null)
+					con.close();
+			} catch (SQLException e) {
+			}
+		}
+		return list;
+	}
+	
+
+	
+	//상품 구매
+	public ClosetBasicVO setClosetInfo(ClosetBasicVO cbvo) throws Exception {
+
+		String dml = "INSERT INTO CLOSET " + " "
+						+ "(ID"
+						+ ", PRODUCT_CODE"
+						+ ", PRODUCT_NAME"
+						+ ", BUYDATE)" 
+						+ " VALUES " + " (?, ?, ?,DATE_FORMAT(now(), '%Y-%m-%d'))";
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ClosetBasicVO retval = null;
+		
+		try {
+			con = DBUtil.getConnection();
+			pstmt = con.prepareStatement(dml);
+			
+			pstmt.setString(1, cbvo.getId());
+			pstmt.setString(2, cbvo.getProductCode());
+			pstmt.setString(3, cbvo.getProductName());
+			
+			int i = pstmt.executeUpdate();
+			retval = new ClosetBasicVO();
+			retval.setStatus(i); 
+			
+		} catch (SQLException e) { //예외처리
+			System.out.println("e=[" + e + "]");
+		} catch (Exception e) {
+			System.out.println("e=[" + e + "]");
+		} finally {
+			try {
+				if (pstmt != null)
+					pstmt.close();
+				if (con != null)
+					con.close();
+			} catch (SQLException e) {
+			}
+		}
+		return retval;
+	}
+
+}

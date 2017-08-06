@@ -1,0 +1,8 @@
+package com.bs.vo;
+
+public class MainFrameVO {
+	
+	private String id;
+	private String password;
+	
+}

@@ -1,0 +1,327 @@
+/* 
+ * =============================
+ * 프로그램 설명 : 
+ * 작성자 : 
+ * 최초 작성일자 : 
+ * 최종 수정일 : 
+ * 수정 내용 : 
+ * =============================
+ * */
+
+package com.bs.view;
+
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Cursor;
+import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
+import java.util.ArrayList;
+
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.table.TableCellRenderer;
+
+import com.bs.control.BoardDAO;
+import com.bs.util.TableRender;
+import com.bs.vo.NoticeBoardVO;
+
+public class Board extends JPanel implements ActionListener, MouseListener, MouseMotionListener, TableCellRenderer{
+
+	private JLabel jl[] = new JLabel[3];
+	private JLabel name;
+	private JButton jbtnMain = new JButton("メインに移動");//"메인으로"
+	private JButton jbtnWrite = new JButton("作成する");//"작성하기"
+	private JButton jbtnUdt = new JButton("修正する");//"수정하기"
+	private JButton jbtnDel = new JButton("削除する");//"삭제하기"
+	private JTable table;
+	private int i;
+	private BoardModel bb;
+	private BoardModel bm = new BoardModel(null);
+	private BoardDAO bdao = null;
+	private ArrayList<NoticeBoardVO> list = null;
+	private ImageIcon img, img2;
+	public static int selectedNum = 0;
+	private MainFrame win;
+	private TableRender cellRenderer = new TableRender();
+	private JLabel lb= null;
+
+	public Board(MainFrame win) {
+		setBackground(Color.WHITE);
+		this.win = win; 
+
+		//메인으로 가기 버튼 액션리스너
+		jbtnMain.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					if (e.getSource() == jbtnMain) {
+						win.panelChange("LoginPage", MainFrame.id);
+						selectedNum = 0;
+					}
+				} catch (Exception ex) {
+					System.out.println(ex);
+				}
+			}
+		});
+		
+		//작성하기 버튼 액션리스너
+		jbtnWrite.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					if (e.getSource() == jbtnWrite) {
+						win.panelChange("BoardInsert", MainFrame.id);
+					}
+				} catch (Exception ex) {
+//					System.out.println(ex);
+					ex.printStackTrace();
+					
+				}
+			}
+		});
+		
+		//삭제하기 버튼 액션리스너
+		jbtnDel.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					if (e.getSource() == jbtnDel) {
+						System.out.println("삭제버튼 클릭됬다.");
+						try{
+							
+							if(selectedNum == 0){								//"삭제하실 게시물을 선택해주세요.", "경고"
+								JOptionPane.showMessageDialog(null, "削除する掲示物を選択してください", "警告", 0);
+								return;
+							}
+							 																					//"선택한 게시글을 삭제하시겠습니까?", "선택"
+							int dialogResult = JOptionPane.showConfirmDialog(null, "選択した掲示物を削除しますか", "選択", 0); // 컨펌
+							if (dialogResult == JOptionPane.YES_OPTION) { //예 눌렀을때
+//								System.out.println("@@@@@@@@@@@@@@@@@@" + selectedNum);
+								BoardDAO bdao = new BoardDAO();
+								int i = bdao.delBoardContent(selectedNum);  //게시글 번호로 조회해서 삭제 
+								
+								if(i<=0){ //삭제 실패									삭제를 실패했습니다", "경고"
+									JOptionPane.showMessageDialog(null, "削除失敗しました。", "警告", 0);
+									return;
+									
+								}else{														//삭제성공", "알림"
+									JOptionPane.showMessageDialog(null, "削除成功", "お知らせ", 0);
+									win.panelChange("Board", MainFrame.id);
+									selectedNum = 0; //선택한 번호 초기화
+								}
+							}else{ //아니요 눌렀을때 
+								return;
+							}
+							
+						}catch(Exception ex){
+							ex.printStackTrace();
+						}
+						
+//						win.panelChange("Board", MainFrame.id);
+					}
+					
+				} catch (Exception ex) {
+					System.out.println(ex);
+				}
+			}
+		});
+		
+		//
+		//수정 버튼 액션리스너
+		jbtnUdt.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					
+					if (e.getSource() == jbtnUdt) {
+						
+						if(selectedNum == 0){								//"수정하실 게시물을 선택해주세요", "경고"
+							JOptionPane.showMessageDialog(null, "修正される掲示物を選択してください.", "警告", 0);
+							return;
+							
+						}else{
+							win.panelChange("BoardUpdate", MainFrame.id);
+						}
+					}
+				} catch (Exception ex) {
+					System.out.println(ex);
+				}
+			}
+		});
+	}
+	
+	//게시판을 새로고침한다.
+	public void getBoardRefresh(String id){
+		
+		setBounds(new Rectangle(0, 0, 900, 600));
+
+		for (int i = 0; i < 3; i++) {
+			if (i == 0) {
+				img2 = new ImageIcon(".\\src\\img\\gg.png");
+				jl[i] = new JLabel(img2);
+				jl[i].setBounds(12, 5, 290, 110);
+				// jl[i].setFont(new Font("굴림", Font.PLAIN, 48));
+				add(jl[i]);
+			}
+		}
+		
+//		img = new ImageIcon(".\\src\\img\\g.png");
+		name = new JLabel(new ImageIcon(getClass().getClassLoader().getResource("g.png")));
+		name.setBounds(586, 0, 290, 122);
+		add(name);
+		
+		setLayout(null);
+		
+		
+		lb = new JLabel(new ImageIcon(getClass().getClassLoader().getResource("gt.png")));
+		lb.setBounds(10,10,100,100);
+		add(lb);
+		
+
+		jbtnMain.setBounds(187, 520, 120, 23);
+		jbtnWrite.setBounds(319, 520, 120, 23);
+		jbtnUdt.setBounds(451, 520, 120, 23);
+		jbtnDel.setBounds(583, 520, 120, 23);
+
+		add(jbtnMain);
+		add(jbtnWrite);
+		add(jbtnUdt);
+		add(jbtnDel);
+		
+		table = new JTable(new BoardModel(null)); //게시판 재조회
+		table.getTableHeader().setResizingAllowed(false);
+		table.getTableHeader().setReorderingAllowed(false);
+		
+		table.getColumnModel().getColumn(1).setPreferredWidth(402);
+		table.getColumnModel().getColumn(2).setPreferredWidth(98);
+		table.getColumnModel().getColumn(3).setPreferredWidth(118);
+		
+		table.setBounds(25, 110, 850, 400);
+		table.setColumnSelectionAllowed(true);
+		table.addMouseListener(this);
+		table.addMouseMotionListener(this);
+		
+		for (int i = 0; i <= 3; i++) {
+			table.getColumnModel().getColumn(i).setCellRenderer(cellRenderer);
+		}
+		
+//		
+//		table.add(new MouseMotionAdapter(){
+//			   public void mouseMoved(MouseEvent e)
+//			   {
+//			      int row = table.rowAtPoint(e.getPoint());
+//			      if (row > -1)
+//			      {
+//			         // easiest way:
+//			         table.clearSelection();
+//			         table.setRowSelectionInterval(row, row);
+//			      }
+//			      else
+//			      {
+//			         table.setSelectionBackground(Color.blue);
+//			      }
+//			   }
+//			});
+//		
+//		
+		
+		JScrollPane scrollPane = new JScrollPane(table);
+		scrollPane.setLocation(25, 110);
+		scrollPane.setSize(850, 400);
+		add(scrollPane);
+		setVisible(true);
+		
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent arg0) {
+		
+		//System.out.println("##############3" + arg0);
+		int row = table.getSelectedRow();
+		int column = 0;
+		selectedNum = (int)table.getValueAt(row, column);
+//		System.out.println("@@@@@@@@@@@@@@@@" + table.getValueAt(row, column2) +"선택했습니다.");
+		
+		if(table.getSelectedColumn()==1){ //제목을 클릭했을때
+			
+//			System.out.println("@################" + table.getName());
+//			System.out.println("table.getSelectedColumn()" + table.getSelectedColumn());
+			try {
+				win.panelChange("BoardDetail", MainFrame.id); //게시글 상세보기 페이지
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseExited(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mousePressed(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseDragged(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	@Override
+	public void mouseMoved(MouseEvent evt) {
+		
+		int row = table.rowAtPoint(evt.getPoint()); //테이블 셀 색변경
+		if (row > -1)
+		 {
+		    cellRenderer.rowAtMouse = row;
+		    cellRenderer.color = Color.GREEN;
+		    table.repaint();
+		 }
+		
+//		System.out.println("@#@@@@@@@@@@@@@@@@@@" + table.rowAtPoint(evt.getPoint()));
+		
+		if(table.columnAtPoint(evt.getPoint())==1){
+			setCursor(new Cursor(Cursor.HAND_CURSOR));
+		}else{
+			setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+		}
+		
+	}
+
+	@Override
+	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
+			int row, int column) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+}

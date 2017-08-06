@@ -1,0 +1,567 @@
+/* 
+ * =============================
+ * 프로그램 설명 : 회원가입, 회원정보수정 기능  
+ * プログラムの説明: 会員加入、会員情報の修正の機能
+ * 작성자 : 황경하, 김덕현, 오내훈　　
+ * 作成者 : ファン・ギョンハ、キム・ドクヒョン、オ・ネフン
+ * 최초 작성일자 :   
+ * 最初の作成日付　:
+ * 최종 수정일 :  
+ * 最終の修正日付　:
+ * 수정 내용 :   
+ * 修正の内容 :
+ * =============================
+ * */
+
+package com.bs.memberjoin.control;
+
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.Rectangle;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.util.ArrayList;
+
+import javax.swing.ButtonGroup;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JRadioButton;
+import javax.swing.JTextField;
+
+import com.bs.loginpage.control.LoginPage;
+import com.bs.view.MainFrame;
+import com.bs.vo.MemberVO;
+
+public class MemberJoin extends JFrame implements ActionListener, ItemListener {
+
+   private JLabel labelArrJoin[] = new JLabel[6];
+   private JTextField textFieldJoin[] = new JTextField[5];
+
+   private JLabel labelArrMove[] = new JLabel[6];
+   private JTextField textFieldMove[] = new JTextField[6];
+   
+   private JPanel panel1 = new JPanel(); //패널 　　
+					 //パネル
+   private JRadioButton male, female;
+   private JCheckBox travel;
+   private  ButtonGroup bg;
+   private JButton trans;
+   private JButton cancel; // Button 선언　　
+			   // Button 宣言
+   private JButton idCheck;
+   private String Phone = null;
+
+   int gender = 0;
+   int admin_flag = 0;
+
+   private Image img;
+
+   boolean sw = false; // 저장 성공 시 저장 성공했다는 걸 알 수 있도록 표시할 수 있도록 하는 장치　　
+		       // 保存成功の時保存成功したということが分かるように表示できるようにする装置
+   boolean idDuplFlag = false; // 입력한 아이디가 중복되었는 지 알아보는 장치　　	
+			       // 入力したIDが重複されたかどうか調べる装置
+   boolean checkedFlag = false; // 중복버튼을 눌렀는지 확인할 수 있도록 해주는 장치  
+			        // 重複ボタンを押したかどうかを確認できるようにしてくれる装置
+ 
+   public MemberJoin() {
+
+      setBounds(new Rectangle(50, 50, 700, 550));
+      getContentPane().setBounds(new Rectangle(50, 50, 700, 550));
+      getContentPane().setLayout(null);
+      setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); //종료시 프로세스제거  
+							 //終了の時プロセスを除去
+      //회원가입시　　
+      //会員加入の時
+      if (LoginPage.loginFlag.equals("N")) {
+
+         Image img = new ImageIcon().getImage();//배경　　
+						//背景
+
+         JPanel panel = new JPanel() {
+            private static final long serialVersionUID = 1L;
+
+            ImageIcon icon = new ImageIcon(".\\img\\1.jpg");
+
+            public void paintComponent(Graphics g) {
+               g.drawImage(icon.getImage(), 0, 0, getWidth(), getHeight(), null);
+               setOpaque(false);
+               super.paintComponent(g);
+            }
+         };
+         panel.setBounds(new Rectangle(20, 20, 700, 550));
+         panel.setBounds(0, 0, 351, 517);
+         
+         panel1.setBounds(0,0,700,550);
+         panel1.setOpaque(false);
+         panel1.setLayout(null);
+         
+         String[]caption = {"ID : ", "パスワード : ",  "名前 : "  , "H.P :                                                                  *番号だけ入力", "メール : " , "性別 : "};
+         int Y1 = 30;//y좌표　　
+		     //y座標
+         
+         for (int i = 0; i < labelArrJoin.length; i++) {
+            
+            if( i<=4 ){
+               textFieldJoin[i] = new JTextField(); //텍스트 필드 4개 생성　　	
+						    //テキストフィールドを4つ生成
+               
+               if(i==1){
+                  System.out.println("@@@@@@@@@@@@@@@@@@");
+                  textFieldJoin[i] = new JPasswordField();
+               }
+               
+               textFieldJoin[i].setBounds(90,Y1,140,20);
+               panel1.add(textFieldJoin[i]); // id패널에 텍스트필드넣기　　
+					     // idのパネルにテキストフィールドを入れる
+            }
+            
+            labelArrJoin[i] = new JLabel(caption[i]);
+            if(i==3){
+               System.out.println("@@@@@@@@@@@@@@");
+               labelArrJoin[i].setBounds(10,Y1,550,20);
+            }else{
+               labelArrJoin[i].setBounds(10,Y1,100,20);
+            }
+            labelArrJoin[i].setOpaque(false);
+            panel1.add(labelArrJoin[i]); // id패널에 id 라벨넣기　　
+					 // idのパネルにidのラベルを入れる
+            
+            Y1 += 30;
+         }
+         
+         idCheck = new JButton("ID チェック");// ID 중복체크　　
+					      // ID重複チェック
+         idCheck.setOpaque(false);
+         idCheck.setBounds(230, 30, 100, 20);
+         idCheck.addActionListener(this);
+
+         panel1.add(idCheck);// 중복버튼 패널에 중복버튼 넣기　　
+			     // 重複ボタンのパネルに重複ボタンを入れる
+
+         male = new JRadioButton("男性");
+         male.setOpaque(false);
+         male.setBounds(90, 183, 70, 15);
+         
+         male.addItemListener(this);
+         female = new JRadioButton("女性");
+         female.setOpaque(false);
+         female.setBounds(170, 183, 70, 15);
+         
+         female.addItemListener(this);
+         bg = new ButtonGroup();
+         bg.add(male);
+         bg.add(female);
+
+         panel1.add(male);// 성별 패널에 남자 버튼　　
+			  // 性別のパネルに男ボタン
+         panel1.add(female);// 성별 패널에 여자 버튼　　
+			    // 性別パネルに女ボタン
+         travel = new JCheckBox("(チェック)");// "(체크)"
+         travel.setVisible(false); // 관리자 체크버튼 안 보이게 하기!!!　　
+				   // 管理者のチェックボタンを見えないようにする!!!
+         travel.setOpaque(false);
+         panel1.add(travel);// 관리자 패널에 관리자 체크　　
+			    // 管理者のパネルに管理者チェック
+
+         trans = new JButton("伝送");// "전송"
+         trans.addActionListener(this);
+         trans.setBounds(70, 230, 80, 25);
+         
+         cancel = new JButton("キャンセル");// "취소"
+         cancel.addActionListener(this);
+         cancel.setBounds(155, 230, 115, 25);
+
+         panel1.add(trans);// 6줄에 전송버튼　　
+			   // 6列に送信ボタン
+         panel1.add(cancel);// 6줄에 취소버튼　　
+			    // 6列にキャンセルボタン
+         setTitle("会員加入");// "회원가입"
+         add(panel1);
+         getContentPane().add(panel);
+      
+      //회원정보 수정시　　
+      //会員情報の変更の時
+      }else {
+         
+         Image img = new ImageIcon().getImage();//배경　　
+						//背景
+
+         JPanel panel = new JPanel() {
+            private static final long serialVersionUID = 1L;
+
+            ImageIcon icon = new ImageIcon(".\\img\\1.jpg");
+
+            public void paintComponent(Graphics g) {
+               g.drawImage(icon.getImage(), 0, 0, getWidth(), getHeight(), null);
+               setOpaque(false);
+               super.paintComponent(g);
+            }
+         };
+         panel.setBounds(new Rectangle(20, 20, 700, 550));
+         panel.setBounds(0, 0, 351, 517);
+         
+         panel1.setBounds(0,0,700,550);
+         panel1.setOpaque(false);
+         panel1.setLayout(null);
+           
+         String[]caption = {"ID : ", "パスワード : ","확인 : ","名前 : " , "H.P :                                                                  *番号だけ入力", "メール : "};
+         
+         int Y1 = 30;//y좌표　　
+		     //y座標
+         
+         for (int i = 0; i < labelArrMove.length; i++) {
+            labelArrMove[i] = new JLabel(caption[i]);
+            if(i==4){
+               System.out.println("###################");
+               labelArrMove[i].setBounds(10,Y1,400,20);
+            }else{
+               labelArrMove[i].setBounds(10,Y1,100,20);
+            }
+            labelArrMove[i].setOpaque(false);
+            panel1.add(labelArrMove[i]); // id패널에 id 라벨넣기　　
+					 // idのパネルにidのラベル入れる
+            
+            if(i<=5){
+               textFieldMove[i] = new JTextField();
+               if(i==1 || i==2){
+                  textFieldMove[i] = new JPasswordField();
+               }
+               
+               textFieldMove[i].setBounds(90,Y1,140,20);
+               panel1.add(textFieldMove[i]); 
+               
+            }
+            
+            
+            Y1 += 30;
+            
+         }
+
+         trans = new JButton("伝送");// "전송"
+         trans.addActionListener(this);
+         trans.setBounds(70, 230, 80, 25);
+         panel1.add(trans);
+         
+         cancel = new JButton("キャンセル");// "취소"
+         cancel.addActionListener(this);
+         cancel.setBounds(155, 230, 115, 25);
+         
+         panel1.add(cancel);         
+
+         setTitle("수정화면");
+         add(panel1);
+         getContentPane().add(panel);
+         
+         
+         // 서버에서 가져온 회원정보 셋팅!!!!　　
+	 // サーバーから持ってきた会員情報設定!!!!
+         ArrayList<MemberVO> list = new ArrayList<MemberVO>();// ArrayList 객체생성　　
+							      // ArrayList　オブジェクト生成
+                                                   
+         MemberDAO mdao = new MemberDAO();
+         try {
+
+            list = mdao.getMemberExist(MainFrame.id);
+
+            if (list != null) {
+               textFieldMove[0].setText(MainFrame.id);
+               textFieldMove[1].setText(list.get(0).getPassword());
+               textFieldMove[2].setText(list.get(0).getPassword());
+               textFieldMove[3].setText(list.get(0).getName());
+               textFieldMove[4].setText(list.get(0).getPhone());
+               textFieldMove[5].setText(list.get(0).getEmail());
+               
+               System.out.println("****************************"
+                     + MainFrame.id);
+               System.out.println("****************************"
+                     + list.get(0).getPassword());
+               System.out.println("****************************"
+                     + list.get(0).getName());
+               System.out.println("****************************"
+                     + list.get(0).getPhone());
+               System.out.println("****************************"
+                     + list.get(0).getEmail());
+
+            }
+         } catch (Exception e) {
+            System.out.println(e);
+         }
+      }
+
+      setSize(361, 555);
+      setResizable(false);
+
+      setVisible(true);
+
+      // 화면 중앙에 위치　　
+      // 画面中央に位置
+
+      Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+      int xPos = (screenSize.width / 2) - (this.getSize().width / 2);
+      int yPos = (screenSize.height / 2) - (this.getSize().height / 2);
+      setLocation(xPos, yPos);
+
+   }
+
+   public void itemStateChanged(ItemEvent e) {
+
+      // 성별 체크, 남자와 여자 중 선택할 시　　
+      // 性別チェック、男性と女性の中で選択するとき
+      if ((e.getSource() == male) || e.getSource() == female) {
+
+         if (male.isSelected()) { // 남자를 선택할 시　　
+				  // 男を選択するとき
+            gender = 1; // 남자일 때 1　　
+			// 男の時1
+         } else {
+            gender = 2;// 여자일 때 2　　
+		       // 女の時2
+         }
+      }
+
+      if (e.getSource() == travel) { // 관리자 체크 버튼을 누를 시　　
+				     // 管理者チェックボタンを押すとき
+         if (travel.isSelected()) {
+            admin_flag = 0;// 관리자는 0　　
+			   // 管理者は0
+         } else {
+            admin_flag = 1;// 일반유저는 1　　
+			   // 一般ユーザーは1
+         }
+      }
+   }
+
+   @Override
+   public void actionPerformed(ActionEvent ae) {
+
+      // DB하고 연결　　
+      // DBと連結
+      String ae_type = ae.getActionCommand();
+      MemberVO mv = null;
+      MemberDAO edvo = null;
+
+      
+      System.out.println("ae_type " + ae_type + "trans.getText()"   + trans.getText());
+      // 전송버튼 클릭했을때　　
+      // 送信ボタンをクリックしたとき
+      if (ae_type.equals(trans.getText()) && LoginPage.loginFlag.equals("N")) {
+
+         try {
+            // 자료들을 다 받아와서 mv에 담는다.　　
+	    // 資料を全部もらって来てmvにのせる。
+            mv = new MemberVO(
+                   textFieldJoin[0].getText()
+                  ,textFieldJoin[1].getText()
+                  ,textFieldJoin[2].getText()
+                  ,textFieldJoin[3].getText()
+                  ,textFieldJoin[4].getText()
+                  ,gender);
+
+            // 회원정보 기입을 하지 않았을때  　　
+	    // 会員情報を書き込みをしなかった時
+            if (textFieldJoin[0].getText().equals(null)
+                  || textFieldJoin[0].getText().equals("")) {
+               JOptionPane.showMessageDialog(this, "IDを記入してください");// "아이디를 기입해주세요."
+
+            } else if (textFieldJoin[1].getText().equals(null)
+                  || textFieldJoin[1].getText().equals("")) {
+               JOptionPane.showMessageDialog(this, "パスワードを記入してください");// "비밀번호를 기입해주세요."
+
+            } else if (textFieldJoin[2].getText().equals(null)
+                  || textFieldJoin[2].getText().equals("")) {
+               JOptionPane.showMessageDialog(this, "名前を記入してください");// "이름을 기입해주세요."
+
+            } else if (gender == 0) {
+               JOptionPane.showMessageDialog(this, "性別を確認してください");// "성별을 확인해주세요."
+
+            } else if (textFieldJoin[3].getText().equals(null)
+                  || textFieldJoin[3].getText().equals("")) {
+               JOptionPane.showMessageDialog(this, "電話番号を記入してください");// "전화번호를 기입해주세요."
+
+            } else if (textFieldJoin[4].getText().equals(null)
+                  || textFieldJoin[4].getText().equals("")) {
+               JOptionPane.showMessageDialog(this, "メールを記入してください");// "이메일을 기입해주세요."
+
+               //아이디 중복체크를 안 눌렀을 경우　　//ID重複チェックを押さなかった場合
+            } else if (checkedFlag == false) {
+               JOptionPane.showMessageDialog(this, "ID チェックをしてください");// "아이디 중복체크를 해주세요."
+               return;// 상태표 띄워주고 반환해준다.　　
+		      // 状況表を現わしたあと返還してくれる。
+
+               //아이디 중복체크를 다 마쳤을 경우　　//ID重複チェックをすべて終えた場合
+            } else if (checkedFlag == true) {
+               edvo = new MemberDAO();
+               edvo.setMemberregiste(mv);
+               JOptionPane.showMessageDialog(this, textFieldJoin[0].getText()
+                     + "様が 成功的に加入されました。");// "님이 성공적으로 추가됨"
+               dispose();// 저장 후 창 닫음　　//保存の後画面を消す。
+
+            }
+
+         } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "会員加入失敗しました。");// "회원가입 실패"
+            System.out.println("e=[" + e + "]");
+            e.printStackTrace();
+         }
+
+      }
+      // 회원정보수정　　// 会員情報を修正
+      else if (ae_type.equals(trans.getText())
+            && LoginPage.loginFlag.equals("Y")) {
+         MemberDAO mdao = new MemberDAO();
+         MemberVO mvo = null;
+         ArrayList<MemberVO> list = null;
+         int change = 0;// 수정한 개수 카운트　
+			// 修正した数のカウント
+         try {
+
+            list = mdao.getMemberExist(MainFrame.id);// 자료들을 다 받아와서 list에 담는다　　
+						     // 資料を全部もらって来てlistにのせる
+                                             
+            mvo = new MemberVO(MainFrame.id, list.get(0).getPassword(),
+                  list.get(0).getName(), list.get(0).getPhone(), list
+                        .get(0).getEmail());// mvo객체 생성!!!　　
+					    // mvoのオブジェクト生成!!!
+            
+            //회원정보기입 안했을 때　　
+	    //会員情報を記入しなかった時
+            if (textFieldMove[1].getText().equals(null)
+                  || textFieldMove[1].getText().equals("")) {
+               JOptionPane.showMessageDialog(this, "パスワードを記入してください");// "비밀번호를 기입해주세요."
+
+            } else if (textFieldMove[2].getText().equals(null)
+                  || textFieldMove[2].getText().equals("")) {
+               JOptionPane.showMessageDialog(this, "パスワードの確認欄で入力してください");// "비번확인란을 기입해주세요."
+
+            } else if (!textFieldMove[1].getText().equals(
+                  textFieldMove[2].getText())) {
+               JOptionPane.showMessageDialog(this, "二つのパスワードが一致しません");// "두 비밀번호가 일치하는지 확인"
+
+            } else if (textFieldMove[3].getText().equals(null)
+                  || textFieldMove[3].getText().equals("")) {
+               JOptionPane.showMessageDialog(this, "名前を入力してください");// "이름 없을때"
+
+            } else if (textFieldMove[4].getText().equals(null)
+                  || textFieldMove[4].getText().equals("")) {
+               JOptionPane.showMessageDialog(this, "電話番号を記入してください");// "전화번호를 기입해주세요."
+
+            } else if (textFieldMove[5].getText().equals(null)
+                  || textFieldMove[5].getText().equals("")) {
+               JOptionPane.showMessageDialog(this, "メールを記入してください");// "이메일을 기입해주세요."
+            } else {
+               if (!textFieldMove[1].getText().equals(
+                     list.get(0).getPassword())
+                     && !textFieldMove[2].getText().equals(
+                           list.get(0).getPassword())) {
+                  mvo.setPassword(textFieldMove[1].getText());// 비밀번호 가져와서 추가
+                  change += 1;// 바뀐게있으면 +1　　
+			      // 変わったのがあれば+1
+               }
+               if (!textFieldMove[3].getText().equals(list.get(0).getName())) {
+                  mvo.setName(textFieldMove[3].getText());// 이름 가져와서 추가　　
+							  // 名前持ってきて追加
+                  change += 1;
+               }
+               if (!textFieldMove[4].getText().equals(list.get(0).getPhone())) {
+                  mvo.setPhone(textFieldMove[4].getText());// 전번 가져와서 추가　　
+							   // この間持ってきて追加
+                  change += 1;
+               }
+               if (!textFieldMove[5].getText().equals(list.get(0).getEmail())) {
+                  mvo.setEmail(textFieldMove[5].getText());// 이메일 가져와서 추가　
+							   // メールもらって来て追加　
+                  change += 1;
+               }
+
+               if (change != 0) {// 바뀐게있으면 수정　　
+				 // 変わったのがあれば修正
+                  System.out.println(mvo);
+                  mdao.setUpdateMember(mvo);
+
+                  JOptionPane.showMessageDialog(this, MainFrame.id
+                        + "様が 成功的に修正される!。");// "님이 성공적으로 수정됨"
+                  dispose();// 저장 후 창 닫음
+			    //保存の後画面を消す
+               } else {//바뀐게 없을때
+		       //変わったのがないとき
+				
+                  JOptionPane.showMessageDialog(this, "修正事項がありません。");  //"수정사항이 없습니다。"
+               }
+            }
+
+         } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "修正失敗しました。");// "수정실패했습니다."
+            System.out.println("e=[" + e + "]");
+         }
+      }
+
+      // 회원가입창 취소버튼을 눌렀을 때 창을 안 보이게 한다.  //　会員加入画面のキャンセルボタンを押した時、画面を見えないようにしている。
+      else if (ae_type.equals(cancel.getText())) {
+         setVisible(false);
+      }
+
+      // 중복 체크 버튼 클릭했을때  // 重複チェックボタンをクリックしたとき
+      else if (ae_type.equals(idCheck.getText())) {
+
+         System.out.println("idCheck.getText()" + idCheck.getText());
+
+         checkedFlag = true; // checkedFlag를 false에서 true로 바뀌어 중복체크를 했다는 것을　알수 있다.// checkedFlagをfalseからtrueに変わって重複チェックをしたということを　知れる。
+         String strId = textFieldJoin[0].getText(); // Id를 변수에 저장　　// Idを変数に保存
+         System.out.println("strId@@@" + strId);
+
+         ArrayList<MemberVO> list = new ArrayList<MemberVO>();
+         MemberDAO mdao = new MemberDAO();
+
+         if (textFieldJoin[0].getText().equals("")) { // 아무것도 기입안했으면　　
+						      // 何も記入しなかったら
+            JOptionPane.showMessageDialog(this, "IDを記入してください");// "아이디를 기입해주세요."
+            return;
+         }
+
+         try {
+            list = mdao.getMemberExist(strId);
+
+            if (list.size() != 0) {
+               // System.out.println("22222222222"+ strId);
+               // System.out.println("@@@@@@@@@@@" + list.get(0).getId());
+               if (list.get(0).getId().equals(strId)) {
+                  idDuplFlag = true; // idCheck를 true로 주어 중복되었다는 걸 알려준다.　　
+				     // idCheckを trueに あげて重複したことを教えてくれる。
+                  // 아이디가 중복되었을 때 사용할 수 없다는 표시를 하고 ID의 텍스트필드에 기입된 내용을 지운다.//IDが重複されたときに使用できないという表示をしてIDのテキストフィールドに記入された内容を消す。	
+                  JOptionPane.showMessageDialog(this, "使用できないIDです。");// "사용할 수 없는 ID입니다. "
+                  textFieldJoin[0].setText("");
+               }
+               // else if(textField[0].getText().equals(null) ||
+               // textField[0].getText().equals("")){
+               // JOptionPane.showMessageDialog(this,
+               // "IDを記入してください");//"아이디를 기입해주세요."
+               // return;
+               // }
+            } else {
+               // JOptionPane.showMessageDialog(this,
+               // "IDを記入してください");//"아이디를 기입해주세요."
+               JOptionPane.showMessageDialog(this, "使用できるIDです。");// "사용가능한  ID입니다. "
+               textFieldJoin[0].setEditable(false);
+               idDuplFlag = false;
+            }
+
+         } catch (Exception e) {
+            // JOptionPane.showMessageDialog(this,
+            // "使用できるIDです。");//"사용가능한  ID입니다. "
+            System.out.println(e);
+            e.printStackTrace();
+         }
+      }
+   }
+
+}

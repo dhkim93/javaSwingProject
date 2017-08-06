@@ -1,0 +1,272 @@
+package com.bs.view;
+
+
+
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+import java.awt.Label;
+import java.awt.Panel;
+import java.awt.TextField;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
+
+
+
+public class AdminPage extends JFrame implements ActionListener {
+
+
+
+    Label lbl1, lbl2, lbl3,lbl4, lbl5, lbl6,lbl7, lbl8, lbl9,lbl10, lbl11, lbl12;
+
+    TextField txt1, txt2, txt3,txt4, txt5, txt6,txt7, txt8, txt9,txt10, txt11, txt12;
+
+    JButton btn1, btn2;
+
+
+
+    JTable table;
+
+    JScrollPane scroll; /* 스크롤 추가를 위해 JScrollPane 선언 */
+
+    DefaultTableModel tablemodel; /* addRow를 호출하기 위한 선언 */
+
+
+
+    public AdminPage(String str)
+
+    {
+
+        super(str);
+
+
+
+        /* DefaultTableModel을 구현하여 JTable을 생성한다. */
+
+        tablemodel = new DefaultTableModel();
+
+        tablemodel.setColumnIdentifiers(new String[] {"모델명", "품목명", "수량"});
+
+        table = new JTable(tablemodel); 
+
+        scroll = new JScrollPane(table);
+        scroll.setBounds(0, 0, 367, 481);
+
+
+
+        
+        lbl1 = new Label("ModelNo");
+        lbl2 = new Label("Product");
+        lbl3 = new Label("Stock");
+
+
+
+        lbl4 = new Label("ModelNo");
+        lbl5 = new Label("Product");
+        lbl6 = new Label("Stock");
+        
+
+        lbl7 = new Label("ModelNo");
+        lbl8 = new Label("Product");
+        lbl9 = new Label("Stock");
+        
+
+        lbl10 = new Label("ModelNo");
+        lbl11 = new Label("Product");
+        lbl12 = new Label("Stock");
+        
+
+        
+
+        txt1 = new TextField(null, 10);
+        txt2 = new TextField(null, 5);
+        txt3 = new TextField(null, 3);
+
+
+        txt4 = new TextField(null, 10);
+        txt5 = new TextField(null, 5);
+        txt6 = new TextField(null, 3);
+
+        txt7 = new TextField(null, 10);
+        txt8 = new TextField(null, 5);
+        txt9 = new TextField(null, 3);
+
+        txt10 = new TextField(null, 10);
+        txt11 = new TextField(null, 5);
+        txt12 = new TextField(null, 3);
+
+
+        
+
+        btn1 = new JButton("물품추가");
+
+        btn1.addActionListener(this);
+
+        btn2 = new JButton("물품삭제");
+
+        btn2.addActionListener(this);
+        getContentPane().setLayout(null);
+
+
+
+        
+
+        Panel panel = new Panel(new FlowLayout());
+        panel.setBounds(373, 0, 411, 512);
+
+       
+      
+        
+        panel.add(lbl1);
+        panel.add(txt1);
+        panel.add(lbl2);
+        panel.add(txt2);
+        panel.add(lbl3);
+        panel.add(txt3);
+        
+        panel.add(lbl4);
+        panel.add(txt4);
+        panel.add(lbl5);
+        panel.add(txt5);
+        panel.add(lbl6);
+        panel.add(txt6);
+        
+        panel.add(lbl7);
+        panel.add(txt7);
+        panel.add(lbl8);
+        panel.add(txt8);
+        panel.add(lbl9);
+        panel.add(txt9);
+        
+        panel.add(lbl10);
+        panel.add(txt10);
+        panel.add(lbl11);
+        panel.add(txt11);
+        panel.add(lbl12);
+        panel.add(txt12);
+        
+        
+        
+        
+
+        panel.add(btn1);
+        panel.add(btn2);
+
+
+
+ 
+
+        /* 화면의 레이아웃을 구성함 */
+
+        getContentPane().add(panel);
+
+        getContentPane().add(table.getTableHeader(), BorderLayout.NORTH);
+
+        getContentPane().add(scroll);
+
+
+
+ 
+
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        setSize(800, 550);
+
+        setResizable(false);//창크기고정
+        setVisible(true);
+
+    }
+
+
+
+ 
+
+    public void actionPerformed(ActionEvent e) {
+
+        Object obj = e.getSource();
+
+        /* 추가 버튼이 눌린 경우 */
+
+        if((JButton)obj == btn1)
+
+        {
+
+            /* TextField에 입력된 데이터를 JTable에 삽입함 */
+
+            tablemodel.addRow(new String[] {txt1.getText().toString(), txt2.getText().toString(),     txt3.getText().toString(),
+            		txt4.getText().toString(), txt5.getText().toString(),     txt6.getText().toString(),
+            		txt7.getText().toString(), txt8.getText().toString(),     txt9.getText().toString(),
+            		txt10.getText().toString(), txt11.getText().toString(),     txt12.getText().toString()
+            		
+            
+            
+            
+            
+            
+            });
+
+            txt1.setText(null);
+
+            txt2.setText(null);
+
+            txt3.setText(null);
+            
+            txt4.setText(null);
+
+            txt5.setText(null);
+
+            txt6.setText(null);
+
+            txt7.setText(null);
+
+            txt8.setText(null);
+
+            txt9.setText(null);
+
+            txt10.setText(null);
+
+            txt11.setText(null);
+
+            txt12.setText(null);
+
+        }
+
+            /* 삭제 버튼이 눌린 경우 */
+
+        else if((JButton)obj == btn2)
+
+        {
+
+            /* 예외처리. 선택된 row가 있어야 한다 */
+
+            if(table.getSelectedRow() >= 0)
+
+            {
+
+                tablemodel.removeRow(table.getSelectedRow());
+
+            }
+
+        }
+
+    }
+
+
+
+ 
+
+    public static void main(String[] args) {
+
+        new AdminPage("관리자 페이지");
+
+    }
+
+}
+
+
+

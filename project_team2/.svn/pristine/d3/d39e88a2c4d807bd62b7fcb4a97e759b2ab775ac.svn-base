@@ -1,0 +1,117 @@
+package com.bs.view;
+
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.util.ArrayList;
+
+import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableModel;
+
+import com.bs.control.BoardDAO;
+import com.bs.vo.NoticeBoardVO;
+
+public class BoardModel extends AbstractTableModel implements MouseListener{
+	
+	Object[][] data;
+	Object[] columnName;
+	BoardDAO bdao = new BoardDAO();
+	NoticeBoardVO nbvo;
+	ArrayList<String>title;
+	ArrayList<NoticeBoardVO> list;
+//	AbstractTableModel table;
+	
+	
+	public  BoardModel(DefaultTableModel model) {
+		// 열의 개수와 행의 개수를 알아야 2차원 배열선언
+		// 테이블에서 컬럼이름을 얻어와서 1차원 배열 선언
+			title = bdao.getColumnName();
+			System.out.println("title.get(0) " + title.get(0));
+			
+			columnName = title.toArray();
+//			System.out.println("columnName :" + title.toArray().toString());
+
+			int columnCount = title.size();
+			list = bdao.getBoardTotal();
+			int rowCount = list.size();
+			data = new Object[rowCount][columnCount]; //2개 컬럼은 숨기기
+			
+			//배열에 데이터 입력 
+			for (int index = 0; index < rowCount; index++) {
+
+				nbvo = list.get(index);
+				data[index][0] = nbvo.getNo();
+				data[index][1] = nbvo.getSubject();
+				data[index][2] = nbvo.getWriter();
+				data[index][3] = nbvo.getDate();
+			}
+			
+	
+			
+			
+		
+			
+			
+			
+	}
+	
+	//컬럼 카운트 반환 메서드 구현 
+	public int getColumnCount() { 
+		// TODO Auto-generated method stub
+		if (columnName == null)
+			return 0;
+		else
+			return columnName.length;
+	}
+
+	//로우 카운트 반환 메서드 구현 
+	public int getRowCount() {
+		// TODO Auto-generated method stub
+		if (data == null)
+			return 0;
+		else
+			return data.length;
+	}
+
+	//getValue 메서드 구현 
+	public Object getValueAt(int rowIndex, int columnIndex) {
+		// TODO Auto-generated method stub
+		return data[rowIndex][columnIndex];
+	}
+	
+	//컬럼네임 반환 메서드 구현 
+	public String getColumnName(int column) {
+		// TODO Auto-generated method stub
+		return (String) columnName[column];
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+}
